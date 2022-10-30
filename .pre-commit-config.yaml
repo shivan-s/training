@@ -19,7 +19,10 @@ repos:
       - id: check-toml
       - id: sort-simple-yaml
       - id: check-yaml
-
+      - id: name-tests-test
+        args:
+          - --pytest-test-first
+        exclude: ".*tests/factories/(.*).py"
   - repo: https://github.com/hadialqattan/pycln
     rev: v2.1.1
     hooks:
@@ -27,7 +30,7 @@ repos:
         args: [--all]
 
   - repo: https://github.com/ambv/black
-    rev: 22.6.0
+    rev: 22.10.0
     hooks:
       - id: black
 
@@ -51,17 +54,15 @@ repos:
         args: ["-iii", "-ll"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.971
+    rev: v0.982
     hooks:
       - id: mypy
         additional_dependencies:
           [
-            "django-stubs",
-            "django-cors-headers",
-            "django-allauth",
             "psycopg2-binary",
             "django-hashid-field",
             "django_extensions",
+            "django-stubs",
             "sentry-sdk",
             "whitenoise",
           ]
@@ -77,7 +78,7 @@ repos:
       - id: isort
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.3
+    rev: v3.2.0
     hooks:
       - id: pyupgrade
         args:
@@ -89,13 +90,23 @@ repos:
             "--py39-plus",
             "--py310-plus",
           ]
-
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.9.4
+    rev: v1.19.3
     hooks:
       - id: djlint-django
+
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: 1.11.0
+    hooks:
+      - id: django-upgrade
+        args: [--target-version, "4.1"]
 
   - repo: https://github.com/AleksaC/hadolint-py
     rev: v2.10.0
     hooks:
       - id: hadolint
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.37.0
+    hooks:
+      - id: commitizen

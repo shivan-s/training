@@ -1,43 +1,32 @@
+# commands
 .PHONY: run
 run:
-	docker-compose up --build db -d && \
-	pipenv run python manage.py runserver
+	@echo "Building and running application" && \
+	docker-compose down --remove-orphans && \
+	docker-compose up --build -d
 
-.PHONY: migrate
-migrate:
-	pipenv run python manage.py makemigrations && \
-	pipenv run python manage.py migrate && \
-	pipenv run python manage.py collectstatic
+.PHONY: attach
+attach:
+	@echo "Attaching to containers" && \
+	docker exec -it training-app sh
 
-ARGPATH=.
-
+ARG=""
 .PHONY: test
 test:
-	clear
-	docker-compose up --build db -d && \
-	pipenv run pytest -vv -k $(ARGPATH)
+	@echo "Running Testing" && \
+	docker exec -it training-app sh -c "pytest $(ARG)"
 
-.PHONY: mypy
-mypy:
-	clear
-	pipenv run mypy . --config-file="../pyproject.toml"
+.PHONY: tox
+tox:
+	@echo "Running tox" && \
+	docker exec -it training-app sh -c "tox"
 
-
-
-.PHONY: shell
-shell:
-	pipenv run python manage.py shell
-
-.PHONY: graph
-graph:
-	pipenv run python manage.py graph_models --rankdir BT api users -o my_project_visualised.png && \
-	open my_project_visualised.png
-
-.PHONY: actions
-actions:
-	act --container-architecture linux/amd64
+.PHONY: deploy
+deploy:
+	@echo "Deploying application" && \
+	ansible-playbook ansible/deploy.yml -i ansible/hosts -K
 
 .PHONY: generate-key
 generate-key:
-	@echo '' && \
-	pipenv -q run python manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'
+	@echo 'generating-key' && \
+	python -q run python manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'

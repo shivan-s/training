@@ -1,13 +1,30 @@
 [build-system]
-requires = ["setuptools >= 62.1.0", "wheel"]
+requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "django-project"
-version = "0.1.0"
+name = "training"
+version = "0.0.1"
+dependencies = [
+  "django",
+  "gunicorn",
+  "django-hashid-field",
+  "psycopg2-binary",
+  "sentry-sdk",
+  "whitenoise",
+]
 
-[tool.setuptools.packages.find]
-exclude = ["templates", "static", "staticfiles"]
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-instafail",
+  "pytest-xdist",
+  "mypy",
+  "flake8",
+  "tox",
+]
 
 [tool.isort]
 profile = "black"
@@ -15,17 +32,11 @@ multi_line_output = 3
 line_length = 79
 default_section = "THIRDPARTY"
 known_first_party = ["users", "config"]
-known_third_party = ["django", "hashid_field", "sentry_sdk"]
+known_third_party = ["django", "hashid_field"]
 
 [tool.black]
 line-length = 79
 include = '\.pyi?%'
-
-[tool.pyright]
-include = ["."]
-exclude = [".venv"]
-venvPath = "."
-venv = ".venv"
 
 [tool.mypy]
 mypy_path = "."
@@ -37,14 +48,31 @@ strict_optional = false
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-addopts = "--cov-report html"
+addopts = [
+  "-n",
+  "auto",
+  "--cov",
+  "--cov-config=./pyproject.toml",
+  "--cov-branch",
+  "--cov-report=html",
+  "--create-db",
+  "--no-migrations",
+  "--pdbcls=pdbr:RichPdb",
+]
+testpaths = ["./tests"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+log_level = "ERROR"
 log_format = "%(asctime)s %(levelname)s %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli = true
+log_cli_level = "ERROR"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
-omit = ["tests/*", "*/migrations/*"]
+branch = true
+omit = ["*/tests/*", "*/migrations/*"]
 
 [[tool.mypy.overrides]]
 module = "*.migrations.*"
@@ -59,5 +87,55 @@ ignore_missing_model_attributes = true
 [tool.pydocstyle]
 ignore = "D100,D101,D102,D103,D104,D105,D106,D107"
 
-[tool.djlint]
-profile="django"
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_files = [
+  "pyproject.toml",
+  "frontend/package.json",
+  "backend/api/__init__.py",
+]
+version = "0.12.2"
+tag_format = "$version"
+
+style = [
+  [
+    "qmark",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "question",
+    "bold",
+  ],
+  [
+    "answer",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "pointer",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "highlighted",
+    "fg:#ff9d00 bold",
+  ],
+  [
+    "selected",
+    "fg:#cc5454",
+  ],
+  [
+    "separator",
+    "fg:#cc5454",
+  ],
+  [
+    "instruction",
+    "",
+  ],
+  [
+    "text",
+    "",
+  ],
+  [
+    "disabled",
+    "fg:#858585 italic",
+  ],
+]

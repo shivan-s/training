@@ -3,21 +3,22 @@
 import os
 from pathlib import Path
 
-import sentry_sdk
+# import sentry_sdk
 from django.core.management.utils import get_random_secret_key
-from sentry_sdk.integrations.django import DjangoIntegration
 
-SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
-SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
-SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", "1.0")
+# from sentry_sdk.integrations.django import DjangoIntegration
 
-if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
-    sentry_sdk.init(
-        dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
-        integrations=[DjangoIntegration()],
-        traces_sample_rate=float(SENTRY_SAMPLE_RATE),
-        send_default_pii=True,
-    )
+# SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
+# SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
+# SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", "1.0")
+#
+# if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
+#     sentry_sdk.init(
+#         dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
+#         integrations=[DjangoIntegration()],
+#         traces_sample_rate=float(SENTRY_SAMPLE_RATE),
+#         send_default_pii=True,
+#     )
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,21 +80,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
-
-if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
-    # local development
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": os.getenv("POSTGRES_NAME"),
-            "USER": os.getenv("POSTGRES_USER"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": os.getenv("POSTGRES_HOST"),
-            "PORT": os.getenv("POSTGRES_PORT"),
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("POSTGRES_NAME"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": 5432,
     }
+}
 
 # Password validation
 
@@ -121,7 +118,6 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -161,9 +157,7 @@ LOGGING = {
 # Producution settings
 DEBUG = False
 ALLOWED_HOSTS = [
-    "localhost",
-    "0.0.0.0",
-    # TODO: where is this going to be hosted?
+    "training.shivan.xyz",
 ]
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True

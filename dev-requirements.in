@@ -1,0 +1,9 @@
+pytest
+pytest-cov
+pytest-django
+pytest-instafail
+pytest-xdist
+django-stubs[compatible-mypy]
+mypy
+flake8
+tox
