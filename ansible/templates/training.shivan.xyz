@@ -17,3 +17,6 @@ server {
 	}
 
 }
+
+# TODO: change the config to below?
+# https://docs.gunicorn.org/en/latest/deploy.html

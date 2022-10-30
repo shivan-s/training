@@ -12,7 +12,6 @@ dependencies = [
   "psycopg2-binary",
   "sentry-sdk",
   "whitenoise",
-  "django-tailwind",
 ]
 
 [project.optional-dependencies]

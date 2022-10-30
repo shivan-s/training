@@ -1,17 +1,18 @@
 {% load static %}
-{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- Bulma -->
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
         <meta charset="UTF-8" />
         <meta name="description" content="description" />
         <meta name="keywords" content="keywords" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Training Partners</title>
-        {% tailwind_css %}
     </head>
-    <body class="bg-gray-50 font-serif leading-normal tracking-normal">
+    <body>
         <div class="container mx-auto">
             {% block content %}
             {% endblock content %}

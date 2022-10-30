@@ -44,11 +44,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # custom
     "users",
-    # third party
-    # - tailwind
-    "tailwind",
-    "theme",
-    "django_browser_reload",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -57,7 +52,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -133,9 +127,6 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = (str(BASE_DIR.joinpath("static")),)
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-TAILWIND_APP_NAME = "theme"
-INTERNAL_IP = "127.0.0.1"
 
 # Logging
 
