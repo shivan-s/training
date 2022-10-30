@@ -12,7 +12,7 @@ COPY pyproject.toml /code/
 # hadolint ignore=DL3042
 RUN pip-compile --output-file=requirements.txt pyproject.toml && \
 pip-compile --extra=dev --output-file=dev-requirements.txt pyproject.toml && \
-pip-sync dev-requirements.txt requirements.txt
+pip-sync dev-requirements.txt requirements.txt --pip-args "--no-cache-dir --no-deps"
 
 COPY entrypoint.sh manage.py /code/
 RUN chmod +x ./entrypoint.sh
