@@ -65,6 +65,7 @@ repos:
             "django-stubs",
             "sentry-sdk",
             "whitenoise",
+            "django-tailwind",
           ]
 
   - repo: https://github.com/asottile/seed-isort-config

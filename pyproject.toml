@@ -12,6 +12,7 @@ dependencies = [
   "psycopg2-binary",
   "sentry-sdk",
   "whitenoise",
+  "django-tailwind",
 ]
 
 [project.optional-dependencies]
@@ -32,7 +33,7 @@ multi_line_output = 3
 line_length = 79
 default_section = "THIRDPARTY"
 known_first_party = ["users", "config"]
-known_third_party = ["django", "hashid_field"]
+known_third_party = ["django", "hashid_field", "sentry_sdk"]
 
 [tool.black]
 line-length = 79

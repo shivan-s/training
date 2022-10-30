@@ -1,6 +1,7 @@
-  django
-  gunicorn
-  django-hashid-field
-  psycopg2-binary
-  sentry-sdk
-  whitenoise
+django
+gunicorn
+django-hashid-field
+psycopg2-binary
+sentry-sdk
+whitenoise
+django-tailwind

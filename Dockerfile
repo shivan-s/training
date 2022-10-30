@@ -1,4 +1,4 @@
-FROM python:3.10.7-slim
+FROM nikolaik/python-nodejs:python3.10-nodejs18-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONNUNBUFFERED 1

@@ -1,1 +1,1 @@
-# Register your models here.
+"""Admin view for project."""

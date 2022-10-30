@@ -3,22 +3,21 @@
 import os
 from pathlib import Path
 
-# import sentry_sdk
+import sentry_sdk
 from django.core.management.utils import get_random_secret_key
+from sentry_sdk.integrations.django import DjangoIntegration
 
-# from sentry_sdk.integrations.django import DjangoIntegration
+SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
+SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
+SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", "0.5")
 
-# SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
-# SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
-# SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", "1.0")
-#
-# if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
-#     sentry_sdk.init(
-#         dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
-#         integrations=[DjangoIntegration()],
-#         traces_sample_rate=float(SENTRY_SAMPLE_RATE),
-#         send_default_pii=True,
-#     )
+if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
+    sentry_sdk.init(
+        dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=float(SENTRY_SAMPLE_RATE),
+        send_default_pii=True,
+    )
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,6 +44,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # custom
     "users",
+    # third party
+    # - tailwind
+    "tailwind",
+    "theme",
+    "django_browser_reload",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -53,6 +57,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -128,6 +133,9 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = (str(BASE_DIR.joinpath("static")),)
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+TAILWIND_APP_NAME = "theme"
+INTERNAL_IP = "127.0.0.1"
 
 # Logging
 

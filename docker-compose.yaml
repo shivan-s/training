@@ -1,6 +1,16 @@
 ---
 version: "3.8"
 
+x-app: &training-app
+  depends_on:
+    - db
+  build: .
+  env_file:
+    - .env
+  volumes:
+    - .:/code/
+  restart: always
+
 services:
   db:
     container_name: training_db
@@ -11,18 +21,19 @@ services:
       - pgdata:/var/lib/postgresql/data/
     restart: always
 
-  app:
-    container_name: training_app
-    depends_on:
-      - db
-    build: .
-    env_file:
-      - .env
+  web:
+    <<: *training-app
+    container_name: training_web
     ports:
       - "${APP_PORT:-8000}:8000"
-    volumes:
-      - .:/code/
-    restart: always
+
+  tailwind:
+    <<: *training-app
+    container_name: training_web_tailwind
+    depends_on:
+      - web
+    command: "python manage.py tailwind start"
+    tty: true
 
 volumes:
   pgdata:

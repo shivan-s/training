@@ -1,27 +1,24 @@
 {% load static %}
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="description" content="description" />
         <meta name="keywords" content="keywords" />
-        <meta name="viewport" content="width=device-width" />
-        <title>Title</title>
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Training Partners</title>
+        {% tailwind_css %}
     </head>
-    <body>
-        <header>
-            Header
-        </header>
-        {% block content %}
-            Content
-        {% endblock content %}
-        <footer>
-            Footer
-        </footer>
+    <body class="bg-gray-50 font-serif leading-normal tracking-normal">
+        <div class="container mx-auto">
+            {% block content %}
+            {% endblock content %}
+        </div>
     </body>
     <!-- Htmx -->
     <script src="https://unpkg.com/htmx.org@1.8.0"></script>
     <!-- Alpinejs -->
     <script src="//unpkg.com/alpinejs" defer></script>
 </html>
-<!-- https://github.com/timonweb/django-tailwind -->
