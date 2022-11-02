@@ -8,18 +8,18 @@ run:
 .PHONY: attach
 attach:
 	@echo "Attaching to containers" && \
-	docker exec -it training_app sh
+	docker exec -it training_web sh
 
 ARG=""
 .PHONY: test
 test:
 	@echo "Running Testing" && \
-	docker exec -it training_app sh -c "pytest $(ARG)"
+	docker exec -it training_web sh -c "pytest $(ARG)"
 
 .PHONY: tox
 tox:
 	@echo "Running tox" && \
-	docker exec -it training_app sh -c "tox"
+	docker exec -it training_web sh -c "tox"
 
 .PHONY: deploy
 deploy:

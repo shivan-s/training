@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% block title %}
+    - Page Not Found
+    {% block title %}
+        {% block content %}
+            <section class="section is-medium">
+                <h2 class="title">Missing a Plate?</h2>
+                <p class="subtitle">Page cannot be found.</p>
+                <a href="{% url 'index' %}">Back to safety.</a>
+            </section>
+        {% endblock content %}

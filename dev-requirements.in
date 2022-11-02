@@ -10,3 +10,4 @@ django-stubs[compatible-mypy]
 mypy
 flake8
 tox
+toml

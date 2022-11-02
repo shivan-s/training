@@ -44,6 +44,17 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # custom
     "users",
+    # third party
+    "django_extensions",
+    "softdelete",
+    "guardian",
+    "django_simple_bulma",
+    "django_htmx",
+    # allauth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -57,6 +68,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -108,6 +121,50 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+    "guardian.backends.ObjectPermissionBackend",
+]
+
+ACCOUNT_FORMS = {
+    "login": "users.forms.CustomLoginForm",
+    "signup": "users.forms.CustomSignupForm",
+    "add_email": "users.forms.CustomAddEmailForm",
+    "change_password": "users.forms.CustomSetForm",
+    "reset_password": "users.forms.CustomResetPasswordForm",
+    "reset_password_key": "users.forms.CustomResetPasswordKeyForm",
+    "disconnect": "users.forms.CustomDisconnectForm",
+}
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_SESSION_REMEMBER = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": os.getenv("GOOGLE_OAUTH2_KEY", ""),
+            "secret": os.getenv("GOOGLE_OAUTH2_SECRET", ""),
+        },
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
+
+
+LOGIN_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "index"
+
+# Email
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "send_emails"
 
 # Internationalization
 
@@ -127,6 +184,21 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = (str(BASE_DIR.joinpath("static")),)
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "django_simple_bulma.finders.SimpleBulmaFinder",
+]
+
+# Custom settings for django-simple-bulma
+
+BULMA_SETTINGS = {
+    "extensions": ["all"],
+    "variables": {
+        "primary": "hsl(0, 0%, 14%)",
+    },
+    "output_style": "compressed",
+}
 
 # Logging
 

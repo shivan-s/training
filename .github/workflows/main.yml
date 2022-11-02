@@ -48,8 +48,8 @@ jobs:
       - id: install-dependancies
         name: Install dependencies
         run: |
-          pip-comple -o requirements.txt pyproject.toml
-          pip-comple --extra=dev -o dev-requirements.txt pyproject.toml
+          pip-compile -o requirements.txt pyproject.toml
+          pip-compile --extra=dev -o dev-requirements.txt pyproject.toml
           pip-sync requirements.txt dev-requirements.txt
 
       - id: test-tox

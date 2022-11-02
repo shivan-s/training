@@ -1,25 +1,37 @@
 {% load static %}
+{% load django_htmx %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- Bulma -->
-        <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
         <meta charset="UTF-8" />
-        <meta name="description" content="description" />
-        <meta name="keywords" content="keywords" />
+        <meta name="description" content="Training Partner" />
+        <meta name="keywords" content="Training" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Training Partners</title>
+        <title>Training Partners
+            {% block title %}
+            {% endblock title %}
+        </title>
+        {% load django_simple_bulma %}
+        {% bulma %}
+        {% font_awesome %}
     </head>
     <body>
-        <div class="container mx-auto">
-            {% block content %}
-            {% endblock content %}
-        </div>
+        <section class="hero is-primary is-fullheight">
+            <div class="hero-head">{% include "base/navbar.html" %}</div>
+            <div class="hero-body">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            <div class="hero-foot">
+                <div class="content has-text-centered">
+                    <strong>TrainingPartners</strong> by Shivan Sivakumaran.
+                </div>
+            </div>
+        </section>
+        <script src='{% static "js/htmx.min.js" %}' defer></script>
+        {% django_htmx_script %}
     </body>
-    <!-- Htmx -->
-    <script src="https://unpkg.com/htmx.org@1.8.0"></script>
     <!-- Alpinejs -->
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <!-- <script src="//unpkg.com/alpinejs" defer></script> -->
 </html>

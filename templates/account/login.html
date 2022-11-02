@@ -1,0 +1,33 @@
+{% extends "base/base.html" %}
+{% block title %}
+    - Log In
+{% endblock title %}
+{% block content %}
+    <div class="panel">
+        <h2 class="panel-heading">Log In</h2>
+        <div class="panel-block">{% include "account/social_logins.html" %}</div>
+        <div class="panel-block">
+            <div class="field"
+                 id="login-form"
+                 hx-post='{% url "account_login" %}'
+                 hx-swap="innerHTML"
+                 hx-target="#login-form">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="button is-primary" type="submit" value="Log In" />
+                </form>
+            </div>
+        </div>
+        <div class="panel-block">
+            <div>
+                <p>
+                    <a href='{% url "account_signup" %}'>No account? Sign up</a>
+                </p>
+                <p>
+                    <a href='{% url "account_reset_password" %}'>Forgot password?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

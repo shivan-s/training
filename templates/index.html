@@ -1,7 +1,33 @@
 {% extends "base/base.html" %}
 {% block content %}
-    <section class="hero is-primary">
+    <section class="section hero is-primary is-large">
         <h2 class="title">Training Partners</h2>
         <p class="subtitle">Coming Soon...</p>
     </section>
+    <section class="section">
+        <div class="level container is-widescreen">
+            <div class="level-item has-text-centered">
+                <div>
+                    <p class="heading">Athletes</p>
+                    <p class="title">{{ count_athletes }}</p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered">
+                <div>
+                    <p class="heading">Teams</p>
+                    <p class="title">{{ count_teams }}</p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered">
+                <div>
+                    <p class="heading">Coaches</p>
+                    <p class="title">{{ count_coaches }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if not user.is_authenticated %}
+        <section class="section">
+        </section>
+    {% endif %}
 {% endblock content %}

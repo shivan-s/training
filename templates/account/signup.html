@@ -1,0 +1,26 @@
+{% extends "base/base.html" %}
+{% block title %}
+    - Sign Up
+{% endblock title %}
+{% block content %}
+    <div class="container is-fluid mt-4">
+        <div class="panel">
+            <h2 class="panel-heading">Sign up</h2>
+            <div class="panel-block">{% include "account/social_logins.html" %}</div>
+            <div class="panel-block">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button class="button is-primary" type="submit">Sign Up</button>
+                </form>
+            </div>
+            <div class="panel-block">
+                <div>
+                    <p>
+                        <a href='{% url "account_login" %}'>Already have an account? Log in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

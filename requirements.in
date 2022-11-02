@@ -1,6 +1,13 @@
 django
 gunicorn
 django-hashid-field
+django-extensions
+django-guardian
+django-softdelete
+django-simple-history
+django-simple-bulma
+django-allauth
+django-htmx
 psycopg2-binary
 sentry-sdk
 whitenoise

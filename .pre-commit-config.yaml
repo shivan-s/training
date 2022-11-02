@@ -61,11 +61,17 @@ repos:
           [
             "psycopg2-binary",
             "django-hashid-field",
-            "django_extensions",
+            "django-extensions",
             "django-stubs",
             "sentry-sdk",
             "whitenoise",
             "django-tailwind",
+            "django-guardian",
+            "django-softdelete",
+            "django-simple-history",
+            "django-simple-bulma",
+            "django-allauth",
+            "django-htmx",
           ]
 
   - repo: https://github.com/asottile/seed-isort-config
