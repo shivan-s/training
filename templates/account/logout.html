@@ -1,0 +1,19 @@
+{% extends "base/base_box.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Log Out" %}
+{% endblock title %}
+{% block box_heading %}
+    {% translate "Log Out" %}
+{% endblock box_heading %}
+{% block box_content %}
+    <div class="block">
+        <p>{% blocktrans %}Are you sure you want to log out?{% endblocktrans %}</p>
+    </div>
+    <div class="block">
+        <form method="post">
+            {% csrf_token %}
+            <div class="control">{% include "components/primary_form_button.html" with value="Log Out" %}</div>
+        </form>
+    </div>
+{% endblock box_content %}

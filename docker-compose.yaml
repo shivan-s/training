@@ -11,6 +11,12 @@ services:
       - pgdata:/var/lib/postgresql/data/
     restart: unless-stopped
 
+  cache:
+    container_name: training_cache
+    image: redis:7
+    env_file:
+      - .env
+
   web:
     container_name: training_web
     depends_on:

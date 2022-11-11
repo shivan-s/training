@@ -8,6 +8,16 @@ django-simple-history
 django-simple-bulma
 django-allauth
 django-htmx
+django-debug-toolbar
+django-grappelli
+django-nested-admin
+Pillow
+sorl-thumbnail
 psycopg2-binary
 sentry-sdk
 whitenoise
+redis[hiredis]
+celery[redis]
+django-celery-results
+django-celery-beat
+django-mptt

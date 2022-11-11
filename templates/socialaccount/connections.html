@@ -1,0 +1,57 @@
+{% extends "base/base_box.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Account Connections" %}
+{% endblock title %}
+{% block box_heading %}
+    {% translate "Account Connections" %}
+{% endblock box_heading %}
+{% block box_content %}
+    {% if form.accounts %}
+        <div class="block">
+            <p class="is-underlined">
+                <a href="{% url "project:profile-edit" %}">Back to Editing Profile</a>
+            </p>
+        </div>
+        <div class="block">
+            <p>
+                {% blocktranslate %}
+                    You can sign in to your account using any of the following third party accounts:
+                {% endblocktranslate %}
+            </p>
+        </div>
+        <div class="block">
+            <form method="post" action="{% url "socialaccount_connections" %}">
+                {% csrf_token %}
+                <fieldset>
+                    {% if form.non_field_errors %}<div class="has-text-danger" id="errorMsg">{{ form.non_field_errors }}</div>{% endif %}
+                    {% for base_account in form.accounts %}
+                        {% with base_account.get_provider_account as account %}
+                            <div class="field">
+                                <div class="control">
+                                    <label class="radio" for="id_account_{{ base_account.id }}">
+                                        <input id="id_account_{{ base_account.id }}"
+                                            type="radio"
+                                            name="account"
+                                            value="{{ base_account.id }}"/>
+                                        <span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }}">{{ account.get_brand.name }}</span>
+                                        {{ account }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                    <div class="control">{% include "components/primary_form_button.html" with value="Remove" %}</div>
+                </fieldset>
+            </form>
+        </div>
+    {% else %}
+        <div class="block">
+            <p>{% translate "You currently have no social network accounts connected to this account." %}</p>
+        </div>
+    {% endif %}
+    <div class="block">
+        <h2 class="title is-4 has-text-primary">{% translate 'Add a 3rd Party Account' %}</h2>
+        {% include "components/social_logins.html" with process="connect" %}
+    </div>
+{% endblock box_content %}

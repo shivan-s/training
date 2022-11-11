@@ -1,0 +1,10 @@
+{% load i18n %}
+{% comment %}
+  This is a primary button as a component, that is used in forms.
+
+  It requires a `value` to provides label.
+
+  Example:
+    {% includes "component/primary_form_button.html" value="ENTER VALUE"}
+{% endcomment %}
+<input class="button is-primary" type="submit" value="{% translate value %}"/>

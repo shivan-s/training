@@ -1,33 +1,24 @@
-{% extends "base/base.html" %}
+{% extends "base/base_box.html" %}
+{% load i18n %}
 {% block title %}
-    - Log In
+    - {% translate "Log In" %}
 {% endblock title %}
-{% block content %}
-    <div class="panel">
-        <h2 class="panel-heading">Log In</h2>
-        <div class="panel-block">{% include "account/social_logins.html" %}</div>
-        <div class="panel-block">
-            <div class="field"
-                 id="login-form"
-                 hx-post='{% url "account_login" %}'
-                 hx-swap="innerHTML"
-                 hx-target="#login-form">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input class="button is-primary" type="submit" value="Log In" />
-                </form>
-            </div>
-        </div>
-        <div class="panel-block">
-            <div>
-                <p>
-                    <a href='{% url "account_signup" %}'>No account? Sign up</a>
-                </p>
-                <p>
-                    <a href='{% url "account_reset_password" %}'>Forgot password?</a>
-                </p>
-            </div>
-        </div>
+{% block box_heading %}
+    {% translate "Log In" %}
+{% endblock box_heading %}
+{% block box_content %}
+    {% include "components/social_logins.html" %}
+    <div class="block">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="control">{% include "components/primary_form_button.html" with value="Log In" %}</div>
+        </form>
     </div>
-{% endblock content %}
+    <div class="block">
+        {% url "account_signup" as url_account_signup %}
+        {% include "components/centered_links.html" with url_link=url_account_signup url_text="No account? Sign up" %}
+        {% url "account_reset_password" as url_account_reset_password %}
+        {% include "components/centered_links.html" with url_link=url_account_reset_password url_text="Forgot password?" %}
+    </div>
+{% endblock box_content %}

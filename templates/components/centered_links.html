@@ -1,0 +1,10 @@
+{% load i18n %}
+{% comment %}
+  This provides centered links. Primarily used for box forms (e.g. login).
+
+  Example:
+    {% include "component/centered_text.html" with url_link=URL url_text=TEXT %}
+{% endcomment %}
+<p class="block is-underlined has-text-centered">
+    <a href="{{ url_link }}">{% translate url_text %}</a>
+</p>

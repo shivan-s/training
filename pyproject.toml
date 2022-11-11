@@ -12,7 +12,19 @@ multi_line_output = 3
 line_length = 79
 default_section = "THIRDPARTY"
 known_first_party = ["users", "config"]
-known_third_party = ["allauth", "django", "factory", "faker", "hashid_field", "pytest", "pytest_factoryboy", "sentry_sdk", "simple_history", "softdelete"]
+known_third_party = [
+  "allauth",
+  "django",
+  "factory",
+  "faker",
+  "hashid_field",
+  "pytest",
+  "pytest_factoryboy",
+  "pytest_lazyfixture",
+  "sentry_sdk",
+  "simple_history",
+  "softdelete",
+]
 
 [tool.black]
 line-length = 79
@@ -67,6 +79,10 @@ ignore_missing_model_attributes = true
 match = '.*\.py'
 inherit = false
 convention = "google"
+
+[tool.djlint]
+profile = "django"
+
 
 [tool.commitizen]
 name = "cz_conventional_commits"

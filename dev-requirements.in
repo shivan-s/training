@@ -1,4 +1,6 @@
+ipdb
 pytest
+pytest-lazy-fixture
 pytest-cov
 pytest-django
 pytest-instafail
@@ -11,3 +13,4 @@ mypy
 flake8
 tox
 toml
+pygraphviz

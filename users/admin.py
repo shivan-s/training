@@ -1,33 +1,32 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
+from sorl.thumbnail.admin import AdminImageMixin
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import CustomUser
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin):
-    """
-    Custom Admin form for users
-    """
+@admin.register(get_user_model())
+class CustomUserAdmin(AdminImageMixin, UserAdmin):
+    """Custom Admin form for users."""
 
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    model = CustomUser
-    readonly_field = ("reference_id",)
+    model = get_user_model()
+    readonly_fields = ("reference_id",)
     fieldsets = (
         (
             None,
             {
                 "fields": (
-                    "id",
+                    "reference_id",
                     "username",
                     "password",
                 )
             },
         ),
-        (_("Personal Information"), {"fields": ("name", "email")}),
+        (_("Personal Information"), {"fields": ("email",)}),
         (
             _("Persmissions"),
             {
@@ -36,7 +35,6 @@ class CustomUserAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "groups",
-                    "user_persmissions",
                 ),
             },
         ),
@@ -48,12 +46,11 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("username", "name", "password1", "password2"),
+                "fields": ("email", "password1", "password2"),
             },
         ),
     )
     list_display = (
+        "reference_id",
         "email",
-        "name",
-        "username",
     )

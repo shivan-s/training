@@ -1,6 +1,8 @@
-"""Views for project."""
+"""IndexView."""
 
 from django.views.generic import TemplateView
+
+from project.models import Profile
 
 
 class IndexView(TemplateView):
@@ -11,7 +13,6 @@ class IndexView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         """Adding context data."""
         context = super().get_context_data(*args, **kwargs)
-        context["count_athletes"] = 1
-        context["count_coaches"] = 1
-        context["count_teams"] = 1
+        # subtract 1 to exclude the admin view.
+        context["count_profiles"] = Profile.objects.all().count() - 1
         return context

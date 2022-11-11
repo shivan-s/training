@@ -1,0 +1,12 @@
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+<div class="block">
+    {% for provider in socialaccount_providers %}
+        <div class="is-flex is-flex-direction-column is-justify-content-space-around">
+            <a href="{% provider_login_url provider.id process=process %}" class="button block">
+                <span class="icon"><i class="fab fa-{{ provider.id }}"></i></span>
+                <span>Continue with {{ provider.name }}</span>
+            </a>
+        </div>
+    {% endfor %}
+</div>

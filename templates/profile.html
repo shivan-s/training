@@ -1,0 +1,78 @@
+{% extends "base/base_box.html" %}
+{% load i18n account socialaccount thumbnail %}
+{% block title %}
+    {% user_display user as user_display %}
+    - {% translate "Profile: " %}{{ user_display }}
+{% endblock title %}
+{% block box_heading %}
+    {% if profile.name %}
+        {{ profile.name }}
+    {% else %}
+        {% user_display user as user_display %}
+        {{ user_display }}
+    {% endif %}
+{% endblock box_heading %}
+{% block box_subheading %}
+    Joined {{ profile.user.date_joined|timesince }} ago
+{% endblock box_subheading %}
+{% block box_content %}
+    <div class="block">
+        <div class="is-flex is-justify-content-space-around">
+            {% if item.image %}
+                {% thumbnail item.image "128x128" crop="center" as im %}
+                    <figure class="image is-128x128">
+                        <img class="is-rounded"
+                            alt="avatar"
+                            src="{{ im.url }}"
+                            width="{{ im.width }}"
+                            height="{{ im.height }}"/>
+                    </figure>
+                {% endthumbnail %}
+            {% else %}
+                {% thumbnail "https://bulma.io/images/placeholders/128x128.png" "128x128" crop="center" as im %}
+                    <figure class="image is-128x128">
+                        <img class="is-rounded"
+                            alt="avatar"
+                            src="{{ im.url }}"
+                            width="{{ im.width }}"
+                            height="{{ im.height }}"/>
+                    </figure>
+                {% endthumbnail %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="block">
+        {% url "project:profile-edit" as url_profile_edit %}
+        {% include "components/centered_links.html" with url_link=url_profile_edit url_text="Edit Profile" %}
+    </div>
+    <div class="block">
+        {% include "components/horizontal_field.html" with field_value=profile.user.date_joined|date:"Y, jS M" field_label="Date Joined" is_static="1" %}
+        {% include "components/horizontal_field.html" with field_value=profile.name field_label="Name" is_static="1" %}
+    </div>
+    <div class="block">
+        <strong>
+            {% blocktranslate count emailaddress_count=emailaddress|length%}
+                Email Address:
+            {% plural %}
+                Email Addresses:
+            {% endblocktranslate %}
+        </strong>
+        {% for emailaddress in user.emailaddress_set.all %}
+            {% if emailaddress.primary %}
+                <p class="has-text-success">
+                    <strong>{{ emailaddress }}</strong> (<strong>{% translate "Primary" %}</strong>)
+                </p>
+            {% elif emailaddress.verfied %}
+                <p class="has-text-success">{{ emailaddress }} ({% translate "Verified" %})</p>
+            {% else %}
+                <p>{{ emailaddress }} ({% translate "Unverfied"})</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="block">
+        <div class="control">
+            {% url "socialaccount_connections" as socialaccount_connections %}
+            {% include "components/centered_links.html" with url_link=socialaccount_connections url_text="Check Social Network connections" %}
+        </div>
+    </div>
+{% endblock box_content %}

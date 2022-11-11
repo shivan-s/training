@@ -1,18 +1,15 @@
 """Users factories."""
 
 import factory
-
-from users.models import CustomUser
+from django.contrib.admin import get_user_model
 
 
 class CustomUserFactory(factory.django.DjangoModelFactory):
-    """CustomUser Factory."""
+    """Factory for testing users."""
 
     class Meta:
-        """CustomUserFactory settings."""
+        """Meta."""
 
-        model = CustomUser
+        model = get_user_model()
 
-    username = factory.Faker("user_name")
-    name = factory.Faker("name")
     email = factory.Faker("email")

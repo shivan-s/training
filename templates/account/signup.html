@@ -1,26 +1,22 @@
-{% extends "base/base.html" %}
+{% extends "base/base_box.html" %}
+{% load i18n %}
 {% block title %}
-    - Sign Up
+    - {% translate "Sign Up" %}
 {% endblock title %}
-{% block content %}
-    <div class="container is-fluid mt-4">
-        <div class="panel">
-            <h2 class="panel-heading">Sign up</h2>
-            <div class="panel-block">{% include "account/social_logins.html" %}</div>
-            <div class="panel-block">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button class="button is-primary" type="submit">Sign Up</button>
-                </form>
-            </div>
-            <div class="panel-block">
-                <div>
-                    <p>
-                        <a href='{% url "account_login" %}'>Already have an account? Log in</a>
-                    </p>
-                </div>
-            </div>
-        </div>
+{% block box_heading %}
+    {% translate "Sign Up" %}
+{% endblock box_heading %}
+{% block box_content %}
+    {% include "components/social_logins.html" %}
+    <div class="block">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="control">{% include "components/primary_form_button.html" with value="Sign Up" %}</div>
+        </form>
     </div>
-{% endblock content %}
+    <div class="block">
+        {% url "account_login" as url_account_login %}
+        {% include "components/centered_links.html" with url_link=url_account_login url_text="Already have an account? Log in" %}
+    </div>
+{% endblock box_content %}

@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block content %}
+    <div class="box">
+        <div class="block">
+            <div class="is-flex is-justify-content-space-around">
+                <div>
+                    <h2 class="title has-text-primary has-text-centered">
+                        {% block box_heading %}
+                        {% endblock box_heading %}
+                    </h2>
+                    <p class="subtitle has-text-primary has-text-centered">
+                        {% block box_subheading %}
+                        {% endblock box_subheading %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% block box_content %}
+        {% endblock box_content %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Coaching Portal" %}
+{% endblock title %}
+{% block content %}
+    <div class="box">
+        <div class="block">
+            <div>
+                <h2 class="title has-text-primary">{% translate "Coaching Portal" %}</h2>
+                <p class="subtitle has-text-primary">
+                    {% blocktranslate count athlete_count=coach.athletes.count %}
+                        coaching
+                    {% plural %}
+                        {{ athlete_count }}
+                        athletes
+                    {% endblocktranslate %}
+                </p>
+            </div>
+        </div>
+        <div class="block">
+            <a href="{% url "project:athlete-list" %}" class="button is-primary">
+                <span class="icon is-small">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span>{% translate "Add Athlete" %}</span>
+            </a>
+        </div>
+    </div>
+{% endblock content %}

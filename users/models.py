@@ -11,15 +11,19 @@ from config.settings import HASHID_FIELD_SALT
 
 
 class CustomUser(AbstractUser, SoftDeleteObject):
-    """CustomUser model."""
+    """User model for application.
+
+    Invokes soft deletetion.
+
+    Links to a single Coach and Athlete model.
+    """
 
     reference_id = HashidAutoField(
-        primary_key=True, salt=f"{HASHID_FIELD_SALT}"
+        primary_key=True, salt=f"custom_user_{HASHID_FIELD_SALT}"
     )
-    name = models.CharField(_("name"), max_length=155, blank=True, null=True)
     email = models.EmailField(_("email address"), unique=True)
     history = HistoricalRecords()
 
     def __str__(self):
-        """Setting."""
+        """Represent string."""
         return self.email

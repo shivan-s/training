@@ -1,33 +1,34 @@
 {% extends "base/base.html" %}
+{% load account %}
 {% block content %}
-    <section class="section hero is-primary is-large">
-        <h2 class="title">Training Partners</h2>
-        <p class="subtitle">Coming Soon...</p>
-    </section>
-    <section class="section">
-        <div class="level container is-widescreen">
-            <div class="level-item has-text-centered">
-                <div>
-                    <p class="heading">Athletes</p>
-                    <p class="title">{{ count_athletes }}</p>
+    <div>
+        {% if user.is_authenticated %}
+            <section class="section hero is-primary">
+                {% user_display user as user_display %}
+                <h2 class="title">Welcome, {{ user_display }}</h2>
+                <p class="subtitle">Coming Soon...</p>
+            </section>
+        {% else %}
+            <section class="section hero is-primary">
+                <h2 class="title">Train With Someone</h2>
+                <p class="subtitle">Coming Soon | Join...</p>
+            </section>
+            <div class="level">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Profiles</p>
+                        <p class="title">{{ count_profiles }}</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <a href="{% url "account_login" %}" class="button">Log In</a>
+                    </div>
+                    <div>
+                        <a href="{% url "account_signup" %}" class="button">Sign Up</a>
+                    </div>
                 </div>
             </div>
-            <div class="level-item has-text-centered">
-                <div>
-                    <p class="heading">Teams</p>
-                    <p class="title">{{ count_teams }}</p>
-                </div>
-            </div>
-            <div class="level-item has-text-centered">
-                <div>
-                    <p class="heading">Coaches</p>
-                    <p class="title">{{ count_coaches }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    {% if not user.is_authenticated %}
-        <section class="section">
-        </section>
-    {% endif %}
+        {% endif %}
+    </div>
 {% endblock content %}

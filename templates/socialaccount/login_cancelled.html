@@ -1,0 +1,16 @@
+{% extends "base/base_box.html" %}
+{% load i18n account %}
+{% block title %}
+    - {% translate "Login Cancelled" %}
+{% endblock title %}
+{% block box_heading %}
+    {% translate "Login Cancelled" %}
+{% endblock box_heading %}
+{% block box_content %}
+    <div class="block">
+        {% translate "You decided to cancel logging in to our site using one of your existing accounts. If this was a mistake, please proceed to " %}
+        <p class="is-underlined">
+            <a href="{% url "account_login" %}">{% translate "sign in" %}</a>.
+        </p>
+    </div>
+{% endblock box_content %}

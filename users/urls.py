@@ -1,1 +1,2 @@
-"""User urls."""
+app_name = "users"
+urlpatterns = []

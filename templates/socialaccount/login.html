@@ -1,0 +1,36 @@
+{% extends "base/base_box.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Sign In" %}
+{% endblock title %}
+{% block box_heading %}
+    {% if process == "connect" %}
+        {% translate "Sign In" %}
+        {% blocktrans with provider.name as provider %}
+        Connect {{ provider }}
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans with provider.name as provider %}
+        Sign In via {{ provider }}
+        {% endblocktrans %}
+    {% endif %}
+{% endblock box_heading %}
+{% block box_content %}
+    <div class="block">
+        <p>
+            {% if process == "connect" %}
+                {% blocktrans with provider.name as provider %}You are about to connect a new third party account from {{ provider }}.{% endblocktrans %}
+            {% else %}
+                {% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}
+            {% endif %}
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="block">
+                <div class="control">
+                    <button class="button is-primary" type="submit">{% trans "Continue" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock box_content %}

@@ -1,0 +1,23 @@
+{% load i18n %}
+{% comment %}
+  This provides a nice way to display key:value pair information.
+
+  For example, "Email" and the user's email.
+
+  Note if `is_static` is 0 the field will render as a valid user input.
+  Example:
+    {% includes "component/horizontal_field.html" with field_value="FIELD" field_label="FIELDLABEL" is_static="0" %}
+{% endcomment %}
+<div class="field is-horizontal">
+    <div class="field-label is-normal">
+        <label class="label">{% translate field_label %}</label>
+    </div>
+    <div class="field-body">
+        <div class="field">
+            <input class="input {% if is_static %}is-static{% endif %}"
+                type="name"
+                value="{{ field_value }}"
+                {% if is_static %} readonly{% endif %}/>
+        </div>
+    </div>
+</div>

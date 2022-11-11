@@ -35,6 +35,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     # defaults
+    "grappelli",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,14 +43,22 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
     # custom
     "users",
+    "project",
     # third party
     "django_extensions",
     "softdelete",
     "guardian",
     "django_simple_bulma",
     "django_htmx",
+    "debug_toolbar",
+    "sorl.thumbnail",
+    "django_celery_results",
+    "django_celery_beat",
+    "mptt",
+    "nested_admin",
     # allauth
     "allauth",
     "allauth.account",
@@ -62,6 +71,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -69,6 +79,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
@@ -95,14 +106,31 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_NAME"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": 5432,
+        "HOST": os.getenv("POSTGRES_HOST"),
     }
 }
+
+# Cached Database - Redis
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://cache:6379",
+    }
+}
+
+# Celery Settings
+
+CELERY_TIMEZONE = "New Zealand"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = "default"
+CELERY_CACHE_BACKEND = "default"
 
 # Password validation
 
@@ -142,6 +170,7 @@ ACCOUNT_FORMS = {
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_SESSION_REMEMBER = True
 
@@ -158,8 +187,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-LOGIN_REDIRECT_URL = "index"
-LOGOUT_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "project:index"
+LOGOUT_REDIRECT_URL = "project:index"
 
 # Email
 
@@ -170,10 +199,9 @@ EMAIL_FILE_PATH = BASE_DIR / "send_emails"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "NZ"
 
 USE_I18N = True
-
 
 USE_TZ = True
 
@@ -189,6 +217,11 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     "django_simple_bulma.finders.SimpleBulmaFinder",
 ]
+
+# Media (Images)
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Custom settings for django-simple-bulma
 
@@ -248,3 +281,14 @@ if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
     del SECURE_PROXY_SSL_HEADER
     SECURE_HSTS_INCLUDE_SUBDOMAINS = False
     SECURE_HSTS_PRELOAD = False
+    import socket
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
+        "127.0.0.1",
+        "10.0.2.2 ",
+    ]
+
+# Email Service
+
+# Set up sendgrid

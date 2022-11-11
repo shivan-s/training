@@ -1,4 +1,4 @@
-# django-template
+# Train With Someone
 
 [![Build](https://github.com/ShivanS93/django-template/actions/workflows/main.yml/badge.svg)](https://github.com/ShivanS93/django-template/actions/workflows/main.yml)
 [![Code style: djlint](https://img.shields.io/badge/html%20style-djlint-blue.svg)](https://www.djlint.com)
@@ -6,13 +6,23 @@
 
 ## About
 
-This is a django template.
+My coach sends me a program via Google Sheets. It works, but let's see if I can make something better.
 
-It comes set up with:
-- PostgreSQL
-- Abstract user
-- Differentiation between production and development environemnts
+The idea is a coach can send a program to an athlete. The athlete can provide feedback to the coach.
 
-## Blog post
+## Credits
 
-TBA
+Built on twitch:
+
+Thanks to:
+
+- Vinitkme
+- Mazzari
+- _redacted_
+- mrwoldfredstep
+- Raticide
+- Samwhoo
+- Aroretini
+- Mazzeri
+
+(please let me know if you do not want to be on here)

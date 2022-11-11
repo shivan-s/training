@@ -15,22 +15,32 @@ cffi==1.15.1
 charset-normalizer==2.1.1
     # via requests
 cryptography==38.0.1
-    # via social-auth-core
+    # via pyjwt
 defusedxml==0.7.1
-    # via
-    #   python3-openid
-    #   social-auth-core
+    # via python3-openid
 django==4.1.2
     # via
     #   -r requirements.in
+    #   django-allauth
+    #   django-debug-toolbar
     #   django-extensions
     #   django-guardian
     #   django-hashid-field
+    #   django-htmx
+    #   django-simple-bulma
+django-allauth==0.51.0
+    # via -r requirements.in
+django-debug-toolbar==3.7.0
+    # via -r requirements.in
 django-extensions==3.2.1
     # via -r requirements.in
 django-guardian==2.4.0
     # via -r requirements.in
 django-hashid-field==3.3.7
+    # via -r requirements.in
+django-htmx==1.12.2
+    # via -r requirements.in
+django-simple-bulma==2.5.0
     # via -r requirements.in
 django-simple-history==3.1.1
     # via -r requirements.in
@@ -42,34 +52,38 @@ hashids==1.3.1
     # via django-hashid-field
 idna==3.4
     # via requests
+libsass==0.21.0
+    # via django-simple-bulma
 oauthlib==3.2.2
-    # via
-    #   requests-oauthlib
-    #   social-auth-core
+    # via requests-oauthlib
+pillow==9.3.0
+    # via -r requirements.in
 psycopg2-binary==2.9.5
     # via -r requirements.in
 pycparser==2.21
     # via cffi
-pyjwt==2.6.0
-    # via social-auth-core
+pyjwt[crypto]==2.6.0
+    # via django-allauth
 python3-openid==3.2.0
-    # via social-auth-core
+    # via django-allauth
 requests==2.28.1
     # via
+    #   django-allauth
     #   requests-oauthlib
-    #   social-auth-core
 requests-oauthlib==1.3.1
-    # via social-auth-core
+    # via django-allauth
 sentry-sdk==1.10.1
     # via -r requirements.in
 six==1.16.0
-    # via django-softdelete
-social-auth-app-django==5.0.0
+    # via
+    #   django-softdelete
+    #   libsass
+sorl-thumbnail==12.9.0
     # via -r requirements.in
-social-auth-core==4.3.0
-    # via social-auth-app-django
 sqlparse==0.4.3
-    # via django
+    # via
+    #   django
+    #   django-debug-toolbar
 urllib3==1.26.12
     # via
     #   requests

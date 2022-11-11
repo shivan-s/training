@@ -1,0 +1,13 @@
+{% extends "base/base_box" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Failure" %}
+{% endblock title %}
+{% block box_heading %}
+    {% translate "Social Network Login Failure" %}
+{% endblock box_heading %}
+{% block box_content %}
+    <div class="block">
+        <p>{% translate "An error occurred while attempting to login via your social network account." %}</p>
+    </div>
+{% endblock box_content %}

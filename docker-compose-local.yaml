@@ -1,0 +1,41 @@
+---
+version: "3.8"
+
+services:
+  db:
+    container_name: training_db
+    image: postgres:14
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    restart: unless-stopped
+
+  cache:
+    container_name: training_cache
+    image: redis:7
+    env_file:
+      - .env
+
+  web:
+    container_name: training_web
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: LocalDockerFile
+    env_file:
+      - .env
+    volumes:
+      - .:/code/
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
+
+volumes:
+  pgdata:
+    driver: local
+  pgconf:
+    driver: local
+  pglog:
+    driver: local

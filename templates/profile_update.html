@@ -1,0 +1,24 @@
+{% extends "base/base_box.html" %}
+{% load i18n account %}
+{% block title %}
+    {% user_display user as user_display %}
+    - {% translate "Profile: " %}{{ user_display }}{% translate "- Update" %}
+{% endblock title %}
+{% block box_heading %}
+    {% user_display user as user_display %}
+    Editing {{ user_display }}
+{% endblock box_heading %}
+{% block box_content %}
+    <div class="block">
+        <div class="block">
+            <form method="post" enctype=multipart/form-data>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="control">{% include "components/primary_form_button.html" with value="Update" %}</div>
+            </form>
+        </div>
+        <p class="is-underlined">
+            <a href="{% url 'account_email' %}">Change E-mail</a>
+        </p>
+    </div>
+{% endblock box_content %}
