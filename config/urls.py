@@ -13,6 +13,5 @@ urlpatterns = [
     path("profile/", include("users.urls")),
     path("accounts/", include("allauth.urls")),
 ]
-
 if DEBUG:
     urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)

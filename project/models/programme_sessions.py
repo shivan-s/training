@@ -1,5 +1,6 @@
 """ProgrammeSession model."""
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
@@ -14,8 +15,8 @@ class ProgrammeSession(BaseModel):
 
     The `session_type` is useful if there are multiple sessions in a day.
 
-    The `start` and `end` can be entered by the athlete if they would like to log \
-            time at the gym.
+    The `start` and `end` can be entered by the athlete if they would like to \
+            log time at the gym.
 
     `notes` can provided by the coach for the session.
     """
@@ -62,11 +63,17 @@ class ProgrammeSession(BaseModel):
         blank=True,
         null=True,
     )
+    comments = GenericRelation(
+        "project.Comment",
+        related_query_name="programme_session",
+        content_type_field="location_ct",
+        object_id_field="location_object_id",
+    )
 
     def __str__(self):
         """Represent string."""
         if self.session_type:
-            return f"{self.date} - {self.session_type}"
+            return f"{self.date} - {self.get_session_type_display()}"
         return f"{self.date}"
 
     class Meta(BaseModel.Meta):

@@ -29,7 +29,10 @@ class Comment(BaseModel):
     author_ct = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
-        limit_choices_to={"model__in": ("project.Coach", "project.Athete")},
+        limit_choices_to={
+            "app_label": "project",
+            "model__in": ("coach", "athlete"),
+        },
         verbose_name=_("author"),
         related_name="author",
     )
@@ -40,24 +43,26 @@ class Comment(BaseModel):
         ContentType,
         on_delete=models.CASCADE,
         limit_choices_to={
-            "model__in": ("project.Exercise", "project.ProgrammSession")
+            "app_label": "project",
+            # TODO: cannot identify programme session
+            # "model__in": ("exercise", "programme session"),
         },
         verbose_name=_("location"),
         related_name="location",
     )
     location_object_id = models.PositiveIntegerField()
     location_content_object = GenericForeignKey(
-        "location_ct", "location_content_object"
+        "location_ct", "location_object_id"
     )
 
     def __str__(self):
         """Represent string."""
-        return self.reference_id
+        return self.content[0:20]
 
     class Meta(BaseModel.Meta):
         """Setting for model.
 
-        Creating an index for the `content_type`.
+        Creating an index for the content types.
         """
 
         indexes = [

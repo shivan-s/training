@@ -234,13 +234,11 @@ BULMA_SETTINGS = {
 }
 
 # Logging
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {
         "file": {
-            "level": "WARNING",
             "class": "logging.FileHandler",
             "filename": "debug.log",
         },
@@ -248,7 +246,6 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["file"],
-            "level": "WARNING",
             "propagate": True,
         },
     },
@@ -288,6 +285,7 @@ if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
         "127.0.0.1",
         "10.0.2.2 ",
     ]
+    LOGGING["root"]["level"] = "DEBUG"
 
 # Email Service
 

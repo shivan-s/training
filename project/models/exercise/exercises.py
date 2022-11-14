@@ -1,5 +1,6 @@
 """Exercise model."""
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
@@ -10,12 +11,6 @@ from project.models.base import BaseModel
 
 class Exercise(BaseModel):
     """Exercise model."""
-
-    class WeightUnit(models.TextChoices):
-        """Choices for `weight_unit`."""
-
-        KILOGRAMS = "KG", _("kilograms")
-        POUNDS = "LB", _("pounds")
 
     reference_id = HashidAutoField(
         primary_key=True, salt=f"set_{HASHID_FIELD_SALT}"
@@ -31,16 +26,16 @@ class Exercise(BaseModel):
         verbose_name=_("exercise_type"),
     )
 
-    weight_unit = models.CharField(
-        max_length=2,
-        choices=WeightUnit.choices,
-        default=WeightUnit.KILOGRAMS,
-    )
-
     coach_notes = models.TextField(
         _("coach's notes"),
         blank=True,
         null=True,
+    )
+    comments = GenericRelation(
+        "project.Comment",
+        related_query_name="exercise",
+        content_type_field="location_ct",
+        object_id_field="location_object_id",
     )
 
     def __str__(self) -> str:

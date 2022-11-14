@@ -4,9 +4,6 @@ import factory
 
 from project.models import Coach
 
-from .athletes import AthleteFactory
-from .profiles import ProfileFactory
-
 
 class CoachFactory(factory.django.DjangoModelFactory):
     """Factory."""
@@ -16,5 +13,7 @@ class CoachFactory(factory.django.DjangoModelFactory):
 
         model = Coach
 
-    profile = factory.SubFactory(ProfileFactory)
-    athletes = factory.RelatedFactoryList(AthleteFactory, size=20)
+    profile = factory.SubFactory("tests.factories.ProfileFactory")
+    athletes = factory.RelatedFactoryList(
+        "tests.factories.AthleteFactory", size=20
+    )

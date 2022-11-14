@@ -23,6 +23,8 @@ Thanks to:
 - Raticide
 - Samwhoo
 - Aroretini
-- Mazzeri
+- Handlefa1
+- dyrenh
+- peasantlike
 
 (please let me know if you do not want to be on here)

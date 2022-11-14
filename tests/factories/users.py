@@ -1,7 +1,9 @@
 """Users factories."""
 
 import factory
-from django.contrib.admin import get_user_model
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class CustomUserFactory(factory.django.DjangoModelFactory):
@@ -10,6 +12,6 @@ class CustomUserFactory(factory.django.DjangoModelFactory):
     class Meta:
         """Meta."""
 
-        model = get_user_model()
+        model = User
 
     email = factory.Faker("email")

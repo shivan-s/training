@@ -9,4 +9,4 @@ class ProjectConfig(AppConfig):
     name = "project"
 
     def ready(self):
-        pass
+        __import__("project.signals")

@@ -16,6 +16,10 @@ urlpatterns = [
         views.CoachPortalView.as_view(),
         name="coach-portal",
     ),
+    path(
+        "your_training/",
+        views.YourTraining.as_view(),
+        )
     path("athlete_add/", views.AthleteAddView.as_view(), name="athlete-add"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path(

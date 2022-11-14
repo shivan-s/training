@@ -18,8 +18,8 @@ class Team(BaseModel):
     reference_id = HashidAutoField(
         primary_key=True, salt=f"team_{HASHID_FIELD_SALT}"
     )
-    name = models.CharField(_("name"), max_length=155, unique=True)
-    description = models.TextField(_("description"), max_length=1000)
+    name = models.CharField(_("name"), max_length=25, unique=True)
+    description = models.TextField(_("description"))
     creator = models.ForeignKey(
         "project.Coach",
         on_delete=models.CASCADE,

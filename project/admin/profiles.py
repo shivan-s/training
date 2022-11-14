@@ -1,30 +1,46 @@
 """ProfileAdmin."""
 
+from typing import Iterable, Type
+
 import nested_admin
 from django.contrib import admin
 
 from project.models import Athlete, Coach, Profile
 
+from .base import BaseCommentInline, InlineType
+
+
+class CommentInline(BaseCommentInline):
+    """Comment inline."""
+
+    ct_field = "author_ct"
+    ct_fk_field = "author_object_id"
+    readonly_fields: Iterable[str] = ("location_content_object", "content")
+
 
 class CoachInline(nested_admin.NestedStackedInline):
     """Inline for Coach in Profile."""
 
-    model = Coach
+    model: Type[Coach] = Coach
 
 
 class AthleteInline(nested_admin.NestedStackedInline):
     """Inline for Athlete in the Profile."""
 
-    model = Athlete
+    model: Type[Athlete] = Athlete
 
 
 @admin.register(Profile)
 class ProfileAdmin(nested_admin.NestedModelAdmin):
     """Profile admin view."""
 
-    model = Profile
-    search_fields = ("user__name", "user__email")
-    raw_id_fields = ("user",)
-    list_display = ("user",)
-    fields = ("name", "avatar")
-    inlines = (CoachInline, AthleteInline)
+    model: Type[Profile] = Profile
+    search_fields: Iterable[str] = ("user__name", "user__email")
+    raw_id_fields: Iterable[str] = ("user",)
+    list_display: Iterable[str] = ("user",)
+    fields: Iterable[str] = ("name", "avatar")
+    inlines: InlineType = (
+        CoachInline,
+        AthleteInline,
+        CommentInline,
+    )

@@ -1,5 +1,6 @@
 """Athlete model."""
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -17,6 +18,12 @@ class Athlete(BaseAthleteCoachModel):
 
     coaches = models.ManyToManyField(
         "project.Coach", verbose_name=_("coaches"), blank=True
+    )
+    comments = GenericRelation(
+        "project.Comment",
+        related_query_name="programme_session",
+        content_type_field="author_ct",
+        object_id_field="author_object_id",
     )
 
     def __str__(self):

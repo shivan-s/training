@@ -1,5 +1,6 @@
 ipdb
 pytest
+pydocstyle
 pytest-lazy-fixture
 pytest-cov
 pytest-django

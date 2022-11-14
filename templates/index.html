@@ -1,13 +1,57 @@
 {% extends "base/base.html" %}
-{% load account %}
+{% load account i18n %}
 {% block content %}
     <div>
         {% if user.is_authenticated %}
             <section class="section hero is-primary">
                 {% user_display user as user_display %}
-                <h2 class="title">Welcome, {{ user_display }}</h2>
-                <p class="subtitle">Coming Soon...</p>
+                <h2 class="title">{% now "l (M jS)" %}</h2>
+                <p class="subtitle">{{ user_display }}'s {% translate "training week of " %}{{ this_week|date:"M jS" }}</p>
             </section>
+            <div class="block">
+                <div class="box">
+                    {% if programmes %}
+                        {% for programme in programmes %}
+                            <div class="block">
+                                <h3 class="title is-5 has-text-primary">
+                                    {{ programme.date|date:"l" }}
+                                    {% if programme.session_type %}- {{ programme.get_session_type_display }}{% endif %}
+                                </h3>
+                                {% with recent=programme.history.last %}
+                                    <p class="subtitle is-6 has-text-primary" title={{ recent.date }}>Last updated: {{ recent.date|timesince }}
+                                    </p>
+                                {% endwith %}
+                                {% for exercise in programme.exercise_set.all %}
+                                    <div class="block">
+                                        <p>
+                                            <p class="has-text-weight-bold">
+                                                <a href="">{{ exercise }}</a>
+                                            </p>
+                                        </p>
+                                        <ul>
+                                            {% for intended_set in exercise.intended.all %}<li>{{ intended_set }}</li>{% endfor %}
+                                        </ul>
+                                        {% if exercise.coach_notes %}
+                                            <div class="block">
+                                                <strong>{% translate "Notes" %}</strong>: {{ exercise.coach_notes }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                {% if programme.coach_notes %}
+                                    <div class="block">
+                                        <strong>{% translate "Notes" %}</strong>: {{ programme.coach_notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            </ hr>
+                        {% endfor %}
+                    {% else %}
+                        <p>There is no programme.</p>
+                        <p>Need a coach?</p>
+                    {% endif %}
+                </div>
+            </div>
         {% else %}
             <section class="section hero is-primary">
                 <h2 class="title">Train With Someone</h2>
@@ -20,12 +64,13 @@
                         <p class="title">{{ count_profiles }}</p>
                     </div>
                 </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <a href="{% url "account_login" %}" class="button">Log In</a>
+                <div class="level-item">
+                    <div class="control m-1">
+                        <a href="{% url "account_login" %}"
+                            class="button is-primary is-inverted is-outlined">Log In</a>
                     </div>
-                    <div>
-                        <a href="{% url "account_signup" %}" class="button">Sign Up</a>
+                    <div class="control m-1">
+                        <a href="{% url "account_signup" %}" class="button is-into">Sign Up</a>
                     </div>
                 </div>
             </div>

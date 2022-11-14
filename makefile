@@ -43,3 +43,9 @@ graph:
 	docker exec -it training_web  sh -c "python manage.py graph_models --rankdir BT project users -o my_project_visualised.png" && \
 	exit
 	open my_project_visualised.png
+
+.PHONY: debug
+debug:
+	@echo "Debugging..." && \
+	docker exec -it training_web sh -c "tail -f debug.log"
+
