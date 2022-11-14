@@ -47,3 +47,7 @@ class BaseAthleteCoachModel(BaseModel):
     def __str__(self):
         """Represent string."""
         return f"{self.__class__.name} - {self.user.__str__()}"
+
+    @property
+    def name(self) -> str:
+        return self.profile.name

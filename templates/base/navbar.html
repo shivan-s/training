@@ -15,8 +15,8 @@
             {% if user.is_authenticated %}
                 <a class="navbar-item {% get_active_class "project:coach-portal" %}"
                     href="{% url "project:coach-portal" %}">Coach Portal</a>
-                <a class="navbar-item {% get_active_class "project:profile" %}"
-                    href="{% url "project:profile" %}">Your Training</a>
+                <a class="navbar-item {% get_active_class "project:programme-session-list" %}"
+                    href="{% url "project:programme-session-list" %}">Your Programme</a>
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link has-background-black-ter">{% user_display user as user_display %}{{ user_display }}</a>
                     <div class="navbar-dropdown has-background-black-ter">

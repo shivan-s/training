@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {{ programme.date|date:"l (jS M)" }}
+{% endblock title %}
+{% block content %}
+    <div class="box">
+        <div class="block">
+            <h3 class="title has-text-primary">
+                {{ programme.date|date:"l (jS M)" }}
+                {% if programme.session_type %}- {{ programme.get_session_type_display }}{% endif %}
+            </h3>
+            {% with recent=programme.history.last %}
+                <p class="subtitle has-text-primary" title={{ recent.date }}>Last updated: {{ recent.date|timesince }}
+                </p>
+            {% endwith %}
+            {% for exercise in programme.exercise_set.all %}
+                <div class="block">
+                    <p>
+                        <p class="has-text-weight-bold">
+                            <a href="">{{ exercise }}</a>
+                        </p>
+                    </p>
+                    <ul>
+                        {% for intended_set in exercise.intended.all %}<li>{{ intended_set }}</li>{% endfor %}
+                    </ul>
+                    {% if exercise.coach_notes %}
+                        <div class="block">
+                            <strong>{% translate "Notes" %}</strong>: {{ exercise.coach_notes }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if programme.coach_notes %}
+                <div class="block">
+                    <strong>{% translate "Notes" %}</strong>: {{ programme.coach_notes }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

@@ -16,6 +16,16 @@ attach:
 	@echo "Attaching to containers" && \
 	docker exec -it training_web sh
 
+.PHONY: tail
+tail:
+	@echo "Attaching to debug.log" && \
+	docker exec -it training_web sh -c "tail -f debug.log"
+
+.PHONY: shell
+shell:
+	@echo "Attaching to django shell" && \
+	docker exec -it training_web sh -c "python manage.py shell_plus"
+
 ARG=""
 .PHONY: test
 test:
@@ -48,4 +58,3 @@ graph:
 debug:
 	@echo "Debugging..." && \
 	docker exec -it training_web sh -c "tail -f debug.log"
-

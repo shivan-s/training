@@ -2,7 +2,7 @@
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView, TemplateView, View
+from django.views.generic import DetailView, ListView, View
 
 from project.forms import AthleteAddForm
 from project.models import Athlete
@@ -40,13 +40,3 @@ class AthleteDetailView(LoginRequiredMixin, DetailView):
 
     model = Athlete
     template_name = "athletes/detail.html"
-
-
-class YourTrainingView(LoginRequiredMixin, TemplateView):
-
-    template_name = "athlete/your_training.html"
-
-    def get_context_data(self, *args, **kwargs):
-        """Adding context data."""
-        context = super().get_context_data(*args, **kwargs)
-        return context

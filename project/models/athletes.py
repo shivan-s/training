@@ -25,6 +25,7 @@ class Athlete(BaseAthleteCoachModel):
         content_type_field="author_ct",
         object_id_field="author_object_id",
     )
+    # TODO: set up a "default coach"
 
     def __str__(self):
         """Represent string."""

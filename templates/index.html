@@ -1,5 +1,12 @@
 {% extends "base/base.html" %}
 {% load account i18n %}
+{% block title %}
+    -
+    {% if user.is_authenticated %}
+        {% user_display user as user_display %}
+        {{ user }}
+    {% endif %}
+{% endblock title %}
 {% block content %}
     <div>
         {% if user.is_authenticated %}
@@ -11,6 +18,7 @@
             <div class="block">
                 <div class="box">
                     {% if programmes %}
+                        {% include "components/programme_list.html" with programmes=programmes %}
                         {% for programme in programmes %}
                             <div class="block">
                                 <h3 class="title is-5 has-text-primary">

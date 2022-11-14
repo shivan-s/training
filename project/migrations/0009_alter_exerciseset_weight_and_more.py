@@ -7,28 +7,66 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('project', '0008_alter_exerciseset_weight_and_more'),
+        ("project", "0008_alter_exerciseset_weight_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='exerciseset',
-            name='weight',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True, validators=[django.core.validators.MinValueValidator(limit_value=0)], verbose_name='weight'),
+            model_name="exerciseset",
+            name="weight",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=6,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(limit_value=0)
+                ],
+                verbose_name="weight",
+            ),
         ),
         migrations.AlterField(
-            model_name='exerciseset',
-            name='weight_unit',
-            field=models.CharField(blank=True, choices=[('KG', 'kilograms (kg)'), ('LB', 'pounds (lbs)'), ('PE', 'percentage (%)')], default='KG', max_length=2, null=True),
+            model_name="exerciseset",
+            name="weight_unit",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("KG", "kilograms (kg)"),
+                    ("LB", "pounds (lbs)"),
+                    ("PE", "percentage (%)"),
+                ],
+                default="KG",
+                max_length=2,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalexerciseset',
-            name='weight',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True, validators=[django.core.validators.MinValueValidator(limit_value=0)], verbose_name='weight'),
+            model_name="historicalexerciseset",
+            name="weight",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=6,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(limit_value=0)
+                ],
+                verbose_name="weight",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalexerciseset',
-            name='weight_unit',
-            field=models.CharField(blank=True, choices=[('KG', 'kilograms (kg)'), ('LB', 'pounds (lbs)'), ('PE', 'percentage (%)')], default='KG', max_length=2, null=True),
+            model_name="historicalexerciseset",
+            name="weight_unit",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("KG", "kilograms (kg)"),
+                    ("LB", "pounds (lbs)"),
+                    ("PE", "percentage (%)"),
+                ],
+                default="KG",
+                max_length=2,
+                null=True,
+            ),
         ),
     ]

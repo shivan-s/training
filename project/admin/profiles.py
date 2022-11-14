@@ -1,6 +1,7 @@
 """ProfileAdmin."""
 
-from typing import Iterable, Type
+from typing import Type
+from collections.abc import Iterable
 
 import nested_admin
 from django.contrib import admin
@@ -21,20 +22,20 @@ class CommentInline(BaseCommentInline):
 class CoachInline(nested_admin.NestedStackedInline):
     """Inline for Coach in Profile."""
 
-    model: Type[Coach] = Coach
+    model: type[Coach] = Coach
 
 
 class AthleteInline(nested_admin.NestedStackedInline):
     """Inline for Athlete in the Profile."""
 
-    model: Type[Athlete] = Athlete
+    model: type[Athlete] = Athlete
 
 
 @admin.register(Profile)
 class ProfileAdmin(nested_admin.NestedModelAdmin):
     """Profile admin view."""
 
-    model: Type[Profile] = Profile
+    model: type[Profile] = Profile
     search_fields: Iterable[str] = ("user__name", "user__email")
     raw_id_fields: Iterable[str] = ("user",)
     list_display: Iterable[str] = ("user",)

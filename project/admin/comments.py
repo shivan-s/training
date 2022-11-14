@@ -1,6 +1,7 @@
 """Comment admin."""
 
-from typing import Iterable, Type
+from typing import Type
+from collections.abc import Iterable
 
 from django.contrib import admin
 
@@ -11,7 +12,7 @@ from project.models import Comment
 class CommentAdmin(admin.ModelAdmin):
     """Comment admin view."""
 
-    model: Type[Comment] = Comment
+    model: type[Comment] = Comment
     readonly_fields: Iterable[str] = (
         "reference_id",
         "author_content_object",

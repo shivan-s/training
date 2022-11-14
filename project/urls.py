@@ -1,3 +1,5 @@
+"""URL routes for project."""
+
 from django.urls import path
 
 from . import views
@@ -17,9 +19,15 @@ urlpatterns = [
         name="coach-portal",
     ),
     path(
-        "your_training/",
-        views.YourTraining.as_view(),
-        )
+        "programme/",
+        views.ProgrammeSessionListView.as_view(),
+        name="programme-session-list",
+    ),
+    path(
+        "programme/<str:pk>/",
+        views.ProgrammeSessionDetailView.as_view(),
+        name="programme-session-detail",
+    ),
     path("athlete_add/", views.AthleteAddView.as_view(), name="athlete-add"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path(

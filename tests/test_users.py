@@ -23,7 +23,7 @@ def test_login(client, custom_user):
     """User is able to logout."""
     url = reverse("account_login")
     data = {"email": custom_user.email, "password": custom_user.password}
-    response: Type[TemplateResponse] = client.post(url, data=data)
+    response: type[TemplateResponse] = client.post(url, data=data)
     assert response.status_code == HTTP_200_OK
     assert response.context["user"] == data
 
@@ -55,7 +55,7 @@ def test_profile(client, custom_user, test_client, expected):
             page.
     """
     url = reverse("project:profile")
-    response: Type[TemplateResponse] = test_client.get(url)
+    response: type[TemplateResponse] = test_client.get(url)
     assert response.status_code == HTTP_200_OK
 
 

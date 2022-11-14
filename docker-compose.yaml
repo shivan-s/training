@@ -4,7 +4,7 @@ version: "3.8"
 services:
   db:
     container_name: training_db
-    image: "postgres:14"
+    image: postgres:14
     env_file:
       - .env
     volumes:
@@ -24,8 +24,6 @@ services:
     build: .
     env_file:
       - .env
-    volumes:
-      - .:/code/
     restart: unless-stopped
     ports:
       - "${APP_PORT:-8000}:8000"

@@ -7,18 +7,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('project', '0007_alter_exerciseset_weight_and_more'),
+        ("project", "0007_alter_exerciseset_weight_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='exerciseset',
-            name='weight',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True, validators=[django.core.validators.MinLengthValidator(limit_value=0)], verbose_name='weight'),
+            model_name="exerciseset",
+            name="weight",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=6,
+                null=True,
+                validators=[
+                    django.core.validators.MinLengthValidator(limit_value=0)
+                ],
+                verbose_name="weight",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalexerciseset',
-            name='weight',
-            field=models.DecimalField(blank=True, decimal_places=2, max_digits=6, null=True, validators=[django.core.validators.MinLengthValidator(limit_value=0)], verbose_name='weight'),
+            model_name="historicalexerciseset",
+            name="weight",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=2,
+                max_digits=6,
+                null=True,
+                validators=[
+                    django.core.validators.MinLengthValidator(limit_value=0)
+                ],
+                verbose_name="weight",
+            ),
         ),
     ]
