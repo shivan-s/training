@@ -22,7 +22,7 @@ class Coach(BaseAthleteCoachModel):
     )
     comments = GenericRelation(
         "project.Comment",
-        related_query_name="programme_session",
+        related_query_name="coach",
         content_type_field="author_ct",
         object_id_field="author_object_id",
     )

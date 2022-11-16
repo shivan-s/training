@@ -1,6 +1,8 @@
 """Programme Session tests."""
 
 
-def programme_group_by(client, programme_session):
-    """Testing the group by dates."""
-    ...
+def test_set_successful(exercise_set):
+    """Test if a set was successful."""
+    assert exercise_set.intended != exercise_set.outcome
+    exercise_set.set_successful()
+    assert exercise_set.intended == exercise_set.outcome

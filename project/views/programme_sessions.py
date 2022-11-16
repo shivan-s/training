@@ -4,7 +4,6 @@ from collections import defaultdict
 from typing import Any, Literal, Union
 
 from django import forms
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F, QuerySet
 from django.db.models.functions import (
@@ -15,10 +14,9 @@ from django.db.models.functions import (
 )
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
-from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
-from project.models import Athlete, ProgrammeSession
+from project.models import Athlete, Comment, ProgrammeSession
 
 
 def get_programme_current_week(
@@ -166,13 +164,45 @@ class ProgrammeSessionListView(BaseProgrammeView):
         return context
 
 
-# class ProgrammeSessionDetailForm(forms.ModelForm):
+# from django.views.generic.edit import FormMixin, ProcessFormView
+#
+#
+# class MultipleFormsMixin(FormMixin):
+#     """
+#     A mixin that provides a way to show and handle several forms in a
+#     request.
+#     """
+#
+#     form_classes = {}  # set the form classes as a mapping
+#
+#     def get_form_classes(self, ):
+#         return self.form_classes
+#
+#     def get_forms(self, form_classes):
+#         return dict(
+#             [
+#                 (key, klass(**self.get_form_kwargs()))
+#                 for key, klass in form_classes.items()
+#             ]
+#         )
+#
+#     def forms_valid(self, forms):
+#         return super(MultipleFormsMixin, self).form_valid(forms)
+#
+#     def forms_invalid(self, forms):
+#         return self.render_to_response(self.get_context_data(forms=forms))
+#
+#
+# class ProgrammeSessionDetailForm(forms.Form, MultipleFormsMixin):
 #     """Form allows athlete feedback."""
 #
-#     class Meta:
-#         """Meta."""
-#
-#         model = ProgrammeSession
+#     def get_form_classes(self):
+
+
+class CommentForm(forms.Form):
+    """Comment."""
+
+    comment = forms.CharField()
 
 
 class ProgrammeSessionDetailView(BaseProgrammeView):
@@ -180,12 +210,47 @@ class ProgrammeSessionDetailView(BaseProgrammeView):
 
     template_name = "programme/detail.html"
 
+    def post(self, request, *args, **kwargs):
+        """Post."""
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            athlete = Athlete.objects.get(profile__user=request.user)
+            programme = get_object_or_404(
+                ProgrammeSession, reference_id=self.kwargs.get("pk")
+            )
+            new_comment = Comment.objects.create(
+                content=form.cleaned_data["comment"],
+                author_content_object=athlete,
+                location_content_object=programme,
+            )
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": form,
+                    "new_comment": new_comment,
+                    "programme": programme,
+                },
+            )
+        else:
+            raise Exception
+
     def get_context_data(self, *args, **kwargs) -> dict[str, Any]:
         """Context."""
         context = super().get_context_data(*args, **kwargs)
         athlete = context["athlete"]
-        qs = ProgrammeSession.objects.filter(athlete=athlete).filter(
-            reference_id=self.kwargs.get("pk")
+        context["programme"] = get_object_or_404(
+            ProgrammeSession, reference_id=self.kwargs.get("pk")
         )
-        context["programme"] = get_object_or_404(qs)
+        context["next_programme"] = None
+        context["previous_programme"] = None
+
+        programme_sessions = ProgrammeSession.objects.filter(athlete=athlete)
+        for i, ps in enumerate(programme_sessions):
+            if ps.reference_id == self.kwargs.get("pk"):
+                if i > 0:
+                    context["next_programme"] = programme_sessions[i - 1]
+                if i < len(programme_sessions) - 1:
+                    context["previous_programme"] = programme_sessions[i + 1]
+
         return context

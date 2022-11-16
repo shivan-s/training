@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if notes %}
+    <div class="block">
+        <div class="message is-primary">
+            <div class="message-header">
+                <p>{% translate "Notes" %}Notes</p>
+            </div>
+            <div class="message-body">{{ notes }}</div>
+        </div>
+    </div>
+{% endif %}

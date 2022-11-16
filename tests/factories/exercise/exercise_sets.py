@@ -19,5 +19,5 @@ class ExerciseSetFactory(factory.django.DjangoModelFactory):
     repetitions = random.randint(1, 10)
     weight = random.uniform(1, 100)
     weight_unit = random.choice(ExerciseSet.WeightUnit.choices)
-    intended = factory.SubFactory("tests.Exercise")
-    outcome = factory.SubFactory("tests.Exercise")
+    intended = factory.SubFactory("tests.factories.ExerciseFactory")
+    outcome = None

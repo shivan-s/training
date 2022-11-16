@@ -13,7 +13,11 @@ class ExerciseFactory(factory.django.DjangoModelFactory):
 
         model = Exercise
 
-    programme_session = factory.SubFactory("tests.factories.ProgrammeSession")
-    exercise_type = factory.SubFactory("tests.factories.ExerciseType")
+    programme_session = factory.SubFactory(
+        "tests.factories.ProgrammeSessionFactory"
+    )
+    exercise_type = factory.SubFactory("tests.factories.ExerciseTypeFactory")
     coach_notes = factory.Faker("paragraph")
-    comments = factory.RelatedFactory("tests.factories.Comment", size=10)
+    comments = factory.RelatedFactory(
+        "tests.factories.CommentFactory", size=10
+    )

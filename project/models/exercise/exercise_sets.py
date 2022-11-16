@@ -2,6 +2,7 @@
 
 import inflect
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
@@ -29,8 +30,9 @@ class ExerciseSet(BaseModel):
         """Choices for `weight_unit`."""
 
         KILOGRAMS = "KG", _("kilograms (kg)")
-        POUNDS = "LB", _("pounds (lbs)")
-        PERCENTAGE = "PE", _("percentage (%)")
+        POUNDS = "LBS", _("pounds (lbs)")
+        PERCENTAGE = "PER", _("percentage (%)")
+        RPE = "RPE", (_("rate of perceived exertion (RPE)"))
 
     reference_id = HashidAutoField(
         primary_key=True, salt=f"set_{HASHID_FIELD_SALT}"
@@ -46,7 +48,7 @@ class ExerciseSet(BaseModel):
         validators=[validators.MinValueValidator(limit_value=0)],
     )
     weight_unit = models.CharField(
-        max_length=2,
+        max_length=3,
         choices=WeightUnit.choices,
         default=WeightUnit.KILOGRAMS,
         blank=True,
@@ -79,7 +81,48 @@ class ExerciseSet(BaseModel):
             WeightUnit.KILOGRAMS: "kg",
             WeightUnit.POUNDS: "lbs",
             WeightUnit.PERCENTAGE: "%",
+            WeightUnit.RPE: "RPE",
         }.get(self.weight_unit)
+
+    def set_successful(self):
+        """Set the `outcome` and to the exercise (linked via `intended`).
+
+        This indicates that the athlete completed the sets successfully.
+        """
+        self.outcome = self.intended
+
+    def clean(self, WeightUnit=WeightUnit, *args, **kwargs):
+        """Customise validation.
+
+        1. Ensure RPE can only between 0 and 10.
+        """
+        errors = []
+        if self.weight_unit == WeightUnit.RPE and self.weight > 12:
+            raise ValidationError(
+                {
+                    "weight": "RPE selected. Weight can only be set between 0 to 12, not %(weight)s"
+                },
+                code="rpe-error",
+                params={
+                    "weight": self.weight,
+                },
+            )
+
+        if len(errors) > 0:
+            error_msg = "\n".join(errors)
+            raise ValidationError(
+                "%(error_msg)s",
+                code="Invalid Attempt",
+                params={
+                    "error_msg": error_msg,
+                },
+            )
+        super().clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        """Enforce custom validation."""
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Represent string."""
@@ -92,8 +135,6 @@ class ExerciseSet(BaseModel):
                 inf.plural("set", self.sets),
             ]
         )
-
-        # + f"{x {self.sets} {inf.plural('set', self.sets)}'} if self.sets > 1  else ''}"
 
     class Meta(BaseModel.Meta):
         """Settings for model."""

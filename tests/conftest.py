@@ -10,6 +10,7 @@ from .factories import (
     AthleteFactory,
     CoachFactory,
     CustomUserFactory,
+    ExerciseSetFactory,
     ProfileFactory,
     TeamFactory,
 )
@@ -24,6 +25,7 @@ register(AthleteFactory)
 register(CoachFactory)
 register(ProfileFactory)
 register(TeamFactory)
+register(ExerciseSetFactory)
 
 
 @pytest.fixture(scope="session")

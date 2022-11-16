@@ -1,5 +1,7 @@
 """Comment model."""
 
+import time
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -36,7 +38,7 @@ class Comment(BaseModel):
         verbose_name=_("author"),
         related_name="author",
     )
-    author_object_id = models.PositiveIntegerField()
+    author_object_id = models.PositiveIntegerField(null=True)
     author_content_object = GenericForeignKey("author_ct", "author_object_id")
 
     location_ct = models.ForeignKey(
@@ -44,20 +46,24 @@ class Comment(BaseModel):
         on_delete=models.CASCADE,
         limit_choices_to={
             "app_label": "project",
-            # TODO: cannot identify programme session
-            # "model__in": ("exercise", "programme session"),
+            "model__in": ("exercise", "programmesession"),
         },
         verbose_name=_("location"),
         related_name="location",
     )
-    location_object_id = models.PositiveIntegerField()
+    location_object_id = models.PositiveIntegerField(null=True)
     location_content_object = GenericForeignKey(
         "location_ct", "location_object_id"
     )
 
     def __str__(self):
         """Represent string."""
-        return self.content[0:20]
+        fmt = "%Y-%m-%d %H:%M:%S"
+        return (
+            f"({self.history.earliest().history_date.strftime(fmt)})"
+            + ": "
+            + f"{self.content[0:50]}"
+        )
 
     class Meta(BaseModel.Meta):
         """Setting for model.
