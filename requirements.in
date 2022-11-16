@@ -11,8 +11,8 @@ django-htmx
 django-debug-toolbar
 django-grappelli
 django-nested-admin
+easy-thumbnails
 Pillow
-sorl-thumbnail
 psycopg2-binary
 sentry-sdk
 whitenoise

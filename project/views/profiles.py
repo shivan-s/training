@@ -40,4 +40,4 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         """Overwrite the `get_object` method to obtain current authenticated \
                 user."""
-        return self.request.user
+        return Profile.objects.get(user=self.request.user)

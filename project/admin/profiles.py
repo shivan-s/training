@@ -1,10 +1,11 @@
 """ProfileAdmin."""
 
-from typing import Type
-from collections.abc import Iterable
+from typing import Iterable, Type
 
 import nested_admin
 from django.contrib import admin
+from easy_thumbnails.fields import ThumbnailerField
+from easy_thumbnails.widgets import ImageClearableFileInput
 
 from project.models import Athlete, Coach, Profile
 
@@ -45,3 +46,6 @@ class ProfileAdmin(nested_admin.NestedModelAdmin):
         AthleteInline,
         CommentInline,
     )
+    formfield_overrides = {
+        ThumbnailerField: {"widget": ImageClearableFileInput},
+    }

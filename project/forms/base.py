@@ -8,8 +8,9 @@ class CustomErrorList(ErrorList):
     """Customise `ErrorLift` to provide Bulma CSS styling for error in form."""
 
     def get_context(self):
-        """Overwrite `get_context` to provide "has-text-danger" in \
-                "error_class" context.
+        """Overwrite `get_context`.
+
+        Provide "has-text-danger" in "error_class" context.
         """
         return {"errors": self, "error_class": "block has-text-danger"}
 
@@ -18,7 +19,9 @@ class CustomBoundField(BoundField):
     """Customise BoundField for tags that surround input fields."""
 
     def css_classes(self, extra_classes=None):
-        """Overwrite `css_classes` to provide extra Bulma CSS class, "field". \
+        """Overwrite `css_classes`.
+
+        Provide extra Bulma CSS class, "field".
         """
         if extra_classes is None:
             extra_classes = "field"
@@ -60,9 +63,7 @@ class BaseCustomForm:
                     self.fields[e].help_text = self.errors[e]
 
     def __getitem__(self, name):
-        """Overwrite `__getitem__` to alter classes in tags surrounding input \
-                fields.
-        """
+        """Alter classes in tags surrounding input fields."""
         try:
             field = self.fields[name]
         except KeyError:

@@ -6,6 +6,8 @@ from django.dispatch import receiver
 
 from project.models import Athlete, Coach, ExerciseSet, Profile
 
+# allauth.account.signals.email_confirmed(request, email_address)
+
 
 @receiver(post_save, sender=get_user_model())
 def create_profile(sender, instance, created, **kwargs):

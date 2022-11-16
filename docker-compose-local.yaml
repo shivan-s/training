@@ -5,20 +5,27 @@ services:
   db:
     container_name: training_db
     image: postgres:14
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
     env_file:
       - .env
     volumes:
       - pgdata:/var/lib/postgresql/data/
+    networks:
+      - internal_network
     restart: unless-stopped
 
   cache:
     container_name: training_cache
     image: redis:7
+    networks:
+      - internal_network
     env_file:
       - .env
 
   web:
     container_name: training_web
+    image: training:dev
     depends_on:
       - db
     build:
@@ -29,8 +36,29 @@ services:
     volumes:
       - .:/code/
     restart: unless-stopped
+    networks:
+      - internal_network
+      - external_network
     ports:
       - "${APP_PORT:-8000}:8000"
+
+  celery:
+    container_name: training_celery
+    image: training:celery-dev
+    restart: unless-stopped
+    depends_on:
+      - db
+      - web
+      - cache
+    volumes:
+      - .:/code/
+    env_file:
+      - .env
+    command: celery worker --app=celery:app -l INFO
+
+networks:
+  external_network:
+  internal_network:
 
 volumes:
   pgdata:

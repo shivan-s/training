@@ -1,14 +1,15 @@
+"""Admin for user model."""
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
-from sorl.thumbnail.admin import AdminImageMixin
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 
 @admin.register(get_user_model())
-class CustomUserAdmin(AdminImageMixin, UserAdmin):
+class CustomUserAdmin(UserAdmin):
     """Custom Admin form for users."""
 
     add_form = CustomUserCreationForm

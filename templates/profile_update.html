@@ -1,5 +1,5 @@
 {% extends "base/base_box.html" %}
-{% load i18n account %}
+{% load i18n account thumbnail %}
 {% block title %}
     {% user_display user as user_display %}
     - {% translate "Profile: " %}{{ user_display }}{% translate "- Update" %}

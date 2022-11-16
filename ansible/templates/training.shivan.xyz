@@ -18,10 +18,11 @@ server {
 
     location /media/ {
         root /home/shivan/{{ app_name }}/media;
+    }
 
     location /static/ {
         root /home/shivan/{{ app_name }}/static;
-}
+    }
 
 }
 

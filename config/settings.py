@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "django_simple_bulma",
     "django_htmx",
     "debug_toolbar",
-    "sorl.thumbnail",
+    "easy_thumbnails",
     "django_celery_results",
     "django_celery_beat",
     "mptt",
@@ -131,6 +131,14 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_RESULT_BACKEND = "default"
 CELERY_CACHE_BACKEND = "default"
+
+# Easy thumbnails
+
+THUMBNAIL_ALIASES = {
+    "": {
+        "avatar": {"size": (50, 50), "crop": True},
+    },
+}
 
 # Password validation
 
@@ -274,6 +282,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+THUMBNAIL_DEBUG = False
 
 # Development settings
 if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
@@ -293,6 +302,7 @@ if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
         "10.0.2.2 ",
     ]
     LOGGING["root"]["level"] = "DEBUG"
+    THUMBNAIL_DEBUG = True
 
 # Email Service
 
