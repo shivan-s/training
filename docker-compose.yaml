@@ -42,8 +42,6 @@ services:
 
   celery:
     container_name: training_celery
-    build: .
-    image: training:celery
     restart: unless-stopped
     depends_on:
       - db
