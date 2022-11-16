@@ -10,6 +10,10 @@ My coach sends me a program via Google Sheets. It works, but let's see if I can 
 
 The idea is a coach can send a program to an athlete. The athlete can provide feedback to the coach.
 
+## Models
+
+![models graph](./my_project_visualised.png)
+
 ## Credits
 
 Built on twitch:
