@@ -17,7 +17,7 @@ server {
 	}
 
    location /media/ {
-       alias /home/shivan/{{ app_name }}/media;
+       root /home/shivan/{{ app_name }};
     }
 
     # location /static/ {
