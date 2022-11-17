@@ -16,13 +16,13 @@ server {
 		proxy_pass http://{{ app_name }}_web;
 	}
 
-    location /media/ {
-        root /home/shivan/{{ app_name }}/media;
-    }
+  #  location /media/ {
+  #      root /home/shivan/{{ app_name }}/media;
+  #  }
 
-    location /static/ {
-        root /home/shivan/{{ app_name }}/static;
-    }
+#    location /static/ {
+#        root /home/shivan/{{ app_name }}/static;
+#    }
 
 }
 
