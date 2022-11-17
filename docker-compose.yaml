@@ -42,19 +42,21 @@ services:
     ports:
       - "${APP_PORT:-8000}:8000"
 
-  celery:
-    container_name: training_celery
-    build: .
-    restart: unless-stopped
-    depends_on:
-      - db
-      - web
-      - cache
-    volumes:
-      - .:/code/
-    env_file:
-      - .env
-    command: celery worker --app=celery:app -l INFO
+  # celery:
+  #   container_name: training_celery
+  #   build:
+  #     context: .
+  #     dockerfile: DockerFile
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db
+  #     - web
+  #     - cache
+  #   volumes:
+  #     - .:/code/
+  #   env_file:
+  #     - .env
+  #   command: celery worker --app=celery:app -l INFO
 
 networks:
   external_network:
