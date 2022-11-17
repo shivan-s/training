@@ -44,7 +44,9 @@ services:
 
   celery:
     container_name: training_celery
-    image: training:celery-dev
+    build:
+      context: .
+      dockerfile: LocalDockerFile
     restart: unless-stopped
     depends_on:
       - db
