@@ -44,7 +44,7 @@ deploy:
 
 # quick deploy does not run certbot or nginx
 .PHONY: quick-deploy
-deploy:
+quick-deploy:
 	@echo "Deploying application" && \
 	ansible-playbook ansible/quick-deploy.yml -i ansible/hosts -K
 
