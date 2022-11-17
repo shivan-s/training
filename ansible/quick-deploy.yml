@@ -1,6 +1,6 @@
 ---
 - name: Quick Deployer Recipe
-  hosts: shivan.xyz
+  hosts: 206.189.82.46
   become: true
   vars:
     app_name: training
