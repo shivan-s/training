@@ -1,6 +1,6 @@
 ---
 - name: Deployer Recipe
-  hosts: 206.189.82.46
+  hosts: shivan.xyz
   become: true
   vars:
     app_name: training

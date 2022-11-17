@@ -42,6 +42,12 @@ deploy:
 	@echo "Deploying application" && \
 	ansible-playbook ansible/deploy.yml -i ansible/hosts -K
 
+# quick deploy does not run certbot or nginx
+.PHONY: quick-deploy
+deploy:
+	@echo "Deploying application" && \
+	ansible-playbook ansible/quick-deploy.yml -i ansible/hosts -K
+
 .PHONY: generate-key
 generate-key:
 	@echo 'generating-key' && \
