@@ -1,13 +1,12 @@
 """Model for CustomUser."""
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 from simple_history.models import HistoricalRecords
 from softdelete.models import SoftDeleteObject
-
-from config.settings import HASHID_FIELD_SALT
 
 
 class CustomUser(AbstractUser, SoftDeleteObject):
@@ -19,7 +18,7 @@ class CustomUser(AbstractUser, SoftDeleteObject):
     """
 
     reference_id = HashidAutoField(
-        primary_key=True, salt=f"custom_user_{HASHID_FIELD_SALT}"
+        primary_key=True, salt=f"custom_user_{settings.HASHID_FIELD_SALT}"
     )
     email = models.EmailField(_("email address"), unique=True)
     history = HistoricalRecords()

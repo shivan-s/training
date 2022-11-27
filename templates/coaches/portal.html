@@ -1,30 +1,79 @@
 {% extends "base/base.html" %}
-{% load i18n %}
+{% load i18n thumbnail %}
 {% block title %}
     - {% translate "Coaching Portal" %}
 {% endblock title %}
 {% block content %}
     <div class="box">
         <div class="block">
-            <div>
-                <h2 class="title has-text-primary">{% translate "Coaching Portal" %}</h2>
-                <p class="subtitle has-text-primary">
-                    {% blocktranslate count athlete_count=coach.athletes.count %}
-                        coaching
-                    {% plural %}
-                        {{ athlete_count }}
-                        athletes
-                    {% endblocktranslate %}
-                </p>
-            </div>
+            <h2 class="title has-text-primary">{% translate "Coaching Portal" %}</h2>
+            <p class="subtitle has-text-primary">
+                {% blocktranslate count athlete_count=coach.athletes.count %}
+                {% plural %}
+                    {{ athlete_count }}
+                    athletes
+                {% endblocktranslate %}
+            </p>
         </div>
         <div class="block">
-            <a href="{% url "project:athlete-list" %}" class="button is-primary">
-                <span class="icon is-small">
-                    <i class="fas fa-plus"></i>
-                </span>
-                <span>{% translate "Add Athlete" %}</span>
-            </a>
+            <form method="post"
+                hx-post="{% url "project:coach-portal" %}"
+                hx-trigger="keyup changed delay:500ms"
+                hx-indicator=".htmx-indicator"
+                hx-target="#athlete-list"
+                hx-select="#athlete-list">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </form>
+            <span class="htmx-indicator">Searching...</span>
+        </div>
+        <div id="athlete-list" class="block">
+            {% if athletes %}
+                {% for athlete in coach.athletes.all %}
+                    <div class="block">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="media">
+                                    {% include "components/athlete_card/avatar.html" with athlete=athlete %}
+                                    <div class="media-content">
+                                        <p>
+                                            <strong>{{ athlete.name }}</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="content">
+                                    <p>
+                                        <strong>{% translate "Latest Session" %}</strong>: {{ TODO }}
+                                    </p>
+                                    <p>
+                                        <strong>{% translate "Last Trained" %}</strong>: {{ TODO }}
+                                    </p>
+                                    <p>
+                                        <strong>{% translate "Something?" %}</strong>: {{ TODO }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url "project:athlete-programme-session-list" athlete.profile.user.pk %}"
+                                    class="card-footer-item">{% translate "See Programme" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                </div>
+                <div class="block">
+                    <p class="has-text-centered">No athletes found.</p>
+                </div>
+            {% endif %}
+            <div class="block">
+                <a href="{% url "project:add-athlete" %}" class="button is-primary">
+                    <span class="icon is-small">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>{% translate "Add Athlete" %}</span>
+                </a>
+            </div>
         </div>
     </div>
 {% endblock content %}

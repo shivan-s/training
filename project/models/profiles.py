@@ -1,10 +1,9 @@
 """Profile model."""
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
-
-from config.settings import AUTH_USER_MODEL
 
 from .base import BaseModel
 
@@ -13,7 +12,7 @@ class Profile(BaseModel):
     """Profile model."""
 
     user = models.OneToOneField(
-        AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True
     )
     name = models.CharField(_("name"), max_length=155, blank=True, null=True)
     avatar = ThumbnailerImageField(

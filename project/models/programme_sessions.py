@@ -1,11 +1,10 @@
 """ProgrammeSession model."""
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
-
-from config.settings import HASHID_FIELD_SALT
 
 from .base import BaseModel
 
@@ -29,7 +28,7 @@ class ProgrammeSession(BaseModel):
         EVENING = (30, _("Evening"))
 
     reference_id = HashidAutoField(
-        primary_key=True, salt=f"team_{HASHID_FIELD_SALT}"
+        primary_key=True, salt=f"team_{settings.HASHID_FIELD_SALT}"
     )
     coach = models.ForeignKey(
         "project.Coach", on_delete=models.CASCADE, verbose_name=_("coach")

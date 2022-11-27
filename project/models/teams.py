@@ -1,10 +1,9 @@
 """Team model."""
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
-
-from config.settings import HASHID_FIELD_SALT
 
 from .base import BaseModel
 
@@ -16,7 +15,7 @@ class Team(BaseModel):
     """
 
     reference_id = HashidAutoField(
-        primary_key=True, salt=f"team_{HASHID_FIELD_SALT}"
+        primary_key=True, salt=f"team_{settings.HASHID_FIELD_SALT}"
     )
     name = models.CharField(_("name"), max_length=25, unique=True)
     description = models.TextField(_("description"))

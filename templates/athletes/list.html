@@ -1,11 +1,27 @@
 {% extends "base/base.html" %}
-{% load i18n %}
+{% load i18n thumbnail %}
 {% block title %}
     - {% translate "Athletes" %}
 {% endblock title %}
 {% block content %}
     <div class="box">
-        <a href={% url "project:athlete-add" %}>Add Athelte by email</a>
+        <div class="block">
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <div class="control has-icons-left">
+                        <input name="id_email"
+                            class="input"
+                            type="text"
+                            placeholder="Enter Athlete's email"/>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control">{% include "components/primary_form_button.html" with value="Update" %}</div>
+            </form>
+        </div>
         <div class="block">
             <h2 class="title has-text-primary">{% translate "Select Athlete" %}</h2>
             <p class="subtitle has-text-primary">
@@ -15,16 +31,6 @@
                     listed athletes
                 {% endblocktranslate %}
             </p>
-        </div>
-        <div class="block">
-            <div class="field">
-                <div class="control has-icons-left">
-                    <input class="input" type="text" placeholder="Search Athlete" />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-search"></i>
-                    </span>
-                </div>
-            </div>
         </div>
         {% if is_paginated %}
             <span class="pagination is-centered"
@@ -64,20 +70,32 @@
             {% translate "No Athletes Found." %}
         {% endif %}
         {% for athlete in athlete_list %}
-            {{ athlete.avatar }}
             <div class="block">
                 <div class="card">
                     <div class="card-content">
                         <div class="media">
                             <div class="media-left">
-                                <figure class="image is-48x48">
-                                    <img src="https://bulma.io/images/placeholders/96x96.png"
-                                        alt="Placeholder image">
+                                <figure class="image is-64x64">
+                                    {% if athlete.profile.avatar %}
+                                        {% thumbnail athlete.profile.avatar 64x64 upscale as thumb %}
+                                        <img src="{{ thumb.url }}"
+                                            width="{{ thumb.width }}"
+                                            height="{{ thumb.height }}"
+                                            alt="{{ thumb }}"/>
+                                    {% else %}
+                                        <img src="https://bulma.io/images/placeholders/96x96.png"
+                                            width="64"
+                                            height="64"
+                                            alt="fallback"/>
+                                    {% endif %}
                                 </figure>
                             </div>
                             <div class="media-content">
-                                <p class="strong">{{ athlete.pk }}</p>
-                                <p class>{{ athlete.name }}</p>
+                                <div class="content">
+                                    <p>
+                                        <strong>{{ athlete.name }}</strong>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

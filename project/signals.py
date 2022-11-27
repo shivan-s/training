@@ -18,7 +18,7 @@ def create_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Profile)
 def create_coach_and_athlete(sender, instance, created, **kwargs):
-    """Create both Coach and Athlete instance."""
+    """Create both Coach and Athlete instance from the user creation."""
     if created:
         Coach.objects.create(profile=instance)
         Athlete.objects.create(profile=instance)

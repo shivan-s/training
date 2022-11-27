@@ -2,14 +2,16 @@
 .PHONY: run-detached
 run-detached:
 	@echo "Building and running application detached" && \
-	docker-compose down --remove-orphans && \
-	docker-compose -f docker-compose-local.yaml up --build --wait
+	cp .env ./docker/dev/.env
+	docker-compose -f ./docker/dev/docker-compose.yaml down --remove-orphans && \
+	docker-compose -f ./docker/dev/docker-compose.yaml up --build --wait
 
 .PHONY: run
 run:
 	@echo "Building and running application" && \
-	docker-compose down --remove-orphans && \
-	docker-compose -f docker-compose-local.yaml up --build
+	cp .env ./docker/dev/.env
+	docker-compose -f ./docker/dev/docker-compose.yaml down --remove-orphans && \
+	docker-compose -f ./docker/dev/docker-compose.yaml up --build
 
 .PHONY: attach
 attach:
@@ -56,9 +58,9 @@ generate-key:
 .PHONY: graph
 graph:
 	@echo "Generating graph viz of database"
-	docker exec -it training_web  sh -c "python manage.py graph_models --rankdir BT project users -o my_project_visualised.png" && \
+	docker exec -it training_web  sh -c "python manage.py graph_models --rankdir BT project users -o ./docs/my_project_visualised.png" && \
 	exit
-	open my_project_visualised.png
+	open ./docs/my_project_visualised.png
 
 .PHONY: debug
 debug:

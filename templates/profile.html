@@ -18,13 +18,20 @@
 {% block box_content %}
     <div class="block">
         <div class="is-flex is-justify-content-space-around">
-            <figure class="image is-128x128">
-                {% thumbnail profile.avatar 128x128 upscale as thumb %}
-                <img src="{{ thumb.url }}"
-                    width="{{ thumb.width }}"
-                    height="{{ thumb.height }}"
-                    alt="{{ thumb }}"/>
-            </figure>
+            {% if profile.avatar %}
+                <figure class="image is-128x128">
+                    {% thumbnail profile.avatar 128x128 upscale as thumb %}
+                    <img src="{{ thumb.url }}"
+                        width="{{ thumb.width }}"
+                        height="{{ thumb.height }}"
+                        alt="{{ thumb }}"/>
+                </figure>
+            {% else %}
+                <img src="https://bulma.io/images/placeholders/128x128.png"
+                    width="128"
+                    height="128"
+                    alt="fallback"/>
+            {% endif %}
         </div>
     </div>
     <div class="block">

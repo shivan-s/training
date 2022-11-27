@@ -2,13 +2,12 @@
 
 import time
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
-
-from config.settings import HASHID_FIELD_SALT
 
 from .base import BaseModel
 
@@ -25,7 +24,7 @@ class Comment(BaseModel):
     """
 
     reference_id = HashidAutoField(
-        primary_key=True, salt=f"comment_{HASHID_FIELD_SALT}"
+        primary_key=True, salt=f"comment_{settings.HASHID_FIELD_SALT}"
     )
     content = models.TextField(verbose_name=_("content"))
     author_ct = models.ForeignKey(

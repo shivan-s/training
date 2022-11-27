@@ -10,6 +10,7 @@ from hashid_field import HashidAutoField
 from config.settings import HASHID_FIELD_SALT
 from project.models.base import BaseModel
 
+# dealing with plurals
 inf = inflect.engine()
 
 

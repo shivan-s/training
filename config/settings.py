@@ -129,7 +129,8 @@ CACHES = {
 CELERY_TIMEZONE = "New Zealand"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_RESULT_BACKEND = "default"
+CELERY_RESULT_BACKEND = CACHES["default"]["LOCATION"]
+CELERY_BROKER_URL = CELERY_RESULT_BACKEND
 CELERY_CACHE_BACKEND = "default"
 
 # Easy thumbnails
@@ -181,6 +182,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_MAX_EMAIL_ADDRESSES = 2
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -241,7 +243,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Custom settings for django-simple-bulma
 
 BULMA_SETTINGS = {
-    "extensions": ["all"],
+    "extensions": ["bulma-calender"],
     "variables": {
         "primary": "hsl(0, 0%, 14%)",
     },

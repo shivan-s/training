@@ -1,0 +1,29 @@
+{% load i18n %}
+{% comment %}
+  This provides centered links. Primarily used for box forms (e.g. login).
+
+  Example:
+    {% include "components/centered_links.html" with url_link=URL url_text=TEXT %}
+{% endcomment %}
+<div class="card">
+    <div class="card-content">
+        <div class="media">
+            {% include "components/athlete_card/avatar.html" with athlete=athlete  %}
+            <div class="media-content">
+                <div class="content">
+                    <p>
+                        <strong>{{ athlete.name }}</strong>
+                    </p>
+                    <strong>{% translate "Joined" %}</strong>: {{ new_athlete.history.first.history_date|timesince }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="post" hx-post="{% url "project:confirm-athlete" %}">
+        {% csrf_token %}
+        <div class="card-footer">
+            <input type="hidden" name="athlete" value={{ new_athlete.profile.user.pk }} />
+            <input type="submit" class="card-footer-item" value="{% translate "Add" %}" />
+        </div>
+    </form>
+</div>

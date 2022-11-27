@@ -1,7 +1,13 @@
 """Export Views."""
 
-from .athletes import AthleteAddView, AthleteListView
-from .coaches import CoachPortalView
+from .athletes import AthleteListView
+from .coaches import (
+    AddAthleteView,
+    AthleteProgrammeSessionCreateView,
+    AthleteProgrammeSessionListView,
+    CoachPortalView,
+    ConfirmAthleteView,
+)
 from .index import IndexView
 from .profiles import ProfileUpdateView, ProfileView
 from .programme_sessions import (
@@ -14,8 +20,10 @@ __all__ = [
     "ProfileUpdateView",
     "ProfileView",
     "CoachPortalView",
+    "ConfirmAthleteView",
+    "AddAthleteView",
     "AthleteListView",
-    "AthleteAddView",
     "ProgrammeSessionListView",
     "ProgrammeSessionDetailView",
+    "AthleteProgrammeSessionListView",
 ]
