@@ -1,12 +1,16 @@
 """ProgrammeSession model."""
 
+from typing import Iterable
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
 from .base import BaseModel
+from .managers import ProgrammeSessionManager
 
 
 class ProgrammeSession(BaseModel):
@@ -40,7 +44,7 @@ class ProgrammeSession(BaseModel):
         _("date"),
     )
     session_type = models.IntegerField(
-        _("session type"),
+        _("session"),
         choices=SessionType.choices,
         blank=True,
         null=True,
@@ -58,7 +62,7 @@ class ProgrammeSession(BaseModel):
     )
 
     coach_notes = models.TextField(
-        _("coach's pre training session notes"),
+        _("notes"),
         blank=True,
         null=True,
     )
@@ -69,7 +73,26 @@ class ProgrammeSession(BaseModel):
         object_id_field="location_object_id",
     )
 
-    def __str__(self):
+    objects = ProgrammeSessionManager()
+
+    @property
+    def is_completed(self) -> bool:
+        """Marks programme completed."""
+        return self.end is not None
+
+    def get_absolute_url(self) -> str:
+        """Provide absolute url for the instance."""
+        kwargs = {"pk": self.pk}
+        return reverse("project:programme-session-detail", kwargs=kwargs)
+
+    def get_hx_edit_url(self) -> str:
+        """Provide the edit url for this instance."""
+        kwargs = {"pk": self.pk, "athlete_pk": self.athlete.pk}
+        return reverse(
+            "project:hx-coach-programme-session-update", kwargs=kwargs
+        )
+
+    def __str__(self) -> str:
         """Represent string."""
         if self.session_type:
             return f"{self.date} - {self.get_session_type_display()}"
@@ -78,4 +101,4 @@ class ProgrammeSession(BaseModel):
     class Meta(BaseModel.Meta):
         """Setting for model."""
 
-        ordering = ["-date", "session_type"]
+        ordering: Iterable[str] = ["-date", "-session_type"]

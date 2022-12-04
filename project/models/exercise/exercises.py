@@ -2,6 +2,7 @@
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
@@ -19,6 +20,8 @@ class Exercise(BaseModel):
         "project.ProgrammeSession",
         on_delete=models.CASCADE,
         verbose_name=_("Programming sessions"),
+        blank=True,
+        null=True,
     )
     exercise_type = models.ForeignKey(
         "project.ExerciseType",
@@ -37,6 +40,19 @@ class Exercise(BaseModel):
         content_type_field="location_ct",
         object_id_field="location_object_id",
     )
+
+    def get_hx_edit_url(self) -> str:
+        kwargs = {
+            "athlete_pk",
+            self.programme_session.athlete.pk,
+            "programme_session_pk",
+            self.programme_session.pk,
+            "pk",
+            self.pk,
+        }
+        return reverse(
+            "hx-athlete-programme-session-exercise-update", kwargs=kwargs
+        )
 
     def __str__(self) -> str:
         """Represent string."""

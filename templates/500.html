@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+{% block title %}
+    - Page Not Found
+{% endblock title %}
+{% block content %}
+    <section class="section is-medium">
+        <h2 class="title">Whoops! Server Error!</h2>
+        <p class="subtitle">Please try again later</p>
+        <a href="{% url 'project:index' %}">Back to safety</a>
+    </section>
+{% endblock content %}

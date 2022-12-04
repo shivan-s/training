@@ -54,7 +54,7 @@ class AddAthleteView(LoginRequiredMixin, TemplateView):
         Enable search by athlete email.
         """
         form = AddAthleteForm(request.POST)
-        coach = Coach.objects.get(profile__user=request.user)
+        coach = Coach.objects.get(user=request.user)
         context = {
             "form": form,
             "coach": coach,
@@ -63,7 +63,7 @@ class AddAthleteView(LoginRequiredMixin, TemplateView):
         if form.is_valid():
             email = form.cleaned_data.get("email")
             context["new_athlete"] = Athlete.objects.get(
-                profile__user__emailaddress__email=email
+                user__emailaddress__email=email
             )
         return render(
             request,
@@ -75,5 +75,5 @@ class AddAthleteView(LoginRequiredMixin, TemplateView):
         """Adding context data."""
         context = super().get_context_data(*args, **kwargs)
         context["form"] = AddAthleteForm
-        context["coach"] = Coach.objects.get(profile=self.request.user.profile)
+        context["coach"] = Coach.objects.get(user=self.request.user)
         return context

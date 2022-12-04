@@ -1,10 +1,11 @@
 """Forms associated with the Profile model."""
 
 from django import forms
-
-from project.models import Profile
+from django.contrib.auth import get_user_model
 
 from .base import BaseCustomForm
+
+User = get_user_model()
 
 
 class ProfileUpdateForm(BaseCustomForm, forms.ModelForm):
@@ -18,5 +19,5 @@ class ProfileUpdateForm(BaseCustomForm, forms.ModelForm):
     class Meta:
         """Options."""
 
-        model = Profile
+        model = User
         fields = ("name", "avatar", "is_private")

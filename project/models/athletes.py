@@ -2,6 +2,7 @@
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from .base import BaseAthleteCoachModel
@@ -31,6 +32,37 @@ class Athlete(BaseAthleteCoachModel):
     # TODO: set up a "default coach"
 
     objects = AthleteManager()
+
+    def get_absolute_url(self):
+        """Provide the url for the instance."""
+        return reverse("project:athlete-detail", kwargs={"pk": self.pk})
+
+    def get_coach_programme_sessions_url(self) -> str:
+        """Provide absolute url for the athlete's programme sessions.
+
+        This is used for a coach viewing and athlete's programme as a coach.
+        """
+        kwargs = {"pk": self.pk}
+        return reverse("project:coach-programme-session-list", kwargs=kwargs)
+
+    def get_hx_coach_programme_session_new_url(self) -> str:
+        """Provides url for creating a new programme session.
+
+        This will work for an athlete instance and this is mainly for coach \
+                view."""
+        kwargs = {"athlete_pk": self.pk}
+        return reverse("project:hx-coach-programme-session-new", kwargs=kwargs)
+
+    def get_hx_coach_programme_session_week_duplicate_url(self):
+        """Provide url for duplicating a programme session.
+
+        This will work for an athlete instance and this is mainly for coach \
+                view.
+        """
+        kwargs = {"athlete_pk": self.pk}
+        return reverse(
+            "project:hx-coach-programme-week-duplicate", kwargs=kwargs
+        )
 
     def clean(self, *args, **kwargs):
         """Customise validation.
@@ -64,9 +96,7 @@ class Athlete(BaseAthleteCoachModel):
 
     def __str__(self):
         """Represent string."""
-        if self.profile.name:
-            return f"A: {self.profile.user.email} ({self.profile.name})"
-        return f"A: {self.profile.user.email}"
+        return f"A: {self.user.name}"
 
     class Meta(BaseAthleteCoachModel.Meta):
         """Settings for Model.

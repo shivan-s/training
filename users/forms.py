@@ -1,5 +1,7 @@
 """Forms for registration."""
 
+from typing import Iterable
+
 from allauth.account.forms import (
     AddEmailForm,
     ChangePasswordForm,
@@ -21,8 +23,8 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         """Setting for form."""
 
-        model = CustomUser
-        fields = ("username", "email")
+        model: type[CustomUser] = CustomUser
+        fields = ("name",)
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -31,8 +33,8 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         """Setting for form."""
 
-        model = CustomUser
-        fields = ("username", "email")
+        model: type[CustomUser] = CustomUser
+        fields = ("name",)
 
 
 class CustomLoginForm(BaseCustomForm, LoginForm):

@@ -1,0 +1,35 @@
+{% load i18n %}
+<div class="columns is-mobile">
+    <div class="column has-text-centered">
+        <div>
+            <p>
+                <span class="is-size-5">{{ exercise_set.display_weight }}</span>
+                <span class="heading">{{ exercise_set.display_shortened_weight_unit }}</span>
+            </p>
+        </div>
+    </div>
+    <div class="column has-text-centered">
+        <div>
+            <p class="is-size-5">{{ exercise_set.repetitions }}</p>
+            <p class="heading">
+                {% blocktranslate count reps=exercise_set.repetitions %}
+                    rep
+                {% plural %}
+                    reps
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+    <div class="column has-text-centered">
+        <div>
+            <p class="is-size-5">{{ exercise_set.sets }}</p>
+            <p class="heading">
+                {% blocktranslate count sets=exercise_set.sets %}
+                    set
+                {% plural %}
+                    sets
+                {% endblocktranslate %}
+            </p>
+        </div>
+    </div>
+</div>

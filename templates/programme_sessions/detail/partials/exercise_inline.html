@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="block">
+        <h2 class="title is-4 has-text-primary">{{ exercise }}</h2>
+        {% if exercise.coach_notes %}
+            <div class="block">
+                <div class="message is-info is-light">
+                    <div class="message-body">
+                        <div class="icon-text">
+                            <span class="icon has-text-info">
+                                <i title="Check notes" class="fas fa-info-circle"></i>
+                            </span>
+                            <strong>{% translate "Notes" %}</strong>
+                        </div>
+                        <p class="block">
+                            {{ exercise.coach_notes }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% for intended_set in exercise.intended.all %}
+            {% include "programme_sessions/detail/partials/exercise_set_inline.html" with exercise_set=intended_set %}
+        {% endfor %}
+    <hr />
+</div>

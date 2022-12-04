@@ -1,33 +1,64 @@
 """Admin for user model."""
 
+from typing import Iterable
+
+import nested_admin
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
+from easy_thumbnails.fields import ThumbnailerField
+from easy_thumbnails.widgets import ImageClearableFileInput
+
+"""TeamAdmin."""
+
+from project.admin.base import BaseCommentInline, InlineType
+from project.models import Athlete, Coach
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
+User = get_user_model()
 
-@admin.register(get_user_model())
-class CustomUserAdmin(UserAdmin):
+
+class CommentInline(BaseCommentInline):
+    """Comment Inline."""
+
+    ct_field = "author_ct"
+    ct_fk_field = "author_object_id"
+    readonly_fields: Iterable[str] = ("location_content_object", "content")
+
+
+class CoachInline(nested_admin.NestedStackedInline):
+    """Inline for Coach in Profile."""
+
+    model: type[Coach] = Coach
+
+
+class AthleteInline(nested_admin.NestedStackedInline):
+    """Inline for Athlete in the Profile."""
+
+    model: type[Athlete] = Athlete
+
+
+@admin.register(User)
+class CustomUserAdmin(admin.ModelAdmin):
     """Custom Admin form for users."""
 
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    model = get_user_model()
-    readonly_fields = ("reference_id",)
-    fieldsets = (
+    model = User
+    search_fields: Iterable[str] = ("name", "email")
+    readonly_fields: Iterable[str] = ("reference_id",)
+    fieldsets: Iterable = (
         (
             None,
             {
                 "fields": (
                     "reference_id",
-                    "username",
                     "password",
                 )
             },
         ),
-        (_("Personal Information"), {"fields": ("email",)}),
+        (_("Personal Information"), {"fields": ("name", "avatar", "email")}),
         (
             _("Persmissions"),
             {
@@ -47,11 +78,17 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "password1", "password2"),
+                "fields": ("password1", "password2"),
             },
         ),
     )
-    list_display = (
-        "reference_id",
-        "email",
+
+    inlines: InlineType = (
+        CoachInline,
+        AthleteInline,
+        CommentInline,
     )
+
+    formfield_overrides = {
+        ThumbnailerField: {"widget": ImageClearableFileInput},
+    }

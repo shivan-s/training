@@ -1,0 +1,63 @@
+{% extends "base/base.html" %}
+{% load account i18n %}
+{% block title %}
+    {% if user.is_authenticated %}
+        {% user_display user as user_display %}
+        - {{ user }}
+    {% endif %}
+{% endblock title %}
+{% block heading %}
+    {% if user.is_authenticated %}
+        {% translate "Today" %}, {% now "l - jS F Y" %}
+    {% else %}
+        {% translate "Train With Someone" %}
+    {% endif %}
+{% endblock heading %}
+{% block subheading %}
+    {% if user.is_authenticated %}
+        {% translate "Training for this week" %}
+    {% else %}
+        {% translate "Join..." %}
+    {% endif %}
+{% endblock subheading %}
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="block">
+            {% if programmes %}
+                {% include "partials/programme_session_inline.html" with programmes=programmes %}
+            {% else %}
+                <div class="box">
+                    <p class="has-text-centered">No programme for this week.</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="block">
+            <div class="is-flex is-justify-content-space-around">
+                <a class="button is-primary is-inverted is-outlined"
+                    href="{% url "project:programme-session-list" %}">
+                    {% translate "See more" %}
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    <p class="heading">Users</p>
+                    <p class="title">{{ total_users }}</p>
+                </div>
+            </div>
+            <div class="level-item">
+                <div class="field is-grouped is-grouped-centered">
+                    <div class="control">
+                        <a href="{% url "account_login" %}"
+                            class="button is-primary is-inverted is-outlined">Log In</a>
+                    </div>
+                    <div class="control">
+                        <a href="{% url "account_signup" %}" class="button">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

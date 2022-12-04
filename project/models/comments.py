@@ -71,6 +71,6 @@ class Comment(BaseModel):
         """
 
         indexes = [
-            models.Index(fields=["author_ct", "author_object_id"]),
-            models.Index(fields=["location_ct", "location_object_id"]),
+            models.Index(fields=["author_ct", "author_object_id"], name="author_idx"),
+            models.Index(fields=["location_ct", "location_object_id"], name="location_idx"),
         ]

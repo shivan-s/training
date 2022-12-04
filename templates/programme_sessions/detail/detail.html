@@ -1,0 +1,110 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {{ programme.date|date:"l (jS M)" }}
+{% endblock title %}
+{% block heading %}
+    {{ programme.date|date:"l (jS M)" }}
+    {% if programme.session_type %}<br />{{ programme.get_session_type_display }}{% endif %}
+{% endblock heading %}
+{% block subheading %}
+    {% with recent=programme.history.latest.history_date %}
+        {% translate "Last updated" %}: {{ recent.date|timesince }}
+    {% endwith %}
+{% endblock subheading %}
+{% block content %}
+    <div>
+        <div class="block is-flex is-justify-content-space-between">
+            {% if previous_programme %}
+                <a href="{% url "project:programme-session-detail" previous_programme.pk %}"
+                    class="button is-primary is-inverted is-outlined">
+                    <span>
+                        <i class="fas fa-caret-left"></i>
+                        Previous
+                    </span>
+                </a>
+            {% else %}
+                <button disabled class="button is-primary is-inverted is-outlined">
+                    <span>
+                        <i class="fas fa-caret-left"></i>
+                        Previous
+                    </span>
+                </button>
+            {% endif %}
+            {% if next_programme %}
+                <a href="{% url "project:programme-session-detail" next_programme.pk %}"
+                    class="button is-primary is-inverted is-outlined">
+                    <span>
+                        Next
+                        <i class="fas fa-caret-right"></i>
+                    </span>
+                </a>
+            {% else %}
+                <button disabled class="button is-primary is-inverted is-outlined">
+                    <span>
+                        Next
+                        <i class="fas fa-caret-right"></i>
+                    </span>
+                </button>
+            {% endif %}
+        </div>
+        {% if programme.coach_notes %}
+            <div class="notification is-info is-light">
+                <div class="media">
+                    <div class="media-left">
+                        {% include "partials/avatar.html" with image_size="48x48" rounded=1 %}
+                    </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <span>
+                                <span class="icon has-text-info">
+                                    <i title="Check notes" class="fas fa-info-circle"></i>
+                                </span>
+                                <strong>{{ programme.coach.name }}'s {% translate "notes" %}</strong>
+                            </span>
+                            <p>{{ programme.coach_notes }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="box">
+        {% for exercise in programme.exercise_set.all %}
+            {% include "programme_sessions/detail/partials/exercise_inline.html" with exercise=exercise %}
+        {% endfor %}
+        </div>
+        <div class="box">
+            <div class="block">
+                <h3 class="title is-5 has-text-primary">Comments</h3>
+                {% for comment in programme.comment.all %}
+                    {% include "components/comment.html" with comment=comment %}
+                {% endfor %}
+                <div id="new_comment">
+                    {% if new_comment %}
+                        {% include "components/comment.html" with comment=new_comment %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="media">
+                <div class="media-left">
+                    {% include "partials/avatar.html" with image_size="48x48" rounded=1 %}
+                </div>
+                <div class="media-content">
+                    <form method="post"
+                        hx-post="{% url "project:programme-session-detail" programme.pk %}"
+                        hx-target="#new_comment"
+                        hx-select="#new_comment"
+                        hx-swap="beforeend">
+                        {% csrf_token %}
+                        <div class="field">
+                            <div class="control">
+                                <textarea class="textarea" type="text" name="comment" placeholder="Add a comment..." rows="1"></textarea>
+                            </div>
+                        </div>
+                        <div class="control">{% include "components/primary_form_button.html" with value="Post Comment " %}</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

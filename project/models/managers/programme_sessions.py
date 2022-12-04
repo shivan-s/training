@@ -1,80 +1,150 @@
 """Manager for ProgrammeSession."""
 
+from __future__ import annotations
+
+from collections import defaultdict
+from datetime import date, datetime
+from enum import Enum, auto
+from typing import TYPE_CHECKING, Union
+
 from django.db import models
+from django.db.models import F, QuerySet
+from django.db.models.functions import (
+    ExtractDay,
+    ExtractMonth,
+    ExtractWeek,
+    ExtractYear,
+)
+from django.utils import timezone
+
+if TYPE_CHECKING:
+    from ..athletes import Athlete
+    from ..programme_sessions import ProgrammeSession
+
+    GroupByProgrammeSession = dict[Union[QuerySet, list[ProgrammeSession]]]
+
+
+class ProgrammeSessionQuerySet(models.QuerySet):
+    """PrgrammeSession QuerySet."""
+
+
+    # TODO  consider the year.
+    # Problem is with the same week but diff year.
+
+    def current_week(self):
+        """Get current week of programmes."""
+        return (
+            self.annotate(week=ExtractWeek(F("date")))
+            .filter(week=timezone.now().isocalendar().week)
+            .order_by("-date")
+        )
+
+    def next_week(self):
+        """Get next week of programmes."""
+        return (
+            self.annotate(week=ExtractWeek(F("date")))
+            .filter(week=timezone.now().isocalendar().week + 1)
+            .order_by("-date")
+        )
+
+    def previous_week(self):
+        """Get next week of programmes."""
+        return (
+            self.annotate(week=ExtractWeek(F("date")))
+            .filter(week=timezone.now().isocalendar().week - 1)
+            .order_by("-date")
+        )
+
+    def recent_week(self):
+        """Get the most resent week of programmes."""
+        # get the most recent programme session
+        # determine the week
+        # filter based on his week.
+        recent = self.annotate(week=ExtractWeek(F('date')).latest().week
+        return (
+                self.annotate(week=ExtractWeek(F('date')))
+
+
+                )
+
+    def group_by(
+        self,
+    ) -> Union[
+        QuerySet, list[ProgrammeSession]
+    ] | GroupByProgrammeSession | dict[int, GroupByProgrammeSession] | dict[
+        int, dict[int, GroupByProgrammeSession]
+    ] | dict[
+        int, dict[int, dict[int, GroupByProgrammeSession]]
+    ]:
+        """Obtain the programme for a given athlete as a nested groupby.
+
+        Returns:
+            Programme sessions.
+        """
+        programmes = (
+            self.annotate(year=ExtractYear(F("date")))
+            .annotate(month=ExtractMonth(F("date")))
+            .annotate(week=ExtractWeek(F("date")))
+            .annotate(day=ExtractDay(F("date")))
+            .order_by("-year", "month", "-week", "day", "session_type")
+        )
+
+        tree = lambda: defaultdict(tree)
+        programmes_group_by = tree()
+
+        def _get_month(d: datetime) -> int:
+            year = d.isocalendar().year
+            week = d.isocalendar().week
+            return date.fromisocalendar(year=year, week=week, day=1).month
+
+        for p in programmes:
+            programmes_group_by[p.date.isocalendar().year][_get_month(p.date)][
+                p.date.isocalendar().week
+            ][p.date][p.pk] = p
+
+        for year in programmes_group_by.values():
+            year.default_factory = None
+            for month in year.values():
+                month.default_factory = None
+                for week in month.values():
+                    week.default_factory = None
+                    for day in week.values():
+                        day.default_factory = None
+
+        return dict(programmes_group_by)
 
 
 class ProgrammeSessionManager(models.Manager):
-    """Manager."""
+    """ProgrammeSession Manager."""
 
-    # def get_programme_groupby(
-    #     self,
-    #     athlete: type[Athlete],
-    #     level: Literal["year", "month", "week", "day"] = "week",
-    #     current: bool = True,
-    #     previous: bool = False,
-    #     next: bool = False,
-    #     *args,
-    #     **kwargs
-    # ) -> Union[
-    #     QuerySet, list[ProgrammeSession]
-    # ] | GroupByProgrammeSession | dict[int, GroupByProgrammeSession] | dict[
-    #     int, dict[int, GroupByProgrammeSession]
-    # ] | dict[
-    #     int, dict[int, dict[int, GroupByProgrammeSession]]
-    # ]:
-    #     """Obtain the programme for a given athlete as a nested groupby.
-    #
-    #     `level` defaults to "week", but can be changed to define level of nesting \
-    #             required for the groupby.
-    #     Args:
-    #         user (type[Athlete]): Athlete instance model as part of the request.
-    #         level (Literal["year", "month", "week", "day"]): nesting for groupby.
-    #         current (bool): provide the current `level` set (e.g. current week).
-    #         previous (bool): provide the previous `level` week (e.g previous week).
-    #         next (bool): provide the programme for the next `level` (e.g. next \
-    #                 week).
-    #
-    #     Returns:
-    #         Programme sessions.
-    #     """
-    #     qs = self.get_queryset()
-    #     programmes = (
-    #         ProgrammeSession.objects.filter(athlete=athlete)
-    #         .order_by("-date")
-    #         .annotate(year=ExtractYear(F("date")))
-    #         .annotate(month=ExtractMonth(F("date")))
-    #         .annotate(week=ExtractWeek(F("date")))
-    #         .annotate(day=ExtractDay(F("date")))
-    #     )
-    #
-    #     return programmes
-    #
-    #     def _generate_nested_defaultdict(depth: int):
-    #         return (
-    #             defaultdict(lambda: _generate_nested_defaultdict(depth - 1))
-    #             if depth
-    #             else dict
-    #         )
-    #
-    #     if level == "year":
-    #         programmes_group_by = _generate_nested_defaultdict(2)
-    #         for p in programmes:
-    #             programmes_group_by[p.year][p.pk] = p
-    #         return programmes_group_by
-    #     elif level == "month":
-    #         programmes_group_by = _generate_nested_defaultdict(3)
-    #         for p in programmes:
-    #             programmes_group_by[p.year][p.month][p.pk] = p
-    #         return programmes_group_by
-    #     elif level == "week":
-    #         programmes_group_by = _generate_nested_defaultdict(4)
-    #         for p in programmes:
-    #             programmes_group_by[p.year][p.month][p.week][p.pk] = p
-    #         return programmes_group_by
-    #     elif level == "day":
-    #         programmes_group_by = _generate_nested_defaultdict(5)
-    #         for p in programmes:
-    #             programmes_group_by[p.year][p.month][p.week][p.day][p.pk] = p
-    #         return programmes_group_by
-    #     else:
-    #         return programmes
+    def get_queryset(self):
+        """Redefine queryset."""
+        return ProgrammeSessionQuerySet(self.model, using=self._db)
+
+    def current_week(
+        self,
+        *arg,
+        **kwargs,
+    ):
+        """Obtain the current week for the programme."""
+        return self.get_queryset().current_week()
+
+    def next_week(
+        self,
+        *args,
+        **kwargs,
+    ):
+        """Obtain the next week for the programme."""
+        return self.get_queryset().next_week()
+
+    def previous_week(
+        self,
+        *args,
+        **kwargs,
+    ):
+        """Obtain the previous week for the programme."""
+        return self.get_queryset().previous_week()
+
+    def group_by(self, *args, **kwargs):
+        """Group by return."""
+        return self.get_queryset().group_by(*args, **kwargs)

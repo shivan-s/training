@@ -21,11 +21,14 @@ class ExerciseTypeAdmin(nested_admin.NestedModelAdmin):
     readonly_fields = ("reference_id",)
     inlines = [ExerciseCategoryInline]
     raw_id_fields = ("creator",)
+    related_lookup_fields = {
+        "creator": ["creator"],
+    }
     fields = (
         "creator",
         "name",
         "description",
-        "contributors",
         "is_private",
         "categories",
+        "starred",
     )

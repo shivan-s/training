@@ -1,0 +1,22 @@
+{% extends "base/base.html" %}
+{% load account i18n %}
+{% block title %}
+    - {% translate "Programme" %}
+{% endblock title %}
+{% block heading %}
+    {% translate "Your Programme" %}
+{% endblock heading %}
+{% block subheading %}
+    {% translate "Today" %}, {% now "l - jS F Y" %}
+{% endblock subheading %}
+{% block content %}
+    <div class="block">
+        <div id="programmes">
+            {% if programmes %}
+                {% include "partials/programme_session_inline.html" with programmes=programmes %}
+            {% else %}
+                <div class="box">No programme found.</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

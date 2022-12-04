@@ -126,7 +126,7 @@ CACHES = {
 
 # Celery Settings
 
-CELERY_TIMEZONE = "New Zealand"
+CELERY_TIMEZONE = "Pacific/Auckland"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_RESULT_BACKEND = CACHES["default"]["LOCATION"]
@@ -181,8 +181,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "name"
 ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_MAX_EMAIL_ADDRESSES = 2
+ACCOUNT_MAX_EMAIL_ADDRESSES = 5
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -244,9 +245,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 BULMA_SETTINGS = {
     "extensions": ["bulma-calender"],
-    "variables": {
-        "primary": "hsl(0, 0%, 14%)",
-    },
+    "variables": {"primary": "hsl(0, 0%, 14%)", "link": "hsl(212, 92%, 45%)"},
     "output_style": "compressed",
 }
 

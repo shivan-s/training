@@ -1,0 +1,12 @@
+<div class="block">
+  <form
+    method="post"
+    hx-post="{{ exercise.get_hx_edit_url }}"
+    hx-swap="outerHTML"
+  >
+    {% csrf_token %} {{ form.as_p }}
+    <div class="control">
+      {% include "components/primary_form_button.html" with value="Save" %}
+    </div>
+  </form>
+</div>

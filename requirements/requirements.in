@@ -21,4 +21,5 @@ celery[redis]
 django-celery-results
 django-celery-beat
 django-mptt
+django-filter
 inflect

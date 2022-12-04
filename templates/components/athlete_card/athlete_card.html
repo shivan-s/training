@@ -22,7 +22,7 @@
     <form method="post" hx-post="{% url "project:confirm-athlete" %}">
         {% csrf_token %}
         <div class="card-footer">
-            <input type="hidden" name="athlete" value={{ new_athlete.profile.user.pk }} />
+            <input type="hidden" name="athlete" value={{ new_athlete.user.pk }} />
             <input type="submit" class="card-footer-item" value="{% translate "Add" %}" />
         </div>
     </form>

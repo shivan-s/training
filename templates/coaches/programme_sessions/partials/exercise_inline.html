@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="block">
+    <p class="has-text-weight-bold">{{ exercise }}</p>
+    <ul>
+        {% for intended_set in exercise.intended.all %}
+            {% include "coaches/programme_sessions/partials/exercise_set_inline.html" %}
+        {% endfor %}
+    </ul>
+    {% if exercise.coach_notes %}
+        <div class="block">
+            <strong>{% translate "Notes" %}</strong>: {{ exercise.coach_notes }}
+        </div>
+    {% endif %}
+</div>

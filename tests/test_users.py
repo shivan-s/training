@@ -10,7 +10,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from pytest_lazyfixture import lazy_fixture
 
-from project.models import Athlete, Coach, Profile
+from project.models import Athlete, Coach:
 
 HTTP_200_OK = 200
 HTTP_301_MOVED_PERMANENTLY = 301

@@ -29,9 +29,7 @@ class Coach(BaseAthleteCoachModel):
 
     def __str__(self):
         """Represent string."""
-        if self.profile.name:
-            return f"C: {self.profile.user.email} ({self.profile.name})"
-        return f"C: {self.profile.user.email}"
+        return f"C: {self.user.name}"
 
     class Meta(BaseAthleteCoachModel.Meta):
         """Setting for model.

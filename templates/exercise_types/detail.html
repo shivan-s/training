@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {{ exercisetype }}
+{% endblock title %}
+{% block content %}
+    <div class="block">
+        <section class="section">
+            <h2 class="title">{{ exercisetype }}</h2>
+            <p class="subtitle">{% translate "created by" %} {{ exercisetype.creator.name }}</p>
+        </section>
+        <div class="box">
+            <span>
+                <i class="fas fa-star"></i>
+                {{ exercisetype.starred.count }}
+                {% for exercise_category in exercisetype.exercise_category_set.all %}
+                    <span class="tag is-primary">{{ exercise_category }}</span>
+                {% endfor %}
+            </span>
+            <div class="block">{{ exercisetype.description|truncatechars:50 }}</div>
+        </div>
+    </div>
+{% endblock content %}

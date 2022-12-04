@@ -9,7 +9,7 @@
 {% block box_content %}
     {% include "components/social_logins.html" %}
     <div class="block">
-        <form method="post">
+        <form method="post" hx-post="." hx-trigger="keyup changed delay:500ms">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="control">{% include "components/primary_form_button.html" with value="Log In" %}</div>

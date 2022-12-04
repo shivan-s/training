@@ -1,12 +1,14 @@
 """Views for profile."""
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import UpdateView
 
 from project.forms import ProfileUpdateForm
-from project.models import Profile
+
+User = get_user_model()
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -18,13 +20,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     """
 
     template_name = "profile.html"
-    model = Profile
-
-    def get_context_data(self, *args, **kwargs):
-        """Adding context data."""
-        context = super().get_context_data(*args, **kwargs)
-        context["profile"] = Profile.objects.get(user=self.request.user)
-        return context
+    model = User
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -40,4 +36,4 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         """Overwrite the `get_object` method to obtain current authenticated \
                 user."""
-        return Profile.objects.get(user=self.request.user)
+        return User.objects.get(pk=self.request.user.pk)

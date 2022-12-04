@@ -11,7 +11,6 @@ from .factories import (
     CoachFactory,
     CustomUserFactory,
     ExerciseSetFactory,
-    ProfileFactory,
     TeamFactory,
 )
 
@@ -23,7 +22,6 @@ factory.random.reseed_random(TEST_RANDOM_SEED)
 register(CustomUserFactory)
 register(AthleteFactory)
 register(CoachFactory)
-register(ProfileFactory)
 register(TeamFactory)
 register(ExerciseSetFactory)
 

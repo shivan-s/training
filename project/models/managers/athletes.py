@@ -9,4 +9,4 @@ class AthleteManager(models.Manager):
     def count(self, *args, **kwargs) -> int:
         """Count number active users (i.e. not admin)."""
         qs = self.get_queryset()
-        return qs.filter(profile__user__is_superuser=False).count()
+        return qs.filter(user__is_superuser=False).count()

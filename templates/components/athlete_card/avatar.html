@@ -1,8 +1,8 @@
 {% load thumbnail %}
 <div class="media-left">
     <figure class="image is-96x96">
-        {% if athlete.profile.avatar %}
-            {% thumbnail athlete.profile.avatar 96x96 upscale as thumb %}
+        {% if athlete.user.avatar %}
+            {% thumbnail athlete.user.avatar 96x96 upscale as thumb %}
             <img src="{{ thumb.url }}"
                 width="{{ thumb.width }}"
                 height="{{ thumb.height }}"

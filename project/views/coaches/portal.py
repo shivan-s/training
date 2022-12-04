@@ -35,14 +35,14 @@ class CoachPortalView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         """Search an athlete."""
         form = CoachPortalForm(request.POST)
-        coach = Coach.objects.get(profile__user=request.user)
+        coach = Coach.objects.get(user=request.user)
         context = {
             "form": form,
             "coach": coach,
         }
         if form.is_valid():
             q = form.cleaned_data.get("search")
-            athletes = coach.athletes.filter(profile__name__icontains=q)
+            athletes = coach.athletes.filter(user__name__icontains=q)
             context["athletes"] = athletes
         return render(request, self.template_name, context)
 
@@ -50,7 +50,7 @@ class CoachPortalView(LoginRequiredMixin, TemplateView):
         """Adding context data."""
         context = super().get_context_data(*args, **kwargs)
         context["form"] = CoachPortalForm
-        context["coach"] = Coach.objects.get(profile=self.request.user.profile)
+        context["coach"] = Coach.objects.get(user=self.request.user)
         # TODO: filter by last program?
         # context["athletes"] = context["coach"].athletes.order_by(
         #     "-programming_session__history__recent__date"

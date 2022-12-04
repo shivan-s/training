@@ -39,12 +39,24 @@
                 {% endif %}
             </div>
             <div class="hero-body is-justify-content-space-around">
-                {% block content %}
-                {% endblock content %}
+                <div>
+                    <section class="section">
+                        <h1 class=title>
+                            {% block heading %}
+                            {% endblock heading %}
+                        </h1>
+                        <p class=subtitle>
+                            {% block subheading %}
+                            {% endblock subheading %}
+                        </p>
+                    </section>
+                    {% block content %}
+                    {% endblock content %}
+                </div>
             </div>
             <div class="hero-foot">
                 <div class="content has-text-centered">
-                    <strong>TrainWithSomeone</strong> by <a class="is-underlined" href="https://shivan.xyz">Shivan Sivakumaran</a>.
+                    <strong>TrainWithSomeone</strong> by <a class="is-underlined" href="https://shivan.xyz">Shivan Sivakumaran</a>
                 </div>
             </div>
         </section>

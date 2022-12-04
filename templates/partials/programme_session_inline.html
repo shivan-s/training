@@ -1,0 +1,87 @@
+{% load i18n dates_text %}
+{% for year, months in programmes.items %}
+    {% for month, weeks in months.items %}
+        <div class="block">
+            <h3 class="title is-4">
+                {% month_text m=month as month_date %}
+                {{ month_date|date:"F" }}
+            </h3>
+            <p class="subtitle is-6">{{ year }}</p>
+        </div>
+        <hr />
+        {% for week, days in weeks.items %}
+            {% start_week week=week year=year as start_week %}
+        {% end_week week=week year=year as end_week %}
+        {% with week|slugify as week_number %}
+            {% now "W" as current_week %}
+            {% if current_week == week_number %}
+                <div class="section hero is-small is-success">
+                    <div class="is-flex is-justify-content-flex-end">
+                        <div class="block has-text-right">
+                            <p class="title is-4">{% translate "Week" %} {{ week }}</p>
+                            <p class="subtitle is-6">{{ start_week|date:"M jS" }} - {{ end_week|date:"M jS" }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="is-flex is-justify-content-flex-end">
+                    <div class="block has-text-right">
+                        <p class="title is-5">{% translate "Week" %} {{ week }}</p>
+                        <p class="subtitle is-7">{{ start_week|date:"M jS" }} - {{ end_week|date:"M jS" }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <hr />
+        <div class="tile is-ancestor">
+            {% for day, programmes in days.items %}
+                <div class="tile is-parent is-vertical">
+                    {% for programme in programmes.values %}
+                        <div class="tile is-child">
+                            <div class="box">
+                                <a href="{{ programme.get_absolute_url }}">
+                                    <div>
+                                        <h3 class="title is-4 has-text-primary">
+                                            {{ programme.date|date:"l (jS M)" }}
+                                            {% if programme.coach_notes %}
+                                                <span class="icon has-text-info">
+                                                    <i title="Check notes" class="fas fa-info-circle"></i>
+                                                </span>
+                                            {% endif %}
+                                        </h3>
+                                        {% with recent=programme.history.latest.history_date %}
+                                            <p class="subtitle is-7 has-text-primary" title={{ recent.date }}>
+                                                {% blocktranslate with recent=recent.date|timesince %}
+                                                    Updated {{ recent }} ago
+                                                {%endblocktranslate %}
+                                            </p>
+                                        {% endwith %}
+                                        {% if programme.session_type %}
+                                            <h4 class="title is-5 has-text-primary">{{ programme.get_session_type_display }}</h4>
+                                        {% endif %}
+                                        {% for exercise in programme.exercise_set.all %}
+                                            <div class="block">
+                                                <p class="has-text-weight-bold">
+                                                    {{ exercise }}
+                                                    {% if exercise.coach_notes %}
+                                                        <span class="icon has-text-info">
+                                                            <i title="Check notes" class="fas fa-info-circle"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                </p>
+                                                <ul>
+                                                    {% for intended_set in exercise.intended.all %}<li>{{ intended_set }}</li>{% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endfor %}
+{% endfor %}

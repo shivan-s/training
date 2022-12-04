@@ -3,29 +3,42 @@
 from datetime import timedelta
 from typing import Any
 
+from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from project.models import Athlete, Profile
+from project.models import ProgrammeSession
+from project.tasks import count_users
 
-from .programme_sessions import get_programme_current_week
+User = get_user_model()
 
 
 class IndexView(TemplateView):
     """Index view."""
 
-    template_name = "index.html"
+    template_name = "index/index.html"
 
     def get_context_data(self, *args, **kwargs) -> dict[str, Any]:
         """Adding context data."""
         context = super().get_context_data(*args, **kwargs)
-        # subtract 1 to exclude the admin view.
-        context["count_profiles"] = Profile.objects.all().count() - 1
+        total_users = cache.get("total_users")
+        count_users.delay()
+        if total_users:
+            context["total_users"] = total_users
+        else:
+            context["total_users"] = User.objects.all().count()
+        # TODO: determine if the default home page is athlete view or coach view.
         if self.request.user.is_authenticated:
             # days - days from the first day of the week.
-            days = timedelta(days=timezone.now().weekday())
-            context["this_week"] = timezone.now() - days
-            context["programmes"] = get_programme_current_week(
-                Athlete.objects.get(profile__user=self.request.user)
+            days_from_start = timedelta(days=timezone.now().weekday())
+            start_week = timezone.now() - days_from_start
+            context["start_week"] = start_week
+            context["end_week"] = start_week + timedelta(days=7)
+            athlete = self.request.user.athlete
+            context["programmes"] = (
+                ProgrammeSession.objects.filter(athlete=athlete)
+                .current_week()
+                .group_by()
             )
         return context

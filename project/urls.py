@@ -7,34 +7,59 @@ from . import views
 app_name = "project"
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
-    path("athletes/", views.AthleteListView.as_view(), name="athlete-list"),
     path(
-        "athletes/<str:pk>",
-        views.AthleteListView.as_view(),
-        name="athlete-detail",
-    ),
-    path(
-        "coaching-portal/",
+        "portal/",
         views.CoachPortalView.as_view(),
         name="coach-portal",
     ),
+    path("athletes/", views.AthleteListView.as_view(), name="athlete-list"),
     path(
-        "coaching-portal/programme/<str:pk>/",
-        views.AthleteProgrammeSessionListView.as_view(),
-        name="athlete-programme-session-list",
+        "portal/athletes/<str:pk>/programme/list",
+        views.CoachProgrammeSessionListView.as_view(),
+        name="coach-programme-session-list",
     ),
     path(
-        "coaching-portal/programme/<str:pk>/create",
-        views.AthleteProgrammeSessionCreateView.as_view(),
-        name="athlete-programme-session-create",
+        "hx/portal/athletes/<str:athlete_pk>/programme/<str:pk>",
+        views.hx_coach_programme_session_update_view,
+        name="hx-coach-programme-session-update",
     ),
     path(
-        "coaching-portal/add-athlete/",
+        "hx/portal/athletes/<str:athlete_pk>/programme/",
+        views.hx_coach_programme_session_update_view,
+        name="hx-coach-programme-session-new",
+    ),
+    path(
+        "hx/portal/athletes/<str:athlete_pk>/programme-new-week/",
+        views.hx_coach_programme_session_week_duplicate_view,
+        name="hx-coach-programme-session-week-duplicate",
+    ),
+    path(
+        "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/<str:pk>",
+        views.hx_coach_exercise_update_view,
+        name="hx-coach-exercise-update",
+    ),
+    path(
+        "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/",
+        views.hx_coach_exercise_update_view,
+        name="hx-coach-exercise-new",
+    ),
+    path(
+        "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/<str:exercise_pk>/exercise_set/<str:pk>",
+        views.hx_coach_exercise_set_update_view,
+        name="hx-coach-exercise-set-update",
+    ),
+    path(
+        "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/<str:exercise_pk>/exercise_set/",
+        views.hx_coach_exercise_set_update_view,
+        name="hx-coach-exercise-set-new",
+    ),
+    path(
+        "portal/add-athlete/",
         views.AddAthleteView.as_view(),
         name="add-athlete",
     ),
     path(
-        "coaching-portal/confirm-athlete/",
+        "portal/confirm-athlete/",
         views.ConfirmAthleteView.as_view(),
         name="confirm-athlete",
     ),
@@ -51,5 +76,15 @@ urlpatterns = [
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path(
         "profile/edit/", views.ProfileUpdateView.as_view(), name="profile-edit"
+    ),
+    path(
+        "library/",
+        views.ExerciseTypeListView.as_view(),
+        name="exercise-type-list",
+    ),
+    path(
+        "library/<str:pk>/",
+        views.ExerciseTypeDetailView.as_view(),
+        name="exercise-type-detail",
     ),
 ]

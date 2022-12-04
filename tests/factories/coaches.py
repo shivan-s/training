@@ -13,7 +13,7 @@ class CoachFactory(factory.django.DjangoModelFactory):
 
         model = Coach
 
-    profile = factory.SubFactory("tests.factories.ProfileFactory")
+    profile = factory.SubFactory("tests.factories.CustomUserFactory")
     athletes = factory.RelatedFactoryList(
         "tests.factories.AthleteFactory", size=20
     )

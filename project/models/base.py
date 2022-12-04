@@ -3,6 +3,7 @@
 Some important features include soft deletion and historical field records.
 """
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
@@ -29,11 +30,11 @@ class BaseModel(SoftDeleteObject, models.Model):
 class BaseAthleteCoachModel(BaseModel):
     """Abstract model for Athlete and Coach to inherit from."""
 
-    profile = models.OneToOneField(
-        "project.Profile",
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name=_("user"),
         primary_key=True,
+        verbose_name=_("user"),
     )
 
     class Meta(BaseModel.Meta):
@@ -50,4 +51,4 @@ class BaseAthleteCoachModel(BaseModel):
 
     @property
     def name(self) -> str:
-        return self.profile.name
+        return self.user.name

@@ -17,7 +17,7 @@ class ExerciseTypeFactory(factory.django.DjangoModelFactory):
     name = factory.Faker("color_name")
     description = factory.Faker("paragraph")
     creator = factory.SubFactory("tests.factories.Coach")
-    contributors = factory.RelatedFactory("tests.factories.Coach", size=5)
+    starred = factory.RelatedFactory("tests.factories.Coach", size=5)
     is_private = factory.Faker("boolean")
 
     @factory.post_generation

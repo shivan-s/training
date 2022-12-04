@@ -3,11 +3,14 @@
 from .athletes import AthleteListView
 from .coaches import (
     AddAthleteView,
-    AthleteProgrammeSessionCreateView,
-    AthleteProgrammeSessionListView,
     CoachPortalView,
+    CoachProgrammeSessionListView,
     ConfirmAthleteView,
+    hx_coach_exercise_set_update_view,
+    hx_coach_exercise_update_view,
+    hx_coach_programme_session_update_view,
 )
+from .exercises_types import ExerciseTypeDetailView, ExerciseTypeListView
 from .index import IndexView
 from .profiles import ProfileUpdateView, ProfileView
 from .programme_sessions import (
@@ -23,7 +26,12 @@ __all__ = [
     "ConfirmAthleteView",
     "AddAthleteView",
     "AthleteListView",
+    "ExerciseTypeListView",
+    "ExerciseTypeDetailView",
     "ProgrammeSessionListView",
     "ProgrammeSessionDetailView",
-    "AthleteProgrammeSessionListView",
+    "CoachProgrammeSessionListView",
+    "hx_coach_programme_session_update_view",
+    "hx_coach_exercise_update_view",
+    "hx_coach_exercise_set_update_view",
 ]

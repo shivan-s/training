@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Exercise Library" %}
+{% endblock title %}
+{% block content %}
+    <div class="block">
+        <section class="section">
+            <h2 class="title">{% translate "Exercise Library" %}</h2>
+            <p class="subtitle">{{ object_list.count }} {% translate "exercises in library" %}</p>
+        </section>
+        {% for exercisetype in exercisetype_list %}
+            <hr />
+            <p class="title is-6 has-text-link">
+                <a href="{{ exercisetype.get_absolute_url }}">{{ exercisetype.name }}</a>
+            </p>
+            <p class="subtitle is-7">{% translate "created by" %} {{ exercisetype.creator.name }}</p>
+            <span>
+                <i class="fas fa-star"></i>
+                {{ exercisetype.starred.count }}
+            </span>
+            <div class="block">{{ exercisetype.description|truncatechars:50 }}</div>
+            <div class="tags">
+                {% for category in exercisetype.categories.all %}
+                    <span class="tag is-primary is-light is-rounded">{{ category }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

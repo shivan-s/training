@@ -85,12 +85,41 @@ class ExerciseSet(BaseModel):
             WeightUnit.RPE: "RPE",
         }.get(self.weight_unit)
 
-    def set_successful(self):
-        """Set the `outcome` and to the exercise (linked via `intended`).
+    # TODO: make this work
+    # def copy_sets(self) -> None:
+    #     """Set the `outcome` and to the exercise (linked via `intended`).
+    #
+    #     This indicates that the athlete completed the sets successfully.
+    #     """
+    #     self.outcome = self.intended
 
-        This indicates that the athlete completed the sets successfully.
-        """
-        self.outcome = self.intended
+    @property
+    def display_weight(self) -> str:
+        """Provide human readable way of determining sets."""
+        return str(self.weight).rstrip("0").rstrip(".")
+
+    @property
+    def display_sets(self) -> str:
+        """Provide human readable way of determining sets."""
+        return f"{self.sets} {inf.plural('set', self.sets)}"
+
+    @property
+    def display_repetitions(self) -> str:
+        """Provide human readable way of determining repetitions."""
+        return f"{self.repetitions} {inf.plural('rep', self.repetitions)}"
+
+    def __str__(self) -> str:
+        """Represent string."""
+        return " ".join(
+            [
+                self.display_weight,
+                self.display_shortened_weight_unit,
+                "x",
+                self.display_repetitions,
+                "x",
+                self.display_sets,
+            ]
+        )
 
     def clean(self, WeightUnit=WeightUnit, *args, **kwargs):
         """Customise validation.

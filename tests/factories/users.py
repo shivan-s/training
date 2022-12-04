@@ -14,4 +14,4 @@ class CustomUserFactory(factory.django.DjangoModelFactory):
 
         model = User
 
-    email = factory.Faker("email")
+    name = factory.Faker("name")
