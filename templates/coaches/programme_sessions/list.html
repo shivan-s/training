@@ -12,8 +12,9 @@
 {% endblock subheading %}
 {% block content %}
     <div>
-        <div class="block">
-            <form method="post"
+        <div class="field is-grouped">
+            <form class="control"
+                method="post"
                 hx-post="{{ athlete.get_hx_coach_programme_session_new_url }}"
                 hx-target="#new-programmes"
                 hx-swap="beforeend">
@@ -25,12 +26,12 @@
                     <span>{% translate "New Programme" %}</span>
                 </button>
             </form>
-        </div>
-        <div class="block">
-            <form method="post"
+            <form class="control"
+                method="post"
                 hx-post="{{ athlete.get_hx_coach_programme_session_week_duplicate_url }}"
-                hx-target="#new-programmes"
-                hx-swap="beforeend">
+                hx-target="#programmes"
+                hx-select="#programmes"
+                hx-swap="outerHTML">
                 {% csrf_token %}
                 <button type="submit" class="button is-primary is-inverted is-outlined">
                     <span class="icon is-small">
@@ -41,7 +42,7 @@
             </form>
         </div>
         <div id="new-programmes" class="block"></div>
-        <div class="block">
+        <div id="programmes" class="block">
             {% if programmes %}
                 {% for year, months in programmes.items %}
                     {% for month, weeks in months.items %}
@@ -52,8 +53,8 @@
                             </h3>
                             <p class="subtitle is-6">{{ year }}</p>
                         </div>
-                        <hr />
                         {% for week, days in weeks.items %}
+                            <hr />
                             {% start_week week=week year=year as start_week %}
                         {% end_week week=week year=year as end_week %}
                         {% with week|slugify as week_number %}
@@ -76,15 +77,15 @@
                                 </div>
                             {% endif %}
                         {% endwith %}
-                        <hr />
+                            <hr />
                         <div class="tile is-ancestor">
                             {% for day, programmes in days.items %}
                                 <div class="tile is-parent is-vertical">
                                     {% for programme in programmes.values %}
                                         <div class="tile is-child">
-                                          <div class="box">
-                                            {% include "coaches/programme_sessions/partials/programme_session_inline.html" with programme=programme %}
-                                          </div>
+                                            <div class="box">
+                                                {% include "coaches/programme_sessions/partials/programme_session_inline.html" with programme=programme %}
+                                            </div>
                                         </div>
                                     {% endfor %}
                                 </div>
@@ -92,10 +93,10 @@
                         </div>
                     {% endfor %}
                 {% endfor %}
-                {% endfor %}
-            {% else %}
-                <p>No Training Sessions.</p>
-            {% endif %}
-        </div>
-    </div>
+            {% endfor %}
+{% else %}
+    <p>No Training Sessions.</p>
+{% endif %}
+</div>
+</div>
 {% endblock content %}

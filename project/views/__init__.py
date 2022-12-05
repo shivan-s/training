@@ -9,6 +9,7 @@ from .coaches import (
     hx_coach_exercise_set_update_view,
     hx_coach_exercise_update_view,
     hx_coach_programme_session_update_view,
+    hx_coach_programme_session_week_duplicate_view,
 )
 from .exercises_types import ExerciseTypeDetailView, ExerciseTypeListView
 from .index import IndexView
@@ -34,4 +35,5 @@ __all__ = [
     "hx_coach_programme_session_update_view",
     "hx_coach_exercise_update_view",
     "hx_coach_exercise_set_update_view",
+    "hx_coach_programme_session_week_duplicate_view",
 ]

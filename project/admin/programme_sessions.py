@@ -18,7 +18,7 @@ class CommentInline(BaseCommentInline):
     ct_field = "location_ct"
     ct_fk_field = "location_object_id"
     readonly_fields: Iterable[str] = ("author_content_object", "content")
-    fields: Iterable[str] = ("author_content_object",)
+    fields: Iterable[str] = ("author_content_object", "content")
 
 
 class IntendedExerciseSetInline(BaseExerciseSetInline):

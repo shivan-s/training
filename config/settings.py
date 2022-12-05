@@ -244,7 +244,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Custom settings for django-simple-bulma
 
 BULMA_SETTINGS = {
-    "extensions": ["bulma-calender"],
+    "extensions": [""],
     "variables": {"primary": "hsl(0, 0%, 14%)", "link": "hsl(212, 92%, 45%)"},
     "output_style": "compressed",
 }

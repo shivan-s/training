@@ -29,7 +29,7 @@ urlpatterns = [
         name="hx-coach-programme-session-new",
     ),
     path(
-        "hx/portal/athletes/<str:athlete_pk>/programme-new-week/",
+        "hx/portal/athletes/<str:pk>/programme-new-week/",
         views.hx_coach_programme_session_week_duplicate_view,
         name="hx-coach-programme-session-week-duplicate",
     ),

@@ -6,4 +6,7 @@
         {{ form.as_p }}
         <div class="control">{% include "components/primary_form_button.html" with value="Save" %}</div>
     </form>
+    {% for exercise in programme.exercise_set.all %}
+        {% include "coaches/programme_sessions/partials/exercise_form.html" with exercise=exercise form_exercise=form_exercise form_exercise_set=form_exercise_set %}
+    {% endfor %}
 </div>

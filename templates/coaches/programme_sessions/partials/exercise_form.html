@@ -1,12 +1,12 @@
 <div class="block">
-  <form
-    method="post"
-    hx-post="{{ exercise.get_hx_edit_url }}"
-    hx-swap="outerHTML"
-  >
-    {% csrf_token %} {{ form.as_p }}
-    <div class="control">
-      {% include "components/primary_form_button.html" with value="Save" %}
-    </div>
-  </form>
+    <form method="post"
+        hx-post="{{ exercise.get_hx_edit_url }}"
+        hx-swap="outerHTML">
+        {% csrf_token %}
+        {{ form_exercise.as_p }}
+        <div class="control">{% include "components/primary_form_button.html" with value="Save" %}</div>
+    </form>
+    {% for exercise_set in programme.intended.all %}
+        {% include "coaches/programme_sessions/partials/exercise_form.html" with exercise_set=exercise_set form_exercise_set=form_exercise_set %}
+    {% endfor %}
 </div>

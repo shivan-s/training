@@ -59,9 +59,9 @@ class Athlete(BaseAthleteCoachModel):
         This will work for an athlete instance and this is mainly for coach \
                 view.
         """
-        kwargs = {"athlete_pk": self.pk}
+        kwargs = {"pk": self.pk}
         return reverse(
-            "project:hx-coach-programme-week-duplicate", kwargs=kwargs
+            "project:hx-coach-programme-session-week-duplicate", kwargs=kwargs
         )
 
     def clean(self, *args, **kwargs):

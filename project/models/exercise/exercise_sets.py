@@ -108,17 +108,16 @@ class ExerciseSet(BaseModel):
         """Provide human readable way of determining repetitions."""
         return f"{self.repetitions} {inf.plural('rep', self.repetitions)}"
 
-    def __str__(self) -> str:
-        """Represent string."""
-        return " ".join(
-            [
-                self.display_weight,
-                self.display_shortened_weight_unit,
-                "x",
-                self.display_repetitions,
-                "x",
-                self.display_sets,
-            ]
+    def get_hx_edit_url(self) -> str:
+        kwargs = {
+            "athlete_pk": self.intended.programme_session.athlete.pk,
+            "programme_session_pk": self.intended.programme_session.pk,
+            "exercise_pk": self.intended.pk,
+            "pk": self.pk,
+        }
+        return reverse(
+            "project:hx-coach-exercise-set-update",
+            kwargs=kwargs,
         )
 
     def clean(self, WeightUnit=WeightUnit, *args, **kwargs):
@@ -158,11 +157,12 @@ class ExerciseSet(BaseModel):
         """Represent string."""
         return " ".join(
             [
-                str(self.weight).rstrip("0").rstrip("."),
-                f"{self.display_shortened_weight_unit} x {self.repetitions}",
-                f"{inf.plural('rep', self.repetitions)}",
-                f"x {self.sets}",
-                inf.plural("set", self.sets),
+                self.display_weight,
+                self.display_shortened_weight_unit,
+                "x",
+                self.display_repetitions,
+                "x",
+                self.display_sets,
             ]
         )
 

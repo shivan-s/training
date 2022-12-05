@@ -43,15 +43,13 @@ class Exercise(BaseModel):
 
     def get_hx_edit_url(self) -> str:
         kwargs = {
-            "athlete_pk",
-            self.programme_session.athlete.pk,
-            "programme_session_pk",
-            self.programme_session.pk,
-            "pk",
-            self.pk,
+            "athlete_pk": self.programme_session.athlete.pk,
+            "programme_session_pk": self.programme_session.pk,
+            "pk": self.pk,
         }
         return reverse(
-            "hx-athlete-programme-session-exercise-update", kwargs=kwargs
+            "project:hx-coach-exercise-update",
+            kwargs=kwargs,
         )
 
     def __str__(self) -> str:

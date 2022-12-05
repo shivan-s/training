@@ -76,12 +76,12 @@
         <div class="box">
             <div class="block">
                 <h3 class="title is-5 has-text-primary">Comments</h3>
-                {% for comment in programme.comment.all %}
-                    {% include "components/comment.html" with comment=comment %}
+                {% for comment in programme.comments.all %}
+                    {% include "partials/comment.html" with comment=comment %}
                 {% endfor %}
                 <div id="new_comment">
                     {% if new_comment %}
-                        {% include "components/comment.html" with comment=new_comment %}
+                        {% include "partials/comment.html" with comment=new_comment %}
                     {% endif %}
                 </div>
             </div>

@@ -1,0 +1,27 @@
+{% load i18n %}
+<div class="media">
+    <div class="media-left">{% include "partials/avatar.html" with image_size="48x48" rounded=1 %}</div>
+    <div class="media-content">
+        <div class="message">
+            <div class="message-body">
+                <div class="content">
+                    <span>
+                        <strong>{{ comment.author_content_object.name }}</strong>
+                        <small>{{ comment.history.earliest.history_date|timesince }} {% translate "ago" %}</small>
+                    </span>
+                    <p>
+                        {{ comment.content }}
+                        <br />
+                        <small><a class="has-text-link">
+                            {% if comment.author_content_object.user == user %}
+                                Edit
+                            {% else %}
+                                Like
+                            {% endif %}
+                        </a></small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

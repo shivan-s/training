@@ -8,7 +8,7 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING, Union
 
 from django.db import models
-from django.db.models import F, QuerySet
+from django.db.models import F, Max, QuerySet
 from django.db.models.functions import (
     ExtractDay,
     ExtractMonth,
@@ -27,7 +27,6 @@ if TYPE_CHECKING:
 class ProgrammeSessionQuerySet(models.QuerySet):
     """PrgrammeSession QuerySet."""
 
-
     # TODO  consider the year.
     # Problem is with the same week but diff year.
 
@@ -35,6 +34,8 @@ class ProgrammeSessionQuerySet(models.QuerySet):
         """Get current week of programmes."""
         return (
             self.annotate(week=ExtractWeek(F("date")))
+            .annotate(year=ExtractYear(F("date")))
+            .filter(year=timezone.now().isocalendar().year)
             .filter(week=timezone.now().isocalendar().week)
             .order_by("-date")
         )
@@ -43,6 +44,8 @@ class ProgrammeSessionQuerySet(models.QuerySet):
         """Get next week of programmes."""
         return (
             self.annotate(week=ExtractWeek(F("date")))
+            .annotate(year=ExtractYear(F("date")))
+            .filter(year=timezone.now().isocalendar().year)
             .filter(week=timezone.now().isocalendar().week + 1)
             .order_by("-date")
         )
@@ -51,21 +54,29 @@ class ProgrammeSessionQuerySet(models.QuerySet):
         """Get next week of programmes."""
         return (
             self.annotate(week=ExtractWeek(F("date")))
+            .annotate(year=ExtractYear(F("date")))
+            .filter(year=timezone.now().isocalendar().year)
             .filter(week=timezone.now().isocalendar().week - 1)
             .order_by("-date")
         )
 
-    def recent_week(self):
+    def most_recent_week(self):
         """Get the most resent week of programmes."""
         # get the most recent programme session
         # determine the week
         # filter based on his week.
-        recent = self.annotate(week=ExtractWeek(F('date')).latest().week
+        recent = (
+            self.order_by("date")
+            .annotate(year=ExtractYear(F("date")))
+            .annotate(week=ExtractWeek(F("date")))
+        ).last()
+        recent_week, recent_year = recent.week, recent.year
         return (
-                self.annotate(week=ExtractWeek(F('date')))
-
-
-                )
+            self.annotate(week=ExtractWeek(F("date")))
+            .annotate(year=ExtractYear(F("date")))
+            .filter(year=recent_year)
+            .filter(week=recent_week)
+        )
 
     def group_by(
         self,
@@ -86,7 +97,7 @@ class ProgrammeSessionQuerySet(models.QuerySet):
             .annotate(month=ExtractMonth(F("date")))
             .annotate(week=ExtractWeek(F("date")))
             .annotate(day=ExtractDay(F("date")))
-            .order_by("-year", "month", "-week", "day", "session_type")
+            .order_by("-year", "-week", "month", "day", "session_type")
         )
 
         tree = lambda: defaultdict(tree)
