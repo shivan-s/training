@@ -4,11 +4,14 @@ import inflect
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.shortcuts import reverse
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
 from config.settings import HASHID_FIELD_SALT
 from project.models.base import BaseModel
+
+from .managers import ExerciseSetManager
 
 # dealing with plurals
 inf = inflect.engine()
@@ -30,10 +33,10 @@ class ExerciseSet(BaseModel):
     class WeightUnit(models.TextChoices):
         """Choices for `weight_unit`."""
 
-        KILOGRAMS = "KG", _("kilograms (kg)")
-        POUNDS = "LBS", _("pounds (lbs)")
-        PERCENTAGE = "PER", _("percentage (%)")
-        RPE = "RPE", (_("rate of perceived exertion (RPE)"))
+        KILOGRAMS = "KG", _("kg")
+        POUNDS = "LBS", _("lbs")
+        PERCENTAGE = "PER", _("%")
+        RPE = "RPE", (_("RPE"))
 
     reference_id = HashidAutoField(
         primary_key=True, salt=f"set_{HASHID_FIELD_SALT}"
@@ -71,6 +74,8 @@ class ExerciseSet(BaseModel):
         blank=True,
         null=True,
     )
+
+    objects = ExerciseSetManager()
 
     @property
     def display_shortened_weight_unit(self, WeightUnit=WeightUnit) -> str:

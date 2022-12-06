@@ -1,73 +1,88 @@
 {% extends "base/base.html" %}
-{% load i18n thumbnail %}
+{% load i18n %}
 {% block title %}
     - {% translate "Coaching Portal" %}
 {% endblock title %}
+{% block heading %}
+    {% translate "Coaching Portal" %}
+{% endblock heading %}
+{% block subheading %}
+    {% blocktranslate count athlete_count=coach.athletes.all.count %}
+    {% plural %}
+        {{ athlete_count }}
+        athletes
+    {% endblocktranslate %}
+{% endblock subheading %}
 {% block content %}
     <div class="block">
-        <section class="section">
-            <h2 class="title">{% translate "Coaching Portal" %}</h2>
-            <p class="subtitle">
-                {% blocktranslate count athlete_count=coach.athletes.count %}
-                {% plural %}
-                    {{ athlete_count }}
-                    athletes
-                {% endblocktranslate %}
-            </p>
-        </section>
-        <div class="box">
-            <div class="block"></div>
-            <div class="block">
-                <form method="post"
-                    action="."
-                    hx-post="."
-                    hx-trigger="keyup changed delay:500ms"
-                    hx-indicator=".htmx-indicator"
-                    hx-target="#athlete-list"
-                    hx-select="#athlete-list">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                </form>
-                <span class="htmx-indicator">{% translate "Searching..." %}</span>
+        <a href="{% url "project:add-athlete" %}"
+            class="button is-primary is-outlined is-inverted">
+            <span class="icon is-small">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span>{% translate "Add Athlete" %}</span>
+        </a>
+    </div>
+    <div class="block">
+        <div class="block">
+            <form class="field has-addons"
+                method="post"
+                name="search"
+                hx-post="."
+                hx-trigger="keyup delayed:500ms"
+                hx-indicator=".htmx-indicator"
+                hx-target="#athlete-list"
+                hx-select="#athlete-list">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="field">
+                        <div class="control has-icons-left">
+                            {{ field }}
+                            {% if field.name == "search" %}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </form>
+            <div class="htmx-indicator">
+                <progress class="progress is-small is-info" max="100"></progress>
             </div>
-            <div id="athlete-list" class="block">
-                {% if athletes %}
-                    {% for athlete in coach.athletes.all %}
-                        <div class="block">
-                            <div class="card">
+        </div>
+        <div id="athlete-list" class="block">
+            {% if athletes %}
+                {% for athlete in coach.athletes.all %}
+                    <div class="tile is-ancestor">
+                        <div class="tile is-parent">
+                            <div class="tile is-child card">
                                 <div class="card-content">
                                     <div class="media">
-                                        {% include "components/athlete_card/avatar.html" with athlete=athlete %}
+                                        {% include "partials/avatar.html" with profile=athlete.user image_size="96x96" rounded=1 %}
                                         <div class="media-content">
-                                            <p>
-                                                <strong>{{ athlete.name }}</strong>
-                                            </p>
+                                            <div class="content">
+                                                <p>
+                                                    <strong>{{ athlete.name }}</strong>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="content">TODO</div>
                                 </div>
                                 <div class="card-footer">
                                     <a href="{{ athlete.get_coach_programme_sessions_url }}"
-                                        class="button is-primary is-inverted card-footer-item">{% translate "See Programme" %}</a>
+                                        class="button is-primary is-inverted card-footer-item">{% translate "View Programme" %}</a>
+                                    <a href="" class="button is-danger is-inverted card-footer-item">{% translate "Remove Athlete" %}</a>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
                     </div>
-                    <div class="block">
-                        <p class="has-text-centered">No athletes found.</p>
-                    </div>
-                {% endif %}
+                {% endfor %}
+            {% else %}
                 <div class="block">
-                    <a href="{% url "project:add-athlete" %}" class="button is-primary">
-                        <span class="icon is-small">
-                            <i class="fas fa-plus"></i>
-                        </span>
-                        <span>{% translate "Add Athlete" %}</span>
-                    </a>
+                    <p class="has-text-centered">No athletes found.</p>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}

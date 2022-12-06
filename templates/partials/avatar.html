@@ -1,7 +1,7 @@
 {% load thumbnail %}
 <figure class="image is-{{ image_size }}">
-    {% if user.avatar %}
-        {% thumbnail user.avatar image_size upscale as thumb %}
+    {% if profile.avatar %}
+        {% thumbnail profile.avatar image_size upscale as thumb %}
     {% else %}
         {% thumbnail "https://bulma.io/images/placeholders/{{ image_size }}.png" image_size upscale as thumb %}
     {% endif %}

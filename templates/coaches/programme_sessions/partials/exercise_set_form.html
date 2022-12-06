@@ -1,9 +1,27 @@
+{% load i18n %}
 <div class="block">
     <form method="post"
         hx-post="{{ exercise_set.get_hx_edit_url }}"
         hx-swap="outerHTML">
         {% csrf_token %}
-        {{ form_exercise_set.as_p }}
-        <div class="control">{% include "components/primary_form_button.html" with value="Save" %}</div>
+        <table class="table is-stripped is-narrow">
+            <thead>
+                <td>{% translate "Sets" %}</td>
+                <td>{% translate "Reps" %}</td>
+                <td>{% translate "Weight" %}</td>
+                <td>{% translate "Unit" %}</td>
+            </thead>
+            <tbody>
+                {% for field in form %}
+                    <td>
+                        {% if field.name == "weight_unit" %}
+                            <div class="select is-small">{{ field }}</div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tbody>
+        </table>
     </form>
 </div>

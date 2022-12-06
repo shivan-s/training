@@ -1,12 +1,15 @@
+{% load i18n %}
 <div class="block">
     <form method="post"
         hx-post="{{ programme.get_hx_edit_url }}"
         hx-swap="outerHTML">
         {% csrf_token %}
         {{ form.as_p }}
-        <div class="control">{% include "components/primary_form_button.html" with value="Save" %}</div>
+        {% for key, value in formset.items %}
+            {% include "coaches/programme_sessions/partials/exercise_form.html" with form=key.0 exercise=key.1 exercise_sets=value %}
+        {% endfor %}
+        <div class="control">
+            <button class="button is-small is-primary is-rounded" type="submit">{% translate "Submit" %}</button>
+        </div>
     </form>
-    {% for exercise in programme.exercise_set.all %}
-        {% include "coaches/programme_sessions/partials/exercise_form.html" with exercise=exercise form_exercise=form_exercise form_exercise_set=form_exercise_set %}
-    {% endfor %}
 </div>

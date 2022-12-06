@@ -8,8 +8,8 @@
             </h3>
             <p class="subtitle is-6">{{ year }}</p>
         </div>
-        <hr />
         {% for week, days in weeks.items %}
+        <hr />
             {% start_week week=week year=year as start_week %}
         {% end_week week=week year=year as end_week %}
         {% with week|slugify as week_number %}

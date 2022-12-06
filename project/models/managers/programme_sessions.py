@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from collections import defaultdict
 from datetime import date, datetime
-from enum import Enum, auto
 from typing import TYPE_CHECKING, Union
 
 from django.db import models
@@ -26,9 +25,6 @@ if TYPE_CHECKING:
 
 class ProgrammeSessionQuerySet(models.QuerySet):
     """PrgrammeSession QuerySet."""
-
-    # TODO  consider the year.
-    # Problem is with the same week but diff year.
 
     def current_week(self):
         """Get current week of programmes."""

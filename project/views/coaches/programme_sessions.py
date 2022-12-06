@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.forms import inlineformset_factory
+from django.db.models import QuerySet
 from django.forms.models import BaseInlineFormSet
 from django.http import Http404
 from django.shortcuts import redirect, render
@@ -45,6 +45,16 @@ class ExerciseSetForm(BaseCustomForm, forms.ModelForm):
     """ExerciseSet Form nested within the ExerciseForm"""
 
     # TODO: exercise_type needs to be made into a search?
+    def __init__(self, *args, **kwargs):
+        """Overwrite."""
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].get_bound_field(self, field).css_classes(
+                extra_classes="is-horizontal"
+            )
+            self.fields[field].widget.attrs.update({"class": "input is-small"})
+
+        self.fields["weight"].widget.attrs.update({"step": 1})
 
     class Meta:
         """Meta."""
@@ -65,7 +75,7 @@ class ExerciseForm(BaseCustomForm, forms.ModelForm):
         """Overwrite `__init__`."""
         super().__init__(*args, **kwargs)
         self.fields["coach_notes"].widget.attrs.update(
-            {"class": "textarea", "rows": "1"}
+            {"class": "textarea is-small has-fixed-size", "rows": "1"}
         )
 
     # TODO: exercise_type needs to be made into a search?
@@ -84,10 +94,11 @@ class ProgrammeSessionForm(BaseCustomForm, forms.ModelForm):
         """Overwrite `__init__`."""
         super().__init__(*args, **kwargs)
         self.fields["coach_notes"].widget.attrs.update(
-            {"class": "textarea", "rows": "1"}
+            {"class": "textarea is-small has-fixed-size", "rows": "1"}
         )
+        self.fields["session_type"].widget.attrs.update({"class": "select"})
         self.fields["date"].widget.input_type = "date"
-        self.fields["date"].widget.attrs.update({"class": "input"})
+        self.fields["date"].widget.attrs.update({"class": "input is-small"})
 
     class Meta:
         """Meta."""
@@ -124,25 +135,31 @@ def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
 
     athlete = _hx_common(request=request, athlete_pk=athlete_pk)
 
-    # check programme session
-    # TODO: work on this.
-
+    formset = {}
     check_programme = ProgrammeSession.objects.filter(pk=pk)
-    logging.warning(check_programme)
     if check_programme.exists():
         programme = check_programme.first()
-        if check_exercise
-        exercises = programme.exercise_set.all()
-        exercise_sets = (exercise_set.intended.all() for exercise_set in exercises)
+        for exercise in programme.exercise_set.all():
+            for exercise_set in exercise.intended.all():
+                exercise_form = ExerciseForm(
+                    request.POST or None, instance=exercise
+                )
+                if formset.get((exercise_form, exercise)) is None:
+                    formset[(exercise_form, exercise)] = []
+                formset[(exercise_form, exercise)].append(
+                    (
+                        ExerciseSetForm(
+                            request.POST or None, instance=exercise_set
+                        ),
+                        exercise_set,
+                    )
+                )
     else:
         programme = None
     form = ProgrammeSessionForm(request.POST or None, instance=programme)
-    formset_exercise = (ExerciseForm(request.POST or None, instance=form_exercise) for form_exercise in formset_exercise)
-    formset_exercise_set = (ExerciseSetForm(request.POST or None, instance=form_exercise_set)
     context = {
         "form": form,
-        "form_exercise": form_exercise,
-        "form_exercise_set": form_exercise_set,
+        "formset": formset,
         "programme": programme,
     }
     if form.is_valid():
@@ -164,18 +181,24 @@ def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
     )
 
 
+def _hx_exercise_common(
+    programme_session_pk=None,
+) -> QuerySet[type[ProgrammeSession]]:
+    check_programme = ProgrammeSession.objects.filter(pk=programme_session_pk)
+    if check_programme.exists():
+        programme = check_programme.first()
+    else:
+        raise Http404
+
+
 @login_required
 def hx_coach_exercise_update_view(
     request, athlete_pk=None, programme_session_pk=None, pk=None
 ):
     athlete = _hx_common(request=request, athlete_pk=athlete_pk)
 
-    # check programme session exists
-    check_programme = ProgrammeSession.objects.filter(pk=programme_session_pk)
-    if check_programme.exists():
-        programme = check_programme.first()
-    else:
-        raise Http404
+    # check programme_session exists
+    programme = _hx_programme_common(pk=programme_session_pk)
 
     check_exercise = Exercise.objects.filter(pk=pk)
     if check_exercise.exists():
@@ -204,8 +227,43 @@ def hx_coach_exercise_update_view(
 
 
 @login_required
-def hx_coach_exercise_set_update_view():
-    pass
+def hx_coach_exercise_set_update_view(
+    request,
+    athlete_pk=None,
+    programme_session_pk=None,
+    exercise_pk=None,
+    pk=None,
+):
+    athlete = _hx_common(request=request, athlete_pk=athlete_pk)
+    programme = _hx_exercise_common(pk=programme_session_pk)
+
+    check_exercise = Exercise.objects.filter(pk=exercise_pk)
+    if check_exercise.exists():
+        exercise = check_exercise.first()
+    else:
+        raise Http404
+
+    check_exercise_set = ExerciseSet.objects.filter(pk=pk)
+    if check_exercise_set.exists():
+        exercise_set = check_exercise_set.first()
+    form = ExerciseSetForm(request.POST or None, instance=exercise_set)
+    context = {"form": form, "exercise_set": exercise_set}
+    if form.is_valid():
+        new_exercise_set = form.save(commit=False)
+        if exercise_set is None:
+            new_exercise_set.exercise = exercise
+        new_exercise_set.save()
+        context["exercise_set"] = new_exercise_set
+        return render(
+            request,
+            "coaches/programme_session/partials/exercise_set_inline.html",
+            context,
+        )
+    return render(
+        request,
+        "coaches/programme_session/partials/exercise_set_form.html",
+        context,
+    )
 
 
 @login_required

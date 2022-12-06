@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="media">
-    <div class="media-left">{% include "partials/avatar.html" with image_size="48x48" rounded=1 %}</div>
+    <div class="media-left">{% include "partials/avatar.html" with image_size="48x48" rounded=1 profile=comment.author_content_object.user %}</div>
     <div class="media-content">
         <div class="message">
             <div class="message-body">

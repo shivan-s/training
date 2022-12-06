@@ -18,13 +18,13 @@ class CoachPortalForm(BaseCustomForm, forms.Form):
     Field used to add an athlete by email address.
     """
 
-    search = forms.CharField(label="")
+    search = forms.CharField(label="", required=False)
 
     def __init__(self, *args, **kwargs):
         """Init."""
         super().__init__(*args, **kwargs)
-        self.fields["search"].widget.attrs["class"] = "input is-small"
-        self.fields["search"].widget.attrs["placeholder"] = "Search athletes"
+        self.fields["search"].widget.attrs["class"] = "input"
+        self.fields["search"].widget.attrs["placeholder"] = "Filter athletes"
 
 
 class CoachPortalView(LoginRequiredMixin, TemplateView):

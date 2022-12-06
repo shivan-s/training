@@ -3,10 +3,9 @@
         hx-post="{{ exercise.get_hx_edit_url }}"
         hx-swap="outerHTML">
         {% csrf_token %}
-        {{ form_exercise.as_p }}
-        <div class="control">{% include "components/primary_form_button.html" with value="Save" %}</div>
+        {{ form.as_p }}
+        {% for form_exercise_set, exercise_set in exercise_sets %}
+            {% include "coaches/programme_sessions/partials/exercise_set_form.html" with exercise_set=exercise_set form=form_exercise_set %}
+        {% endfor %}
     </form>
-    {% for exercise_set in programme.intended.all %}
-        {% include "coaches/programme_sessions/partials/exercise_form.html" with exercise_set=exercise_set form_exercise_set=form_exercise_set %}
-    {% endfor %}
 </div>
