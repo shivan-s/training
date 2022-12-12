@@ -13,7 +13,7 @@
     <div class="block">
         <div id="programmes">
             {% if programmes %}
-                {% include "partials/programme_session_inline.html" with programmes=programmes %}
+                {% include "partials/programme_sessions/list.html" with programmes=programmes %}
             {% else %}
                 <div class="box">No programme found.</div>
             {% endif %}

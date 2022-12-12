@@ -1,0 +1,47 @@
+{% load i18n dates_text %}
+{% for year, months in programmes.items %}
+    {% for month, weeks in months.items %}
+        <div class="block">
+            <h3 class="title is-4">
+                {% month_text m=month as month_date %}
+                {{ month_date|date:"F" }}
+            </h3>
+            <p class="subtitle is-6">{{ year }}</p>
+        </div>
+        {% for week, days in weeks.items %}
+            <hr />
+            {% start_week week=week year=year as start_week %}
+        {% end_week week=week year=year as end_week %}
+        {% with week|slugify as week_number %}
+            {% now "W" as current_week %}
+            {% if current_week == week_number %}
+                <div class="section hero is-small is-success">
+                    <div class="is-flex is-justify-content-flex-end">
+                        <div class="block has-text-right">
+                            <p class="title is-4">{% translate "Week" %} {{ week }}</p>
+                            <p class="subtitle is-6">{{ start_week|date:"M jS" }} - {{ end_week|date:"M jS" }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="is-flex is-justify-content-flex-end">
+                    <div class="block has-text-right">
+                        <p class="title is-5">{% translate "Week" %} {{ week }}</p>
+                        <p class="subtitle is-7">{{ start_week|date:"M jS" }} - {{ end_week|date:"M jS" }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <hr />
+        <div class="tile is-ancestor">
+            {% for day, programmes in days.items %}
+                <div class="tile is-parent is-vertical">
+                    {% for programme in programmes.values %}
+                        <div class="tile is-child">{% include "partials/programme_sessions/inline.html" with programme=programme %}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endfor %}
+{% endfor %}

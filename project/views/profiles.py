@@ -19,7 +19,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     Users `user` context under the hood.
     """
 
-    template_name = "profile.html"
+    template_name = "profile/profile.html"
     model = User
 
 
@@ -29,7 +29,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     Only viewable if the user is authenticated.
     """
 
-    template_name = "profile_update.html"
+    template_name = "profile/update.html"
     form_class = ProfileUpdateForm
     success_url = reverse_lazy("project:profile")
 

@@ -7,7 +7,7 @@ from datetime import date, datetime
 from typing import TYPE_CHECKING, Union
 
 from django.db import models
-from django.db.models import F, Max, QuerySet
+from django.db.models import F, Max, Q, QuerySet
 from django.db.models.functions import (
     ExtractDay,
     ExtractMonth,
@@ -26,37 +26,37 @@ if TYPE_CHECKING:
 class ProgrammeSessionQuerySet(models.QuerySet):
     """PrgrammeSession QuerySet."""
 
-    def current_week(self):
+    def current_week(self) -> QuerySet[ProgrammeSession]:
         """Get current week of programmes."""
         return (
             self.annotate(week=ExtractWeek(F("date")))
             .annotate(year=ExtractYear(F("date")))
             .filter(year=timezone.now().isocalendar().year)
             .filter(week=timezone.now().isocalendar().week)
-            .order_by("-date")
+            .order_by("date")
         )
 
-    def next_week(self):
-        """Get next week of programmes."""
+    def next_week(self) -> QuerySet[ProgrammeSession]:
+        """Get next week of programmes, after the current week."""
         return (
             self.annotate(week=ExtractWeek(F("date")))
             .annotate(year=ExtractYear(F("date")))
             .filter(year=timezone.now().isocalendar().year)
             .filter(week=timezone.now().isocalendar().week + 1)
-            .order_by("-date")
+            .order_by("date")
         )
 
-    def previous_week(self):
-        """Get next week of programmes."""
+    def previous_week(self) -> QuerySet[ProgrammeSession]:
+        """Get previous week of programmes, before the current week."""
         return (
             self.annotate(week=ExtractWeek(F("date")))
             .annotate(year=ExtractYear(F("date")))
             .filter(year=timezone.now().isocalendar().year)
             .filter(week=timezone.now().isocalendar().week - 1)
-            .order_by("-date")
+            .order_by("date")
         )
 
-    def most_recent_week(self):
+    def most_recent_week(self) -> QuerySet[ProgrammeSession]:
         """Get the most resent week of programmes."""
         # get the most recent programme session
         # determine the week
@@ -72,7 +72,18 @@ class ProgrammeSessionQuerySet(models.QuerySet):
             .annotate(year=ExtractYear(F("date")))
             .filter(year=recent_year)
             .filter(week=recent_week)
+            .order_by("date")
         )
+
+    def last_trained_session(self) -> QuerySet[ProgrammeSession]:
+        """Provide the most recent complete programme session."""
+        return self.filter(~Q(end=None)).latest("date")
+
+    def completed_programme_sessions(
+        self, *args, **kwargs
+    ) -> QuerySet[ProgrammeSession]:
+        """Provide all completed training sessions."""
+        return self.filter(~Q(end=None))
 
     def group_by(
         self,
@@ -124,7 +135,7 @@ class ProgrammeSessionQuerySet(models.QuerySet):
 class ProgrammeSessionManager(models.Manager):
     """ProgrammeSession Manager."""
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         """Redefine queryset."""
         return ProgrammeSessionQuerySet(self.model, using=self._db)
 
@@ -132,7 +143,7 @@ class ProgrammeSessionManager(models.Manager):
         self,
         *arg,
         **kwargs,
-    ):
+    ) -> QuerySet[ProgrammeSession]:
         """Obtain the current week for the programme."""
         return self.get_queryset().current_week()
 
@@ -140,7 +151,7 @@ class ProgrammeSessionManager(models.Manager):
         self,
         *args,
         **kwargs,
-    ):
+    ) -> QuerySet[ProgrammeSession]:
         """Obtain the next week for the programme."""
         return self.get_queryset().next_week()
 
@@ -148,10 +159,28 @@ class ProgrammeSessionManager(models.Manager):
         self,
         *args,
         **kwargs,
-    ):
+    ) -> QuerySet[ProgrammeSession]:
         """Obtain the previous week for the programme."""
         return self.get_queryset().previous_week()
 
-    def group_by(self, *args, **kwargs):
+    def last_trained_session(
+        self, *args, **kwargs
+    ) -> QuerySet[ProgrammeSession]:
+        """Provide the most recent complete programme session."""
+        return self.get_queryset().last_trained_session()
+
+    def completed_programme_sessions(self, *args, **kwargs):
+        """Provide complete programme sessions."""
+        return self.get_queryset().completed_programme_sessions()
+
+    def group_by(
+        self, *args, **kwargs
+    ) -> Union[
+        QuerySet, list[ProgrammeSession]
+    ] | GroupByProgrammeSession | dict[int, GroupByProgrammeSession] | dict[
+        int, dict[int, GroupByProgrammeSession]
+    ] | dict[
+        int, dict[int, dict[int, GroupByProgrammeSession]]
+    ]:
         """Group by return."""
         return self.get_queryset().group_by(*args, **kwargs)

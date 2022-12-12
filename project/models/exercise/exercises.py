@@ -40,6 +40,7 @@ class Exercise(BaseModel):
         content_type_field="location_ct",
         object_id_field="location_object_id",
     )
+    order = models.PositiveSmallIntegerField()
 
     def get_hx_edit_url(self) -> str:
         kwargs = {

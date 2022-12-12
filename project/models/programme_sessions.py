@@ -85,12 +85,23 @@ class ProgrammeSession(BaseModel):
         kwargs = {"pk": self.pk}
         return reverse("project:programme-session-detail", kwargs=kwargs)
 
+    def get_coach_edit_url(self) -> str:
+        """Provide update url for a programme for a coach."""
+        kwargs = {"pk": self.pk, "athlete_pk": self.athlete.pk}
+        return reverse("project:coach-programme-session-update", kwargs=kwargs)
+
     def get_hx_edit_url(self) -> str:
         """Provide the edit url for this instance."""
         kwargs = {"pk": self.pk, "athlete_pk": self.athlete.pk}
         return reverse(
             "project:hx-coach-programme-session-update", kwargs=kwargs
         )
+
+    def clean(self, *args, **kwargs):
+        pass
+
+    def full_clean(self, *args, **kwargs):
+        pass
 
     def __str__(self) -> str:
         """Represent string."""

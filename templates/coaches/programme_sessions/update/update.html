@@ -1,0 +1,28 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Programme for " %} {{ athlete.user.name }} {{ programme.date }}
+{% endblock title %}
+{% block heading %}
+    {% include "partials/avatar.html" with profile=athlete.user rounded=1 image_size="128x128" %}
+    {{ athlete.user.name }}'s {% translate "Programme" %}
+{% endblock heading %}
+{% block subheading %}
+    {{ programme.date|date:"l - jS F Y" }}
+{% endblock subheading %}
+{% block breadcrumbs %}
+    <li>
+        <a href="{% url "project:coach-portal" %}">{% translate "Portal" %}</a>
+    </li>
+    <li>
+        <a href="{{ athlete.get_coach_programme_sessions_url }}"
+            aria-current="home">{{ athlete.name }}</a>
+    </li>
+    <li class="is-active">
+        <a href="{{ programme.get_coach_programme_sessions_url }}"
+            aria-current="home">{{ programme.date|date:"l - jS F Y" }}</a>
+    </li>
+{% endblock breadcrumbs %}
+{% block content %}
+    {% include "coaches/programme_sessions/update/partials/programme_session_form.html" with programme=programme %}
+{% endblock content %}

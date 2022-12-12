@@ -5,7 +5,10 @@
 {% endblock title %}
 {% block heading %}
     {{ programme.date|date:"l (jS M)" }}
-    {% if programme.session_type %}<br />{{ programme.get_session_type_display }}{% endif %}
+    {% if programme.session_type %}
+        <br />
+        {{ programme.get_session_type_display }}
+    {% endif %}
 {% endblock heading %}
 {% block subheading %}
     {% with recent=programme.history.latest.history_date %}
@@ -48,61 +51,67 @@
                 </button>
             {% endif %}
         </div>
-        {% if programme.coach_notes %}
-            <div class="notification is-info is-light">
-                <div class="media">
-                    <div class="media-left">
-                        {% include "partials/avatar.html" with image_size="48x48" rounded=1 %}
-                    </div>
-                    <div class="media-content">
-                        <div class="content">
-                            <span>
-                                <span class="icon has-text-info">
-                                    <i title="Check notes" class="fas fa-info-circle"></i>
-                                </span>
-                                <strong>{{ programme.coach.name }}'s {% translate "notes" %}</strong>
-                            </span>
-                            <p>{{ programme.coach_notes }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-        <div class="box">
-        {% for exercise in programme.exercise_set.all %}
-            {% include "programme_sessions/detail/partials/exercise_inline.html" with exercise=exercise %}
-        {% endfor %}
-        </div>
-        <div class="box">
-            <div class="block">
-                <h3 class="title is-5 has-text-primary">Comments</h3>
-                {% for comment in programme.comments.all %}
-                    {% include "partials/comment.html" with comment=comment %}
-                {% endfor %}
-                <div id="new_comment">
-                    {% if new_comment %}
-                        {% include "partials/comment.html" with comment=new_comment %}
-                    {% endif %}
-                </div>
-            </div>
-            <div class="media">
-                <div class="media-left">
-                    {% include "partials/avatar.html" with image_size="48x48" rounded=1 %}
-                </div>
-                <div class="media-content">
-                    <form method="post"
-                        hx-post="{% url "project:programme-session-detail" programme.pk %}"
-                        hx-target="#new_comment"
-                        hx-select="#new_comment"
-                        hx-swap="beforeend">
-                        {% csrf_token %}
-                        <div class="field">
-                            <div class="control">
-                                <textarea class="textarea" type="text" name="comment" placeholder="Add a comment..." rows="1"></textarea>
+        <div class="tile is-ancestor">
+            <div class="tile is-parent is-vertical">
+                {% if programme.coach_notes %}
+                    <div class="tile is-child notification is-info is-light">
+                        <div class="media">
+                            <div class="media-left">
+                                {% include "partials/avatar.html" with profile=programme.coach.user image_size="48x48" rounded=1 %}
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <span>
+                                        <span class="icon has-text-info">
+                                            <i title="Check notes" class="fas fa-info-circle"></i>
+                                        </span>
+                                        <strong>{{ programme.coach.name }}'s {% translate "notes" %}</strong>
+                                    </span>
+                                    <p>{{ programme.coach_notes }}</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="control">{% include "components/primary_form_button.html" with value="Post Comment " %}</div>
-                    </form>
+                    </div>
+                {% endif %}
+                <div class="tile is-child box">
+                    {% for exercise in programme.exercise_set.all %}
+                        {% include "programme_sessions/detail/partials/exercise_inline.html" with exercise=exercise %}
+                    {% endfor %}
+                </div>
+                <div class="tile is-child box">
+                    <div class="block">
+                        <h3 class="title is-5 has-text-primary">Comments</h3>
+                        {% for comment in programme.comments.all %}
+                            {% include "partials/comment.html" with comment=comment %}
+                        {% endfor %}
+                        <div id="new_comment">
+                            {% if new_comment %}
+                                {% include "partials/comment.html" with comment=new_comment %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="media">
+                        <div class="media-left">{% include "partials/avatar.html" with profile=user image_size="48x48" rounded=1 %}</div>
+                        <div class="media-content">
+                            <form method="post"
+                                hx-post="{% url "project:programme-session-detail" programme.pk %}"
+                                hx-target="#new_comment"
+                                hx-select="#new_comment"
+                                hx-swap="beforeend">
+                                {% csrf_token %}
+                                <div class="field">
+                                    <div class="control">
+                                        <textarea class="textarea"
+                                            type="text"
+                                            name="comment"
+                                            placeholder="Add a comment..."
+                                            rows="1"></textarea>
+                                    </div>
+                                </div>
+                                <div class="control">{% include "components/primary_form_button.html" with value="Post Comment " %}</div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

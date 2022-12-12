@@ -27,6 +27,7 @@ class Comment(BaseModel):
         primary_key=True, salt=f"comment_{settings.HASHID_FIELD_SALT}"
     )
     content = models.TextField(verbose_name=_("content"))
+    read = models.BooleanField(_("message read"), default=False)
     author_ct = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
@@ -71,6 +72,11 @@ class Comment(BaseModel):
         """
 
         indexes = [
-            models.Index(fields=["author_ct", "author_object_id"], name="author_idx"),
-            models.Index(fields=["location_ct", "location_object_id"], name="location_idx"),
+            models.Index(
+                fields=["author_ct", "author_object_id"], name="author_idx"
+            ),
+            models.Index(
+                fields=["location_ct", "location_object_id"],
+                name="location_idx",
+            ),
         ]

@@ -19,6 +19,11 @@ urlpatterns = [
         name="coach-programme-session-list",
     ),
     path(
+        "portal/athletes/<str:athlete_pk>/programme/<str:pk>",
+        views.CoachProgrammeSessionUpdateView.as_view(),
+        name="coach-programme-session-update",
+    ),
+    path(
         "hx/portal/athletes/<str:athlete_pk>/programme/<str:pk>",
         views.hx_coach_programme_session_update_view,
         name="hx-coach-programme-session-update",

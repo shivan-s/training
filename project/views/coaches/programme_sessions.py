@@ -12,7 +12,7 @@ from django.db import transaction
 from django.db.models import QuerySet
 from django.forms.models import BaseInlineFormSet
 from django.http import Http404
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 
 from project.forms.base import BaseCustomForm
@@ -22,7 +22,7 @@ from project.models import Athlete, Exercise, ExerciseSet, ProgrammeSession
 class CoachProgrammeSessionListView(LoginRequiredMixin, TemplateView):
     """Programme List view of an athlete for a coach to view."""
 
-    template_name = "coaches/programme_sessions/list.html"
+    template_name = "coaches/programme_sessions/list/list.html"
 
     def get_context_data(self, *args, **kwargs):
         """Context."""
@@ -38,6 +38,53 @@ class CoachProgrammeSessionListView(LoginRequiredMixin, TemplateView):
         context["coach"] = coach
         context["programmes"] = programmes
         context["athlete"] = athlete
+        return context
+
+
+class CoachProgrammeSessionUpdateView(LoginRequiredMixin, TemplateView):
+    """Programme Update view."""
+
+    template_name = "coaches/programme_sessions/update/update.html"
+
+    def get_context_data(self, *args, **kwargs):
+        """Context."""
+        context = super().get_context_data(*args, **kwargs)
+        athlete_pk = self.kwargs.get("athlete_pk")
+        coach = self.request.user.coach
+        check_athlete = coach.athletes.filter(user__pk=athlete_pk)
+        if check_athlete.exists():
+            athlete = check_athlete.first()
+            programme = get_object_or_404(
+                ProgrammeSession, reference_id=self.kwargs.get("pk")
+            )
+            form = ProgrammeSessionForm(
+                self.request.POST or None, instance=programme
+            )
+            formset = {}
+            for exercise in programme.exercise_set.all():
+                for exercise_set in exercise.intended.all():
+                    exercise_form = ExerciseForm(
+                        self.request.POST or None, instance=exercise
+                    )
+                    if formset.get((exercise_form, exercise)) is None:
+                        formset[(exercise_form, exercise)] = []
+                    formset[(exercise_form, exercise)].append(
+                        (
+                            ExerciseSetForm(
+                                self.request.POST or None,
+                                instance=exercise_set,
+                            ),
+                            exercise_set,
+                        )
+                    )
+        else:
+            raise PermissionDenied("Athlete not registered with Coach.")
+
+        context["programme"] = programme
+        context["coach"] = coach
+        context["athlete"] = athlete
+        context["form"] = form
+        context["formset"] = formset
         return context
 
 

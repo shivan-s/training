@@ -1,0 +1,53 @@
+{% load i18n %}
+<div class="card">
+    <div class="card-content">
+        <div>
+            <h3 class="title is-4 has-text-primary">
+                {{ programme.date|date:"l (jS M)" }}
+                {% if programme.coach_notes %}
+                    <span class="icon has-text-info">
+                        <i title="Check notes" class="fas fa-info-circle"></i>
+                    </span>
+                {% endif %}
+                {% if programme.is_completed %}
+                    <span class="icon has-text-success">
+                        <i title="Check notes" class="fas fa-check-square"></></i>
+                    </span>
+                {% endif %}
+            </h3>
+            {% with recent=programme.history.latest.history_date %}
+                <p class="subtitle is-7 has-text-primary" title={{ recent.date }}>
+                    {% blocktranslate with recent=recent.date|timesince %}
+                        Updated {{ recent }} ago
+                    {%endblocktranslate %}
+                </p>
+            {% endwith %}
+            {% if programme.session_type %}
+                <h4 class="title is-5 has-text-primary">{{ programme.get_session_type_display }}</h4>
+            {% endif %}
+            {% for exercise in programme.exercise_set.all %}
+                <div class="block">
+                    <p class="has-text-weight-bold">
+                        {{ exercise }}
+                        {% if exercise.coach_notes %}
+                            <span class="icon has-text-info">
+                                <i title="Check notes" class="fas fa-info-circle"></i>
+                            </span>
+                        {% endif %}
+                    </p>
+                    <ul>
+                        {% for intended_set in exercise.intended.all %}<li>{{ intended_set }}</li>{% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card-footer">
+        <a class="card-footer-item button is-ghost"
+            href="{{ programme.get_absolute_url }}">{% translate "See more" %}</a>
+        {% if programme.coach.user == user %}
+            <a class="card-footer-item button is-warning is-light"
+                href="{{ programme.get_coach_edit_url }}">{% translate "Edit" %}</a>
+        {% endif %}
+    </div>
+</div>

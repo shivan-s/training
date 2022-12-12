@@ -1,0 +1,21 @@
+{% load i18n %}
+<form method="post"
+    hx-post="{{ exercise_set.get_hx_edit_url }}"
+    hx-swap="outerHTML"
+    hx-trigger="changed throttle:1s"
+    hx-indicator=".htmx-indicator-{{ programme.pk }}">
+    <div class="htmx-indicator-{{ programme.pk }}">
+        {% translate "Saving..." %}
+        <progress class="progress is-small is-info" max="100"></progress>
+    </div>
+    {% csrf_token %}
+    {% for field in form %}
+        <td>
+            {% if field.name == "weight_unit" %}
+                <div class="select is-small">{{ field }}</div>
+            {% else %}
+                {{ field }}
+            {% endif %}
+        </td>
+    {% endfor %}
+</form>

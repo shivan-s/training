@@ -5,6 +5,7 @@ from .confirm_athlete import ConfirmAthleteView
 from .portal import CoachPortalView
 from .programme_sessions import (
     CoachProgrammeSessionListView,
+    CoachProgrammeSessionUpdateView,
     hx_coach_exercise_set_update_view,
     hx_coach_exercise_update_view,
     hx_coach_programme_session_update_view,
@@ -16,6 +17,7 @@ __all__ = [
     "AddAthleteView",
     "ConfirmAthleteView",
     "CoachProgrammeSessionListView",
+    "CoachProgrammeSessionUpdateView",
     "hx_coach_exercise_set_update_view",
     "hx_coach_programme_session_update_view",
     "hx_coach_exercise_update_view",

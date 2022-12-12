@@ -74,6 +74,7 @@ class ExerciseSet(BaseModel):
         blank=True,
         null=True,
     )
+    order = models.PositiveSmallIntegerField()
 
     objects = ExerciseSetManager()
 

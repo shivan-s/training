@@ -1,14 +1,10 @@
 {% load thumbnail %}
 <figure class="image is-{{ image_size }}">
-    {% if profile.avatar %}
-        {% thumbnail profile.avatar image_size upscale as thumb %}
-    {% else %}
-        {% thumbnail "https://bulma.io/images/placeholders/{{ image_size }}.png" image_size upscale as thumb %}
-    {% endif %}
+        {% thumbnail profile.avatar|default:"images/fallback.png" image_size upscale as thumb %}
     <img
         {% if rounded %}
             class="is-rounded"
-        {% endif%}
+        {% endif %}
         src="{{ thumb.url }}"
         width="{{ thumb.width }}"
         height="{{ thumb.height }}"

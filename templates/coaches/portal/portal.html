@@ -55,27 +55,15 @@
             {% if athletes %}
                 {% for athlete in coach.athletes.all %}
                     <div class="tile is-ancestor">
-                        <div class="tile is-parent">
-                            <div class="tile is-child card">
-                                <div class="card-content">
-                                    <div class="media">
-                                        {% include "partials/avatar.html" with profile=athlete.user image_size="96x96" rounded=1 %}
-                                        <div class="media-content">
-                                            <div class="content">
-                                                <p>
-                                                    <strong>{{ athlete.name }}</strong>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <a href="{{ athlete.get_coach_programme_sessions_url }}"
-                                        class="button is-primary is-inverted card-footer-item">{% translate "View Programme" %}</a>
-                                    <a href="" class="button is-danger is-inverted card-footer-item">{% translate "Remove Athlete" %}</a>
-                                </div>
+                        {% if not athlete.programmesession_set.all.current_week %}
+                            <div class="tile is-parent">
+                                <div class="tile is-child">{% include "coaches/portal/partials/athlete_card.html" with athlete=athlete %}</div>
                             </div>
-                        </div>
+                        {% else %}
+                            <div class="tile is-parent">
+                                <div class="tile is-child">{% include "coaches/portal/partials/athlete_card.html" with athlete=athlete %}</div>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% else %}

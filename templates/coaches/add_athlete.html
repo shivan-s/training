@@ -4,15 +4,17 @@
     - {% translate "Add Athlete" %}
 {% endblock title %}
 {% block content %}
+{% block heading %}
+{% translate "Add Athlete" %}
+{% endblock heading %}
+{% block subheading %}
+{% endblock subheading %}
     <div class="box">
-        <div class="block">
-            <div>
-                <h2 class="title has-text-primary">{% translate "Add Athlete" %}</h2>
-            </div>
-        </div>
         <div id="new-athlete">
             <div class="block">
-                <form method="post"
+                <form 
+                 class="field is-addons"
+                 method="post"
                     hx-post="{% url "project:add-athlete" %}"
                     hx-target="#new-athlete"
                     hx-select="#new-athlete">
@@ -26,14 +28,14 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="media">
-                                {% include "components/athlete_card/avatar.html" with athlete=athlete %}
+                                {% include "partials/avatar.html" with athlete=athlete.user image_size="96x96" rounded=1  %}
                                 <div class="media-content">
+                            <div class="content">
                                     <p>
                                         <strong>{{ new_athlete.name }}</strong>
                                     </p>
                                 </div>
                             </div>
-                            <div class="content">
                                 <strong>{% translate "Joined" %}</strong>: {{ new_athlete.history.first.history_date|timesince }}
                             </div>
                         </div>
@@ -45,14 +47,16 @@
                                         Successful. Create Programme Session
                                     </button>
                                 {% else %}
+                                <div class="card-footer-item">
                                     <form method="post"
                                         hx-post="{% url "project:confirm-athlete" %}"
                                         hx-target="#confirm-athlete"
                                         hx-select="#confirm-athlete">
                                         {% csrf_token %}
                                         <input type="hidden" name="athlete" value={{ new_athlete.profile.user.pk }} />
-                                        <input type="submit" class="card-footer-item" value="{% translate "Add" %}" />
+                                        <button type="submit" class="button is-primary is-inverted" value="{% translate "Add" %}" />
                                     </form>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>

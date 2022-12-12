@@ -3,7 +3,7 @@
     <p class="has-text-weight-bold">{{ exercise }}</p>
     <ul>
         {% for intended_set in exercise.intended.all %}
-            {% include "coaches/programme_sessions/partials/exercise_set_inline.html" %}
+            {% include "coaches/programme_sessions/list/partials/exercise_set_inline.html" %}
         {% endfor %}
     </ul>
     {% if exercise.coach_notes %}

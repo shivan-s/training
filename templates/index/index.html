@@ -2,8 +2,7 @@
 {% load account i18n %}
 {% block title %}
     {% if user.is_authenticated %}
-        {% user_display user as user_display %}
-        - {{ user }}
+        - {{ user.name }}
     {% endif %}
 {% endblock title %}
 {% block heading %}
@@ -24,7 +23,7 @@
     {% if user.is_authenticated %}
         <div class="block">
             {% if programmes %}
-                {% include "partials/programme_session_inline.html" with programmes=programmes %}
+                {% include "partials/programme_sessions/list.html" with programmes=programmes %}
             {% else %}
                 <div class="box">
                     <p class="has-text-centered">No programme for this week.</p>

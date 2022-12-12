@@ -30,7 +30,7 @@ class CoachPortalForm(BaseCustomForm, forms.Form):
 class CoachPortalView(LoginRequiredMixin, TemplateView):
     """Index view."""
 
-    template_name = "coaches/portal.html"
+    template_name = "coaches/portal/portal.html"
 
     def post(self, request, *args, **kwargs):
         """Search an athlete."""

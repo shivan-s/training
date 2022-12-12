@@ -1,0 +1,32 @@
+{% load i18n %}
+<div class="tile is-child card">
+    <header class="card-header">
+        <p class="card-header-title">{% translate "Exercise" %} {{ forloop.counter }}</p>
+    </header>
+    <div id="indicator-exercise-{{ exercise.pk }}" class="htmx-indicator">
+        <progress class="progress is-small is-info" max="100"></progress>
+    </div>
+    <div class="card-content">
+        <form method="post"
+            hx-post="{{ exercise.get_hx_edit_url }}"
+            hx-swap="outerHTML"
+            hx-trigger="changed throttle:1s"
+            hx-indicator="#indicator-exercise-{{ exercise.pk }}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <table class="table is-stripped is-narrow">
+                <thead>
+                    <td>{% translate "Sets" %}</td>
+                    <td>{% translate "Reps" %}</td>
+                    <td>{% translate "Weight" %}</td>
+                    <td>{% translate "Unit" %}</td>
+                </thead>
+                <tbody>
+                    {% for form_exercise_set, exercise_set in exercise_sets %}
+                        {% include "coaches/programme_sessions/update/partials/exercise_set_form.html" with exercise_set=exercise_set form=form_exercise_set %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>

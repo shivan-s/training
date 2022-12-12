@@ -1,7 +1,4 @@
-{% load static %}
-{% load i18n %}
-{% load django_htmx %}
-{% load l10n %}
+{% load static i18n django_htmx l10n active_page %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -50,6 +47,20 @@
                             {% endblock subheading %}
                         </p>
                     </section>
+                    <nav class="breadcrumb has-arrow-separator" aria-label="breadcrumbs">
+                        <ul>
+                            <li class="{% get_active_class "project:index" %}">
+                                <a href="{% url "project:index" %}" aria-current="home">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-home" aria-hidden="true"></i>
+                                    </span>
+                                    <span>{% translate "Home" %}</span>
+                                </a>
+                            </li>
+                            {% block breadcrumbs %}
+                            {% endblock breadcrumbs %}
+                        </ul>
+                    </nav>
                     {% block content %}
                     {% endblock content %}
                 </div>

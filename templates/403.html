@@ -1,0 +1,14 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+{% block title %}
+    - {% translate "Forbidden" %}
+{% endblock title %}
+{% block heading %}
+    {% translate "Forbidden" %}
+{% endblock heading %}
+{% block subheading %}
+    {% translate "Whoops" %}
+{% endblock subheading %}
+{% block content %}
+    <a class="button is-ghost large" href="{% url 'project:index' %}">Back to safety</a>
+{% endblock content %}

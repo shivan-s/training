@@ -6,9 +6,13 @@ from typing import Any, Literal, Union
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F, QuerySet
-from django.db.models.functions import (ExtractDay, ExtractMonth, ExtractWeek,
-                                        ExtractYear)
-from django.shortcuts import get_object_or_404, render
+from django.db.models.functions import (
+    ExtractDay,
+    ExtractMonth,
+    ExtractWeek,
+    ExtractYear,
+)
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils import timezone
 from django.views.generic import TemplateView
 
@@ -84,6 +88,20 @@ class ProgrammeSessionDetailView(BaseProgrammeView):
     """View for the detail view of the programme."""
 
     template_name = "programme_sessions/detail/detail.html"
+
+    def get(self, request, *args, **kwargs):
+        """\
+        If athlete is not the coach, athlete can send programme link to coach.
+        """
+        programme_session = get_object_or_404(
+            ProgrammeSession, reference_id=self.kwargs.get("pk")
+        )
+        if (
+            self.request.user == programme_session.coach.user
+            and programme_session.athlete.user != programme_session.coach.user
+        ):
+            return redirect(reverse("coach-programme-session-update"))
+        return render(request, self.template_name, self.get_context_data())
 
     def post(self, request, *args, **kwargs):
         """Post."""
