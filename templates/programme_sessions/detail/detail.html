@@ -4,7 +4,16 @@
     - {{ programme.date|date:"l (jS M)" }}
 {% endblock title %}
 {% block heading %}
-    {{ programme.date|date:"l (jS M)" }}
+    <span>{{ programme.date|date:"l (jS M)" }}</span> <span>
+        {% if programme.coach.user == user %}
+            <a class="button is-warning is-light"
+                href="{{ programme.get_coach_edit_url }}">
+                <span class="icon is-small">
+                    <i class="fas fa-pen"></i>
+                </span>
+            </a>
+        {% endif %}
+    </span>
     {% if programme.session_type %}
         <br />
         {{ programme.get_session_type_display }}
@@ -15,6 +24,17 @@
         {% translate "Last updated" %}: {{ recent.date|timesince }}
     {% endwith %}
 {% endblock subheading %}
+{% block breadcrumbs %}
+    <li>
+        <a class="button is-ghost"
+            href="{% url "project:programme-session-list" %}">{% translate "Your Programme" %}</a>
+    </li>
+    <li>
+        <a class="button is-ghost is-active"
+            href="{{ programme.get_absolute_url }}"
+            aria-current="programme {{ programme.date }}">{{ programme.date|date:"l - jS F Y" }}</a>
+    </li>
+{% endblock breadcrumbs %}
 {% block content %}
     <div>
         <div class="block is-flex is-justify-content-space-between">

@@ -1,17 +1,16 @@
 {% load i18n %}
-<a href="">
-<div id="programme-{{ programme.pk }}"class="block">
-    <h3 class="title is-5 has-text-primary">
-        {{ programme.date|date:"l (jS M)" }}
-        {% if programme.session_type %}- {{ programme.get_session_type_display }}{% endif %}
-    </h3>
-    {% for exercise in programme.exercise_set.all %}
-        {% include "coaches/programme_sessions/list/partials/exercise_inline.html" %}
-    {% endfor %}
-    {% if programme.coach_notes %}
-        <div class="block">
-            <strong>{% translate "Notes" %}</strong>: {{ programme.coach_notes }}
-        </div>
-    {% endif %}
+<div id="programme-{{ programme.pk }}" class="block">
+        <h3 class="title is-5 has-text-primary">
+            {{ programme.date|date:"l (jS M)" }}
+            {% if programme.session_type %}- {{ programme.get_session_type_display }}{% endif %}
+        </h3>
+{% endif %}
+{% for exercise in programme.exercise_set.all %}
+    {% include "coaches/programme_sessions/list/partials/exercise_inline.html" %}
+{% endfor %}
+{% if programme.coach_notes %}
+    <div class="block">
+        <strong>{% translate "Notes" %}</strong>: {{ programme.coach_notes }}
+    </div>
+{% endif %}
 </div>
-</a>

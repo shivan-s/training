@@ -5,22 +5,28 @@
 {% endblock title %}
 {% block heading %}
     {% include "partials/avatar.html" with profile=athlete.user rounded=1 image_size="128x128" %}
-    {{ athlete.user.name }}'s {% translate "Programme" %}
+    <span>{{ athlete.user.name }}'s {% translate "Programme" %}</span> <span>
+        <a class="button is-light" href="{{ programme.get_absolute_url }}">
+            <span class="icon is-small">
+<i class="fas fa-arrow-right"></i>
+            </span>
+        </a>
+    </span>
 {% endblock heading %}
 {% block subheading %}
     {{ programme.date|date:"l - jS F Y" }}
 {% endblock subheading %}
 {% block breadcrumbs %}
     <li>
-        <a href="{% url "project:coach-portal" %}">{% translate "Portal" %}</a>
+        <a class="button is-ghost" href="{% url "project:coach-portal" %}">{% translate "Portal" %}</a>
     </li>
     <li>
-        <a href="{{ athlete.get_coach_programme_sessions_url }}"
-            aria-current="home">{{ athlete.name }}</a>
+        <a class="button is-ghost"
+            href="{{ athlete.get_coach_programme_sessions_url }}">{{ athlete.name }}</a>
     </li>
-    <li class="is-active">
+    <li class="button is-ghost is-active">
         <a href="{{ programme.get_coach_programme_sessions_url }}"
-            aria-current="home">{{ programme.date|date:"l - jS F Y" }}</a>
+            aria-current="programme session">{{ programme.date|date:"l - jS F Y" }}</a>
     </li>
 {% endblock breadcrumbs %}
 {% block content %}

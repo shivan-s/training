@@ -13,6 +13,11 @@
         athletes
     {% endblocktranslate %}
 {% endblock subheading %}
+{% block breadcrumbs %}
+    <li>
+        <a class="button is-ghost is-active" href="{% url "project:coach-portal" %}" aria-current="coach portal">{% translate "Portal" %}</a>
+    </li>
+{% endblock breadcrumbs %}
 {% block content %}
     <div class="block">
         <a href="{% url "project:add-athlete" %}"

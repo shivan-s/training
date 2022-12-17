@@ -12,9 +12,9 @@
 {% endblock subheading %}
 {% block breadcrumbs %}
     <li>
-        <a href="{% url "project:coach-portal" %}">{% translate "Portal" %}</a>
+        <a class="button is-ghost" href="{% url "project:coach-portal" %}">{% translate "Portal" %}</a>
     </li>
-    <li class="is-active">
+    <li class="button is-ghost is-active">
         <a href="{{ athlete.get_coach_edit_url }}"
             aria-current="{{ athlete.name }}">{{ athlete.name }}</a>
     </li>

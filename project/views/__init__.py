@@ -9,6 +9,7 @@ from .coaches import (
     ConfirmAthleteView,
     hx_coach_exercise_set_update_view,
     hx_coach_exercise_update_view,
+    hx_coach_programme_session_delete_view,
     hx_coach_programme_session_update_view,
     hx_coach_programme_session_week_duplicate_view,
 )
@@ -38,4 +39,5 @@ __all__ = [
     "hx_coach_exercise_update_view",
     "hx_coach_exercise_set_update_view",
     "hx_coach_programme_session_week_duplicate_view",
+    "hx_coach_programme_session_delete_view",
 ]

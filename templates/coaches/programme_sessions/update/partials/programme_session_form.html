@@ -28,8 +28,45 @@
                 </form>
             </div>
         </div>
-        {% for key, value in formset.items %}
-            {% include "coaches/programme_sessions/update/partials/exercise_form.html" with form=key.0 exercise=key.1 exercise_sets=value %}
+        {% for exercise_form, exercise_sets_formset in formset.items %}
+            {% include "coaches/programme_sessions/update/partials/exercise_form.html" with exercise_form=exercise_form exercise_sets_formset=exercise_sets_formset %}
         {% endfor %}
+        <div class="tile is-child">
+            <form method="post"
+                hx-post="{{ programme.get_hx_coach_exercise_new }}"
+                hx-swap="outerHTML"
+                hx-trigger="change">
+                {% csrf_token %}
+                <button class="button is-success" action="submit">
+                    <span class="icon is-small">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>{% translate "Add Exercise" %}</span>
+                </button>
+            </form>
+        </div>
+        <div class="tile is-child">{% include "partials/history.html" with history=programme.history.all %}</div>
+        <div class="tile is-child">
+            <div class="buttons">
+                <button class="button is-danger"
+                    hx-delete="{{ programme.get_hx_delete_url }}"
+                    {% if programme.deleted %} disabled{% endif %}>
+                    <span class="icon is-small">
+                        <i class="fas fa-trash"></i>
+                    </span>
+                    <span>{% translate "Delete Programme" %}</span>
+                </button>
+                {% if programme.deleted %}
+                    <button class="button is-success is-light"
+                        hx-delete="{{ programme.get_hx_delete_url }}"
+                        {% if programme.deleted %} disabled{% endif %}>
+                        <span class="icon is-small">
+                            <i class="fas fa-trash"></i>
+                        </span>
+                        <span>{% translate "Restore" %}</span>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>

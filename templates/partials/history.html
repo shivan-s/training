@@ -1,0 +1,40 @@
+{% load i18n %}
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">{% translate "History" %}</p>
+    </header>
+    <div class="card-content">
+        <div class="table-container">
+            <table class="table is-striped is-narrow is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>{% translate "History" %}</th>
+                        <th>{% translate "Reason" %}</th>
+                        <th>{% translate "User" %}</th>
+                        <th>{% translate "Date" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for history in programme.history.all %}
+                        <tr>
+                            <td>
+                                {% with history=history.history_type %}
+                                    {% if history == "+" %}
+                                        <p class="has-text-success">{% translate "Created" %}</p>
+                                    {% elif history == "~" %}
+                                        {% translate "Updated" %}
+                                    {% elif history == "-" %}
+                                        <p class="has-text-danger">{% translate "Deleted" %}</p>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>{{ history.history_change_reason }}</td>
+                            <td>{{ history.history_user.name }}</td>
+                            <td>{{ history.history_date|date:"P d M Y" }} ({{ history.date|timesince }} {% translate "ago" %})</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

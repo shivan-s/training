@@ -1,21 +1,34 @@
 {% load i18n %}
-<form method="post"
-    hx-post="{{ exercise_set.get_hx_edit_url }}"
-    hx-swap="outerHTML"
-    hx-trigger="changed throttle:1s"
-    hx-indicator=".htmx-indicator-{{ programme.pk }}">
-    <div class="htmx-indicator-{{ programme.pk }}">
-        {% translate "Saving..." %}
-        <progress class="progress is-small is-info" max="100"></progress>
-    </div>
-    {% csrf_token %}
-    {% for field in form %}
-        <td>
-            {% if field.name == "weight_unit" %}
-                <div class="select is-small">{{ field }}</div>
-            {% else %}
-                {{ field }}
-            {% endif %}
-        </td>
-    {% endfor %}
-</form>
+<div class="is-flex">
+    <form method="post"
+        hx-post="{{ exercise_set_form.instance.get_hx_edit_url }}"
+        hx-swap="outerHTML"
+        hx-trigger="changed throttle:1s"
+        hx-indicator="indicator-set-{{ exercise_form.instance.pk }}">
+        {% csrf_token %}
+        <div class="field-body">
+            {% for field in exercise_set_form %}
+                <div class="field">
+                    {% if forloop.parentloop.counter == 1 %}<label class="label is-normal">{{ field.label }}</label>{% endif %}
+                    {% if field.name == "weight_unit" %}
+                        <div class="select is-small">{{ field }}</div>
+                    {% else %}
+                        <div class="control">{{ field }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <form method="post"
+                hx-post="{{ exercise_set_form.instance.get_hx_delete_url }}">
+                <div class="field is-flex">
+                    <div class="control {% if forloop.counter == 1 %}is-align-self-flex-end{% endif %}">
+                        <button class="button is-danger is-light is-small is-rounded">
+                            <span class="icon is-small">
+                                <i class="fas fa-minus"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </form>
+</div>

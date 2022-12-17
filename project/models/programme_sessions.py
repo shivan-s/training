@@ -97,6 +97,21 @@ class ProgrammeSession(BaseModel):
             "project:hx-coach-programme-session-update", kwargs=kwargs
         )
 
+    def get_hx_delete_url(self) -> str:
+        kwargs = {"pk": self.pk, "athlete_pk": self.athlete.pk}
+        return reverse(
+            "project:hx-coach-programme-session-delete", kwargs=kwargs
+        )
+
+    def get_hx_coach_exercise_url(self) -> str:
+        """Provide an exercise url for a programme."""
+        kwargs = {
+            "pk": None,
+            "programme_pk": self.pk,
+            "athlete_pk": self.athlete.pk,
+        }
+        return reverse("project:hx-coach-exercise-new", kwargs=kwargs)
+
     def clean(self, *args, **kwargs):
         pass
 

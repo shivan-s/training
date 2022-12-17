@@ -1,10 +1,8 @@
 """Views for a coach to list their athlete's programme."""
 
-from collections.abc import Iterable
 from datetime import timedelta
 from typing import Any
 
-from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
@@ -13,9 +11,10 @@ from django.db.models import QuerySet
 from django.forms.models import BaseInlineFormSet
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView
 
-from project.forms.base import BaseCustomForm
+from project.forms import ExerciseForm, ExerciseSetForm, ProgrammeSessionForm
 from project.models import Athlete, Exercise, ExerciseSet, ProgrammeSession
 
 
@@ -62,19 +61,17 @@ class CoachProgrammeSessionUpdateView(LoginRequiredMixin, TemplateView):
             )
             formset = {}
             for exercise in programme.exercise_set.all():
+                exercise_form = ExerciseForm(
+                    self.request.POST or None, instance=exercise
+                )
+                if formset.get(exercise_form) is None:
+                    formset[exercise_form] = []
+
                 for exercise_set in exercise.intended.all():
-                    exercise_form = ExerciseForm(
-                        self.request.POST or None, instance=exercise
-                    )
-                    if formset.get((exercise_form, exercise)) is None:
-                        formset[(exercise_form, exercise)] = []
-                    formset[(exercise_form, exercise)].append(
-                        (
-                            ExerciseSetForm(
-                                self.request.POST or None,
-                                instance=exercise_set,
-                            ),
-                            exercise_set,
+                    formset[exercise_form].append(
+                        ExerciseSetForm(
+                            self.request.POST or None,
+                            instance=exercise_set,
                         )
                     )
         else:
@@ -86,72 +83,6 @@ class CoachProgrammeSessionUpdateView(LoginRequiredMixin, TemplateView):
         context["form"] = form
         context["formset"] = formset
         return context
-
-
-class ExerciseSetForm(BaseCustomForm, forms.ModelForm):
-    """ExerciseSet Form nested within the ExerciseForm"""
-
-    # TODO: exercise_type needs to be made into a search?
-    def __init__(self, *args, **kwargs):
-        """Overwrite."""
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].get_bound_field(self, field).css_classes(
-                extra_classes="is-horizontal"
-            )
-            self.fields[field].widget.attrs.update({"class": "input is-small"})
-
-        self.fields["weight"].widget.attrs.update({"step": 1})
-
-    class Meta:
-        """Meta."""
-
-        model: type[Exercise] = ExerciseSet
-        fields: Iterable[str] = (
-            "sets",
-            "repetitions",
-            "weight",
-            "weight_unit",
-        )
-
-
-class ExerciseForm(BaseCustomForm, forms.ModelForm):
-    """Exercise Form which is nested within ProgrammeSessionForm."""
-
-    def __init__(self, *args, **kwargs):
-        """Overwrite `__init__`."""
-        super().__init__(*args, **kwargs)
-        self.fields["coach_notes"].widget.attrs.update(
-            {"class": "textarea is-small has-fixed-size", "rows": "1"}
-        )
-
-    # TODO: exercise_type needs to be made into a search?
-
-    class Meta:
-        """Meta."""
-
-        model: type[Exercise] = Exercise
-        fields: Iterable[str] = ("exercise_type", "coach_notes")
-
-
-class ProgrammeSessionForm(BaseCustomForm, forms.ModelForm):
-    """Programme Session Form for coaches."""
-
-    def __init__(self, *args, **kwargs):
-        """Overwrite `__init__`."""
-        super().__init__(*args, **kwargs)
-        self.fields["coach_notes"].widget.attrs.update(
-            {"class": "textarea is-small has-fixed-size", "rows": "1"}
-        )
-        self.fields["session_type"].widget.attrs.update({"class": "select"})
-        self.fields["date"].widget.input_type = "date"
-        self.fields["date"].widget.attrs.update({"class": "input is-small"})
-
-    class Meta:
-        """Meta."""
-
-        model: type[ProgrammeSession] = ProgrammeSession
-        fields: Iterable[str] = ("date", "session_type", "coach_notes")
 
 
 def _hx_common(request, athlete_pk) -> type[Athlete]:
@@ -178,10 +109,27 @@ def _hx_common(request, athlete_pk) -> type[Athlete]:
 
 
 @login_required
-def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
-
+@require_http_methods(["DELETE"])
+def hx_coach_programme_session_delete_view(request, athlete_pk, pk):
+    """Deleting a programme session by a coach."""
     athlete = _hx_common(request=request, athlete_pk=athlete_pk)
+    check_programme = ProgrammeSession.objects.filter(pk=pk)
+    if check_programme.exists():
+        programme = check_programme.first()
+        programme.delete()
+        context = {"programme": programme}
+        return render(
+            request,
+            "coaches/programme_sessions/detail/update.html",
+            context,
+        )
+    else:
+        Http404()
 
+
+@login_required
+def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
+    athlete = _hx_common(request=request, athlete_pk=athlete_pk)
     formset = {}
     check_programme = ProgrammeSession.objects.filter(pk=pk)
     if check_programme.exists():
@@ -331,7 +279,6 @@ def hx_coach_programme_session_week_duplicate_view(request, pk=None):
                 )
                 programme.pk = None
                 programme._state.adding = True
-                programme.coach_notes = None
                 programme.date += timedelta(days=7)
                 programme.save()
                 for exercise in exercises:
@@ -339,7 +286,6 @@ def hx_coach_programme_session_week_duplicate_view(request, pk=None):
                         intended=exercise.pk
                     )
                     exercise.pk = None
-                    exercise.coach_notes = None
                     exercise._state.adding = True
                     exercise.programme_session = programme
                     exercise.save()
@@ -360,6 +306,6 @@ def hx_coach_programme_session_week_duplicate_view(request, pk=None):
 
     return render(
         request,
-        "coaches/programme_sessions/list.html",
+        "coaches/programme_sessions/list/list.html",
         context,
     )

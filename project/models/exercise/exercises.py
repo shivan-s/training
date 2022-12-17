@@ -26,7 +26,7 @@ class Exercise(BaseModel):
     exercise_type = models.ForeignKey(
         "project.ExerciseType",
         on_delete=models.CASCADE,
-        verbose_name=_("exercise_type"),
+        verbose_name=_("exercise"),
     )
 
     coach_notes = models.TextField(

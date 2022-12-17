@@ -9,6 +9,11 @@
 {% block subheading %}
     {% translate "Today" %}, {% now "l - jS F Y" %}
 {% endblock subheading %}
+{% block breadcrumbs %}
+    <li>
+        <a class="button is-ghost is-active" href="{% url "project:programme-session-list" %}" aria-current="programme session list">{% translate "Your Programme" %}</a>
+    </li>
+{% endblock breadcrumbs %}
 {% block content %}
     <div class="block">
         <div id="programmes">

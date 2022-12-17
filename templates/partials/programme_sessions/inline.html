@@ -43,11 +43,16 @@
         </div>
     </div>
     <div class="card-footer">
-        <a class="card-footer-item button is-ghost"
+        <a class="card-footer-item button is-info is-light"
             href="{{ programme.get_absolute_url }}">{% translate "See more" %}</a>
         {% if programme.coach.user == user %}
             <a class="card-footer-item button is-warning is-light"
-                href="{{ programme.get_coach_edit_url }}">{% translate "Edit" %}</a>
+                href="{{ programme.get_coach_edit_url }}">
+                <span>{% translate "Edit" %}</span>
+                <span class="icon is-small">
+                    <i class="fas fa-pen"></i>
+                </span>
+            </a>
         {% endif %}
     </div>
 </div>
