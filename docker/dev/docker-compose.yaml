@@ -1,11 +1,11 @@
 ---
 version: "3.8"
 
-name: training
+name: trainwithsomeone
 
 services:
   db:
-    container_name: training_db
+    container_name: trainwithsomeone_db
     image: postgres:14
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   cache:
-    container_name: training_cache
+    container_name: trainwithsomeone_cache
     depends_on:
       - db
     image: redis:7
@@ -30,7 +30,7 @@ services:
       - .env
 
   web:
-    container_name: training_web
+    container_name: trainwithsomeone_web
     image: training:dev
     depends_on:
       - cache
@@ -47,17 +47,10 @@ services:
       - external_network
     ports:
       - "${APP_PORT:-8000}:8000"
-    command:
-      - sh
-      - -c
-      - |
-        python manage.py migrate
-        python manage.py collectstatic --no-input
-        gunicorn -c python:config.gunicorn config.wsgi
 
   celery:
-    container_name: training_celery
-    image: training_celery:dev
+    container_name: trainingwithsomeone_celery
+    image: trainwithsomeone_celery:dev
     build:
       context: ../..
       dockerfile: ./docker/dev/Dockerfile

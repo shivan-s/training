@@ -9,23 +9,22 @@ WORKDIR /code
 # for libsass (bulma css frontend)
 # hadolint ignore=DL3008
 RUN apt-get update && \
-    apt-get -y --no-install-recommends install build-essential && \
-    rm -rf /var/lib/apt/lists/*
+  apt-get -y --no-install-recommends install build-essential && \
+  rm -rf /var/lib/apt/lists/*
 
 # install python dependences
 # install pip-tools and pip
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir -U pip-tools pip
-COPY requirements.in /code/
+COPY requirements/requirements.in /code/
 
 # hadolint ignore=DL3042
 RUN pip-compile -o requirements.txt requirements.in && \
-    pip install --no-cache-dir --no-deps -r requirements.txt
+  pip install --no-cache-dir --no-deps -r requirements.txt
 
 # run entry scripts
-COPY entrypoint.sh manage.py /code/
-RUN chmod +x ./entrypoint.sh
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+COPY . .
+ENTRYPOINT ["docker/prod/entrypoint.sh"]
 
 # expose port
 EXPOSE 8000
