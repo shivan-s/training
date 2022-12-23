@@ -1,11 +1,11 @@
 """ProgrammeSession admin."""
 
 from collections.abc import Iterable
-from typing import Type as T
 
 import nested_admin
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from simple_history.admin import SimpleHistoryAdmin
 
 from project.models import Exercise, ProgrammeSession
 
@@ -39,7 +39,7 @@ class OutcomeExerciseSetInline(BaseExerciseSetInline):
 class ExerciseInline(nested_admin.NestedStackedInline):
     """ExerciseInline."""
 
-    model: T[Exercise] = Exercise
+    model: type[Exercise] = Exercise
     inlines: InlineType = (
         IntendedExerciseSetInline,
         OutcomeExerciseSetInline,
@@ -49,21 +49,24 @@ class ExerciseInline(nested_admin.NestedStackedInline):
 
 
 @admin.register(ProgrammeSession)
-class ProgrammeSessionAdmin(nested_admin.NestedModelAdmin):
+class ProgrammeSessionAdmin(nested_admin.NestedModelAdmin, SimpleHistoryAdmin):
     """ProgrammeSession admin view."""
 
-    model: T[ProgrammeSession] = ProgrammeSession
-    readonly_fields: Iterable[str] = ("reference_id",)
+    model: type[ProgrammeSession] = ProgrammeSession
+    readonly_fields: Iterable[str] = ("reference_id", "deleted", "deleted_at")
     raw_id_fields: Iterable[str] = ("coach", "athlete")
     inlines: InlineType = (
         ExerciseInline,
         CommentInline,
     )
+    history_list_display: Iterable[str] = []
     fields: Iterable[str] = (
-        "coach",
-        "athlete",
+        "reference_id",
+        "deleted",
+        "deleted_at",
         "date",
         "session_type",
+        "published",
         "start",
         "end",
         "coach_notes",

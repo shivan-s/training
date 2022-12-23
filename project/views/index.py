@@ -36,12 +36,9 @@ class IndexView(TemplateView):
             context["start_week"] = start_week
             context["end_week"] = start_week + timedelta(days=7)
             athlete = self.request.user.athlete
-            exercise_sets = ExerciseSet.objects.filter(
-                intended__programme_session__athlete=athlete
-            ).current_week()
-            # context["exercise_sets"] = exercise_sets
             context["programmes"] = (
                 ProgrammeSession.objects.filter(athlete=athlete)
+                .filter(published__isnull=False)
                 .current_week()
                 .group_by()
             )

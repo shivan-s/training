@@ -1,0 +1,112 @@
+{% load i18n %}
+<div class="programme-session-modal"
+    id="edit-programme-{{ programme.pk }}"
+    class="block">
+    <div x-data="{open: true}" x-show="open">
+        <div class="modal is-active">
+            <div @click="open = false" class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">
+                        {% if programme.deleted %}
+                            {% translate "DELETED" %}
+                        {% elif not programme.is_published %}
+                            {% translate "DRAFT" %}
+                        {% endif %}
+                        {% translate "Programme" %}
+                    </p>
+                    <button @click="open = false" class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body {% if programme.deleted %}has-background-danger-light{% elif not programme.is_published %}has-background-warning-light{% endif %}">
+                    <div class="tile is-ancestor">
+                        <div class="tile is-parent is-vertical">
+                            <div class="tile is-child card">
+                                <header class="card-header">
+                                    <p class="card-header-title is-centered">{% translate "Programme Details" %}</p>
+                                </header>
+                                <div id="indicator-programme-{% if programme %}{{ programme.pk }}{% else %}new{% endif %}"
+                                    class="htmx-indicator">
+                                    <progress class="progress is-small is-info" max="100"></progress>
+                                </div>
+                                <div class="card-content">
+                                    <form hx-post="{{ programme.get_hx_edit_url }}"
+                                        hx-swap="outerHTML"
+                                        hx-trigger="change"
+                                        hx-indicator="#indicator-programme-{% if programme %}{{ programme.pk }}{% else %}new{% endif %}">
+                                        {% csrf_token %}
+                                        {% for field in form %}
+                                            <div class="field">
+                                                <div class="label">{{ field.label }}</div>
+                                                {% if field.name == "session_type" %}
+                                                    <p class="control select is-small">{{ field }}</p>
+                                                {% else %}
+                                                    <p class="control">{{ field }}</p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </form>
+                                </div>
+                            </div>
+                            {% for exercise_form, exercise_sets_formset in formset.items %}
+                                {% include "coaches/programme_sessions/partials/exercise_form.html" with programme=programme exercise_form=exercise_form exercise_sets_formset=exercise_sets_formset %}
+                            {% endfor %}
+                            <div id="new-exercise" class="title is-parent"></div>
+                            <div class="tile is-child">
+                                <form class="control"
+                                    method="post"
+                                    hx-post="{{ programme.get_hx_exercise_new_url }}"
+                                    hx-target="#new-exercise"
+                                    hx-swap="afterend">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button is-success is-light is-small is-outlined">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                        <span>{% translate "Exercise" %}</span>
+                                    </button>
+                                </form>
+                            </div>
+                            {% with history=programme.history.all %}
+                                {% if history %}
+                                    <div class="tile is-child">{% include "partials/history.html" with history=history %}</div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button @click="open = false" class="button" aria-label="close">{% translate "Close" %}</button>
+                    {% if not programme.deleted %}
+                        <button class="button is-success">Save changes</button>
+                        <form method="post"
+                            hx-target="#edit-programme-{{ programme.pk }}"
+                            hx-post="{{ programme.get_hx_delete_url }}"
+                            hx-swap="outerHTML">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="button is-danger {% if programme.deleted %} disabled{% endif %}">
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                                <span>{% translate "Delete Programme" %}</span>
+                            </button>
+                        </form>
+                    {% else %}
+                        <form method="post"
+                            hx-target="#edit-programme-{{ programme.pk }}"
+                            hx-post="{{ programme.get_hx_delete_url }}"
+                            hx-swap="outerHTML">
+                            {% csrf_token %}
+                            <button type="submit" class="button is-success">
+                                <span class="icon is-small">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                                <span>{% translate "Restore" %}</span>
+                            </button>
+                        </form>
+                    {% endif %}
+                </footer>
+            </div>
+        </div>
+    </div>
+</div>

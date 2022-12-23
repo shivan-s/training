@@ -43,7 +43,7 @@ class CustomUserManager(UserManager):
         kwargs.setdefault("is_superuser", False)
         return self._create_user(email, password, **kwargs)
 
-    def create_superuser(self, email=None, passwor=None, **kwargs):
+    def create_superuser(self, email=None, password=None, **kwargs):
         kwargs.setdefault("is_staff", True)
         kwargs.setdefault("is_superuser", True)
         return self._create_user(email, password, **kwargs)

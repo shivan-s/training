@@ -1,15 +1,27 @@
-{% extends "base/base_box.html" %}
+{% extends "base/base.html" %}
 {% load i18n account thumbnail %}
 {% block title %}
     {% user_display user as user_display %}
     - {% translate "Profile: " %}{{ user_display }}{% translate "- Update" %}
 {% endblock title %}
-{% block box_heading %}
+{% block heading %}
+    {% translate "Editing Profile" %}
+{% endblock heading %}
+{% block subheading %}
     {% user_display user as user_display %}
-    Editing {{ user_display }}
-{% endblock box_heading %}
-{% block box_content %}
-    <div class="block">
+    {{ user_display }}
+{% endblock subheading %}
+{% block breadcrumbs %}
+    <li>
+        <a class="button is-ghost" href="{% url "project:profile" %}">{% translate "Profile" %}</a>
+    </li>
+    <li>
+        <a class="button is-ghost is-active"
+            href="{% url "project:profile-update" %}">{% translate "Editing" %}</a>
+    </li>
+{% endblock breadcrumbs %}
+{% block content %}
+    <div class="box">
         <div class="block">
             <form method="post" enctype=multipart/form-data>
                 {% csrf_token %}
@@ -17,8 +29,6 @@
                 <div class="control">{% include "components/primary_form_button.html" with value="Update" %}</div>
             </form>
         </div>
-        <p class="is-underlined">
-            <a href="{% url 'account_email' %}">Change E-mail</a>
-        </p>
+        <a class="button is-ghost" href="{% url 'account_email' %}">Change E-mail</a>
     </div>
-{% endblock box_content %}
+{% endblock content %}

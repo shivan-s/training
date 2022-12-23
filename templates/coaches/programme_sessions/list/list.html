@@ -25,8 +25,8 @@
             <form class="control"
                 method="post"
                 hx-post="{{ athlete.get_hx_coach_programme_session_new_url }}"
-                hx-target="#new-programmes"
-                hx-swap="beforeend">
+                hx-target=".programme-session-modal"
+                hx-swap="outerHTML">
                 {% csrf_token %}
                 <button type="submit" class="button is-primary is-inverted is-outlined">
                     <span class="icon is-small">
@@ -35,22 +35,24 @@
                     <span>{% translate "New Programme" %}</span>
                 </button>
             </form>
-            <form class="control"
-                method="post"
-                hx-post="{{ athlete.get_hx_coach_programme_session_week_duplicate_url }}"
-                hx-target="#programmes"
-                hx-select="#programmes"
-                hx-swap="outerHTML">
-                {% csrf_token %}
-                <button type="submit" class="button is-primary is-inverted is-outlined">
-                    <span class="icon is-small">
-                        <i class="fas fa-plus"></i>
-                    </span>
-                    <span>{% translate "Duplicate Week" %}</span>
-                </button>
-            </form>
+            <div class="programme-session-modal"></div>
+            {% if athlete.programme_sessions_set.most_recent_week %}
+                <form class="control"
+                    method="post"
+                    hx-post="{{ athlete.get_hx_coach_programme_session_week_duplicate_url }}"
+                    hx-target="#programmes"
+                    hx-select="#programmes"
+                    hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-primary is-inverted is-outlined">
+                        <span class="icon is-small">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <span>{% translate "Duplicate Week" %}</span>
+                    </button>
+                </form>
+            {% endif %}
         </div>
-        <div id="new-programmes" class="block"></div>
         <div id="programmes" class="block">
             {% if programmes %}
                 {% include "partials/programme_sessions/list.html" %}

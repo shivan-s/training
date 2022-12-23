@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.shortcuts import reverse
+from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from hashid_field import HashidAutoField
 
@@ -40,9 +42,7 @@ class ProgrammeSession(BaseModel):
     athlete = models.ForeignKey(
         "project.Athlete", on_delete=models.CASCADE, verbose_name=_("athlete")
     )
-    date = models.DateField(
-        _("date"),
-    )
+    date = models.DateField(_("date"), default=timezone.now())
     session_type = models.IntegerField(
         _("session"),
         choices=SessionType.choices,
@@ -50,6 +50,9 @@ class ProgrammeSession(BaseModel):
         null=True,
     )
 
+    published = models.DateTimeField(
+        _("published"), blank=True, null=True, default=None
+    )
     start = models.DateTimeField(
         _("time start of session"),
         blank=True,
@@ -75,20 +78,29 @@ class ProgrammeSession(BaseModel):
 
     objects = ProgrammeSessionManager()
 
-    @property
+    @cached_property
     def is_completed(self) -> bool:
         """Marks programme completed."""
         return self.end is not None
+
+    def complete(self):
+        """Mark a programme completed."""
+        self.end = timezone.now()
+
+    @cached_property
+    def is_published(self) -> bool:
+        """Mark a programme as published."""
+        if self.published is None:
+            return False
+        return self.published <= timezone.now()
+
+    def publish(self):
+        self.published = timezone.now()
 
     def get_absolute_url(self) -> str:
         """Provide absolute url for the instance."""
         kwargs = {"pk": self.pk}
         return reverse("project:programme-session-detail", kwargs=kwargs)
-
-    def get_coach_edit_url(self) -> str:
-        """Provide update url for a programme for a coach."""
-        kwargs = {"pk": self.pk, "athlete_pk": self.athlete.pk}
-        return reverse("project:coach-programme-session-update", kwargs=kwargs)
 
     def get_hx_edit_url(self) -> str:
         """Provide the edit url for this instance."""
@@ -103,11 +115,10 @@ class ProgrammeSession(BaseModel):
             "project:hx-coach-programme-session-delete", kwargs=kwargs
         )
 
-    def get_hx_coach_exercise_url(self) -> str:
+    def get_hx_exercise_new_url(self) -> str:
         """Provide an exercise url for a programme."""
         kwargs = {
-            "pk": None,
-            "programme_pk": self.pk,
+            "programme_session_pk": self.pk,
             "athlete_pk": self.athlete.pk,
         }
         return reverse("project:hx-coach-exercise-new", kwargs=kwargs)

@@ -19,11 +19,6 @@ urlpatterns = [
         name="coach-programme-session-list",
     ),
     path(
-        "portal/athletes/<str:athlete_pk>/programme/<str:pk>",
-        views.CoachProgrammeSessionUpdateView.as_view(),
-        name="coach-programme-session-update",
-    ),
-    path(
         "hx/portal/athletes/<str:athlete_pk>/programme/<str:pk>",
         views.hx_coach_programme_session_update_view,
         name="hx-coach-programme-session-update",
@@ -52,6 +47,11 @@ urlpatterns = [
         "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/",
         views.hx_coach_exercise_update_view,
         name="hx-coach-exercise-new",
+    ),
+    path(
+        "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/<str:pk>",
+        views.hx_coach_exercise_delete_view,
+        name="hx-coach-exercise-delete",
     ),
     path(
         "hx/portal/athletes/<str:athlete_pk>/programme/<str:programme_session_pk>/exercise/<str:exercise_pk>/exercise_set/<str:pk>",
@@ -85,7 +85,9 @@ urlpatterns = [
     ),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path(
-        "profile/edit/", views.ProfileUpdateView.as_view(), name="profile-edit"
+        "profile/update/",
+        views.ProfileUpdateView.as_view(),
+        name="profile-update",
     ),
     path(
         "library/",

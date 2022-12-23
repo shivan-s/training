@@ -11,11 +11,12 @@ from django.db.models import QuerySet
 from django.forms.models import BaseInlineFormSet
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.views.generic import TemplateView
 
 from project.forms import ExerciseForm, ExerciseSetForm, ProgrammeSessionForm
 from project.models import Athlete, Exercise, ExerciseSet, ProgrammeSession
+from project.utils import get_max_exercise_order, reorder_exercise
 
 
 class CoachProgrammeSessionListView(LoginRequiredMixin, TemplateView):
@@ -37,51 +38,6 @@ class CoachProgrammeSessionListView(LoginRequiredMixin, TemplateView):
         context["coach"] = coach
         context["programmes"] = programmes
         context["athlete"] = athlete
-        return context
-
-
-class CoachProgrammeSessionUpdateView(LoginRequiredMixin, TemplateView):
-    """Programme Update view."""
-
-    template_name = "coaches/programme_sessions/update/update.html"
-
-    def get_context_data(self, *args, **kwargs):
-        """Context."""
-        context = super().get_context_data(*args, **kwargs)
-        athlete_pk = self.kwargs.get("athlete_pk")
-        coach = self.request.user.coach
-        check_athlete = coach.athletes.filter(user__pk=athlete_pk)
-        if check_athlete.exists():
-            athlete = check_athlete.first()
-            programme = get_object_or_404(
-                ProgrammeSession, reference_id=self.kwargs.get("pk")
-            )
-            form = ProgrammeSessionForm(
-                self.request.POST or None, instance=programme
-            )
-            formset = {}
-            for exercise in programme.exercise_set.all():
-                exercise_form = ExerciseForm(
-                    self.request.POST or None, instance=exercise
-                )
-                if formset.get(exercise_form) is None:
-                    formset[exercise_form] = []
-
-                for exercise_set in exercise.intended.all():
-                    formset[exercise_form].append(
-                        ExerciseSetForm(
-                            self.request.POST or None,
-                            instance=exercise_set,
-                        )
-                    )
-        else:
-            raise PermissionDenied("Athlete not registered with Coach.")
-
-        context["programme"] = programme
-        context["coach"] = coach
-        context["athlete"] = athlete
-        context["form"] = form
-        context["formset"] = formset
         return context
 
 
@@ -109,18 +65,26 @@ def _hx_common(request, athlete_pk) -> type[Athlete]:
 
 
 @login_required
-@require_http_methods(["DELETE"])
+@require_POST
 def hx_coach_programme_session_delete_view(request, athlete_pk, pk):
-    """Deleting a programme session by a coach."""
+    """Deleting a programme session by a coach.
+
+    This will also restore the programme session if it has been marked for \
+            deletetion.
+    """
     athlete = _hx_common(request=request, athlete_pk=athlete_pk)
     check_programme = ProgrammeSession.objects.filter(pk=pk)
     if check_programme.exists():
         programme = check_programme.first()
-        programme.delete()
-        context = {"programme": programme}
+        if not programme.deleted:
+            programme.delete()
+        else:
+            programme.undelete()
+        form = ProgrammeSessionForm(request.POST or None, instance=programme)
+        context = {"form": form, "programme": programme}
         return render(
             request,
-            "coaches/programme_sessions/detail/update.html",
+            "coaches/programme_sessions/partials/programme_session_form.html",
             context,
         )
     else:
@@ -128,20 +92,22 @@ def hx_coach_programme_session_delete_view(request, athlete_pk, pk):
 
 
 @login_required
+@require_POST
 def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
+    """Coach to update/edit/create a programme session."""
     athlete = _hx_common(request=request, athlete_pk=athlete_pk)
     formset = {}
     check_programme = ProgrammeSession.objects.filter(pk=pk)
     if check_programme.exists():
         programme = check_programme.first()
         for exercise in programme.exercise_set.all():
+            exercise_form = ExerciseForm(
+                request.POST or None, instance=exercise
+            )
+            if formset.get(exercise_form) is None:
+                formset[exercise_form] = []
             for exercise_set in exercise.intended.all():
-                exercise_form = ExerciseForm(
-                    request.POST or None, instance=exercise
-                )
-                if formset.get((exercise_form, exercise)) is None:
-                    formset[(exercise_form, exercise)] = []
-                formset[(exercise_form, exercise)].append(
+                formset[exercise_form].append(
                     (
                         ExerciseSetForm(
                             request.POST or None, instance=exercise_set
@@ -150,7 +116,10 @@ def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
                     )
                 )
     else:
-        programme = None
+        programme = ProgrammeSession()
+        programme.athlete = athlete
+        programme.coach = request.user.coach
+        programme.save()
     form = ProgrammeSessionForm(request.POST or None, instance=programme)
     context = {
         "form": form,
@@ -159,14 +128,11 @@ def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
     }
     if form.is_valid():
         new_programme = form.save(commit=False)
-        if programme is None:
-            new_programme.athlete = athlete
-            new_programme.coach = coach
         new_programme.save()
         context["programme"] = new_programme
         return render(
             request,
-            "coaches/programme_sessions/partials/programme_session_inline.html",
+            "coaches/programme_sessions/partials/programme_session_form.html",
             context,
         )
     return render(
@@ -176,14 +142,49 @@ def hx_coach_programme_session_update_view(request, athlete_pk=None, pk=None):
     )
 
 
-def _hx_exercise_common(
-    programme_session_pk=None,
-) -> QuerySet[type[ProgrammeSession]]:
-    check_programme = ProgrammeSession.objects.filter(pk=programme_session_pk)
+def _hx_programme_common(
+    pk=None,
+) -> type[ProgrammeSession]:
+    check_programme = ProgrammeSession.objects.filter(pk=pk)
     if check_programme.exists():
         programme = check_programme.first()
     else:
         raise Http404
+    return programme
+
+
+@login_required
+@require_POST
+def hx_coach_exercise_delete_view(
+    request, athlete_pk, programme_session_pk, pk
+):
+    """Deleting an exercise by a coach."""
+    athlete = _hx_common(request=request, athlete_pk=athlete_pk)
+    programme = _hx_programme_common(pk=programme_session_pk)
+    check_exercise = Exercise.objects.filter(pk=pk)
+    if check_exercise.exists():
+        exercise = check_exercise.first()
+        if not exercise.deleted:
+            exercise.delete()
+        else:
+            exercise.undelete()
+        exercise_form = ExerciseForm(request.POST or None, instance=exercise)
+        programme_session_form = ProgrammeSessionForm(
+            request.POST or None, instance=programme
+        )
+        context = {
+            "exercise_form": exercise_form,
+            "exercise": exercise,
+            "programme": programme,
+            "form": programme_session_form,
+        }
+        return render(
+            request,
+            "coaches/programme_sessions/partials/programme_session_form.html",
+            context,
+        )
+    else:
+        Http404()
 
 
 @login_required
@@ -198,25 +199,36 @@ def hx_coach_exercise_update_view(
     check_exercise = Exercise.objects.filter(pk=pk)
     if check_exercise.exists():
         exercise = check_exercise.first()
+    else:
+        exercise = Exercise()
+        exercise.programme_session = programme
+        exercise.order = get_max_exercise_order(programme)
+        exercise.save()
+        exercise_set = ExerciseSet()
+        exercise_set.intended = exercise
+    programme_session_form = ProgrammeSessionForm(
+        request.POST or None, instance=programme
+    )
     form = ExerciseForm(request.POST or None, instance=exercise)
     context = {
-        "form": form,
+        "form": programme_session_form,
+        "exercise_form": form,
         "exercise": exercise,
     }
     if form.is_valid():
         new_exercise = form.save(commit=False)
         if exercise is None:
-            new_exercise.intended = programme
+            new_exercise.programme_session = programme
         new_exercise.save()
         context["exercise"] = new_exercise
         return render(
             request,
-            "coaches/programme_sessions/partials/exercise_inline.html",
+            "coaches/programme_sessions/partials/programme_session_form.html",
             context,
         )
     return render(
         request,
-        "coaches/programme_sessions/partials/exercise_form.html",
+        "coaches/programme_sessions/partials/programme_session_form.html",
         context,
     )
 
@@ -230,7 +242,7 @@ def hx_coach_exercise_set_update_view(
     pk=None,
 ):
     athlete = _hx_common(request=request, athlete_pk=athlete_pk)
-    programme = _hx_exercise_common(pk=programme_session_pk)
+    programme = _hx_programme_common(pk=programme_session_pk)
 
     check_exercise = Exercise.objects.filter(pk=exercise_pk)
     if check_exercise.exists():

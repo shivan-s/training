@@ -26,9 +26,9 @@
     </li>
     <li class="button is-ghost is-active">
         <a href="{{ programme.get_coach_programme_sessions_url }}"
-            aria-current="programme session">{{ programme.date|date:"l - jS F Y" }}</a>
+            aria-current="programme session">{% translate "" %}</a>
     </li>
 {% endblock breadcrumbs %}
 {% block content %}
-    {% include "coaches/programme_sessions/update/partials/programme_session_form.html" with programme=programme %}
+    {% include "coaches/programme_sessions/partials/programme_session_form.html" with programme=programme %}
 {% endblock content %}

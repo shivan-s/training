@@ -1,8 +1,11 @@
 {% load i18n %}
-<div class="card">
+<div class="card {% if not programme.is_published %}has-background-warning-light{% endif %}">
     <div class="card-content">
         <div>
             <h3 class="title is-4 has-text-primary">
+                {% if not programme.is_published %}
+                    {% translate "(DRAFT)" %}
+                {% endif %}
                 {{ programme.date|date:"l (jS M)" }}
                 {% if programme.coach_notes %}
                     <span class="icon has-text-info">
@@ -42,17 +45,26 @@
             {% endfor %}
         </div>
     </div>
-    <div class="card-footer">
-        <a class="card-footer-item button is-info is-light"
-            href="{{ programme.get_absolute_url }}">{% translate "See more" %}</a>
+    <footer class="card-footer">
         {% if programme.coach.user == user %}
-            <a class="card-footer-item button is-warning is-light"
-                href="{{ programme.get_coach_edit_url }}">
-                <span>{% translate "Edit" %}</span>
-                <span class="icon is-small">
-                    <i class="fas fa-pen"></i>
-                </span>
-            </a>
+            <form class="card-footer-item control"
+                method="post"
+                hx-post="{{ programme.get_hx_edit_url }}"
+                hx-target="#edit-programme-{{ programme.pk }}"
+                hx-swap="outerHTML">
+                {% csrf_token %}
+                <button style="width: 100%" class="button is-warning" type="submit">
+                    <span>{% translate "Edit" %}</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-pen"></i>
+                    </span>
+                </button>
+            </form>
         {% endif %}
-    </div>
+        <div class="card-footer-item">
+          <a style="width: 100%;" class="button is-info is-light"
+                href="{{ programme.get_absolute_url }}">{% translate "See more" %}</a>
+        </div>
+    </footer>
+    <div id="edit-programme-{{ programme.pk }}"></div>
 </div>

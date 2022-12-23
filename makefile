@@ -16,39 +16,28 @@ run:
 .PHONY: attach
 attach:
 	@echo "Attaching to containers" && \
-	docker exec -it training_web sh
+	docker exec -it trainwithsomeone_web sh
 
 .PHONY: tail
 tail:
 	@echo "Attaching to debug.log" && \
-	docker exec -it training_web sh -c "tail -f debug.log"
+	docker exec -it trainwithsomeone_web sh -c "tail -f debug.log"
 
 .PHONY: shell
 shell:
 	@echo "Attaching to django shell" && \
-	docker exec -it training_web sh -c "python manage.py shell_plus"
+	docker exec -it trainwithsomeone_web sh -c "python manage.py shell_plus"
 
 ARG=""
 .PHONY: test
 test:
 	@echo "Running Testing" && \
-	docker exec -it training_web sh -c "pytest $(ARG)"
+	docker exec -it trainwithsomeone_web sh -c "pytest $(ARG)"
 
 .PHONY: tox
 tox:
 	@echo "Running tox" && \
-	docker exec -it training_web sh -c "tox"
-
-.PHONY: deploy
-deploy:
-	@echo "Deploying application" && \
-	ansible-playbook ansible/deploy.yml -i ansible/hosts -K
-
-# quick deploy does not run certbot or nginx
-.PHONY: quick-deploy
-quick-deploy:
-	@echo "Deploying application" && \
-	ansible-playbook ansible/quick-deploy.yml -i ansible/hosts -K
+	docker exec -it trainwithsomeone_web sh -c "tox"
 
 .PHONY: generate-key
 generate-key:
@@ -58,11 +47,11 @@ generate-key:
 .PHONY: graph
 graph:
 	@echo "Generating graph viz of database"
-	docker exec -it training_web  sh -c "python manage.py graph_models --rankdir BT project users -o ./docs/my_project_visualised.png" && \
+	docker exec -it trainwithsomeone_web  sh -c "python manage.py graph_models --rankdir BT project users -o ./docs/my_project_visualised.png" && \
 	exit
 	open ./docs/my_project_visualised.png
 
 .PHONY: debug
 debug:
 	@echo "Debugging..." && \
-	docker exec -it training_web sh -c "tail -f debug.log"
+	docker exec -it trainwithsomeone_web sh -c "tail -f debug.log"

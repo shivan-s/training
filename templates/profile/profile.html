@@ -15,6 +15,12 @@
 {% block subheading %}
     Joined {{ user.date_joined|timesince }} ago
 {% endblock subheading %}
+{% block breadcrumbs %}
+    <li>
+        <a class="button is-ghost is-active"
+            href="{% url "project:profile" %}">{% translate "Profile" %}</a>
+    </li>
+{% endblock breadcrumbs %}
 {% block content %}
 <div class="box">
     <div class="block">
@@ -24,7 +30,7 @@
     </div>
     <div class="block">
         <div class="is-flex is-justify-content-space-around">
-            <a class="button is-text" href={% url "project:profile-edit" %}>{% translate "Edit Profile" %}</a>
+            <a class="button is-ghost" href={% url "project:profile-update" %}>{% translate "Edit Profile" %}</a>
         </div>
         <div class="block">
             {% include "components/horizontal_field.html" with field_value=user.date_joined|date:"Y, jS M" field_label="Date Joined" is_static="1" %}
@@ -53,7 +59,7 @@
     </div>
     <div class="block">
         <div class="is-flex is-justify-content-space-around">
-            <a class="button is-text" href={% url "socialaccount_connections" %}>{% translate "Manage Social Connections" %}</a>
+            <a class="button is-ghost" href={% url "socialaccount_connections" %}>{% translate "Manage Social Connections" %}</a>
         </div>
     </div>
 </div>

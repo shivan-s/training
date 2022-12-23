@@ -6,7 +6,6 @@ from collections import defaultdict
 from datetime import date, datetime
 from typing import TYPE_CHECKING, Union
 
-from django.db import models
 from django.db.models import F, Max, Q, QuerySet
 from django.db.models.functions import (
     ExtractDay,
@@ -15,6 +14,7 @@ from django.db.models.functions import (
     ExtractYear,
 )
 from django.utils import timezone
+from softdelete.models import SoftDeleteManager, SoftDeleteQuerySet
 
 if TYPE_CHECKING:
     from ..athletes import Athlete
@@ -23,8 +23,12 @@ if TYPE_CHECKING:
     GroupByProgrammeSession = dict[Union[QuerySet, list[ProgrammeSession]]]
 
 
-class ProgrammeSessionQuerySet(models.QuerySet):
+class ProgrammeSessionQuerySet(SoftDeleteQuerySet):
     """PrgrammeSession QuerySet."""
+
+    def unpublished(self) -> QuerySet[ProgrammeSession]:
+        """Published programme sessions."""
+        return self.filter(published__isnull=True)
 
     def current_week(self) -> QuerySet[ProgrammeSession]:
         """Get current week of programmes."""
@@ -58,14 +62,13 @@ class ProgrammeSessionQuerySet(models.QuerySet):
 
     def most_recent_week(self) -> QuerySet[ProgrammeSession]:
         """Get the most resent week of programmes."""
-        # get the most recent programme session
-        # determine the week
-        # filter based on his week.
         recent = (
             self.order_by("date")
             .annotate(year=ExtractYear(F("date")))
             .annotate(week=ExtractWeek(F("date")))
         ).last()
+        if recent is None:
+            return self.none()
         recent_week, recent_year = recent.week, recent.year
         return (
             self.annotate(week=ExtractWeek(F("date")))
@@ -83,7 +86,7 @@ class ProgrammeSessionQuerySet(models.QuerySet):
         self, *args, **kwargs
     ) -> QuerySet[ProgrammeSession]:
         """Provide all completed training sessions."""
-        return self.filter(~Q(end=None))
+        return self.filter(published__isnull=False).filter(~Q(end=None))
 
     def group_by(
         self,
@@ -132,7 +135,7 @@ class ProgrammeSessionQuerySet(models.QuerySet):
         return dict(programmes_group_by)
 
 
-class ProgrammeSessionManager(models.Manager):
+class ProgrammeSessionManager(SoftDeleteManager):
     """ProgrammeSession Manager."""
 
     def get_queryset(self) -> QuerySet:

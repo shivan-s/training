@@ -57,6 +57,7 @@ class ProgrammeSessionListView(BaseProgrammeView):
             programmes = (
                 ProgrammeSession.objects.filter(athlete=athlete)
                 .filter(date__range=[start, end])
+                .filter(published__isnull=False)
                 .group_by()
             )
             return render(
@@ -70,9 +71,11 @@ class ProgrammeSessionListView(BaseProgrammeView):
         context = super().get_context_data(*args, **kwargs)
         athlete = context["athlete"]
         coaches = athlete.coaches.all()
-        programmes = ProgrammeSession.objects.filter(
-            athlete=athlete
-        ).group_by()
+        programmes = (
+            ProgrammeSession.objects.filter(athlete=athlete)
+            .filter(published__isnull=False)
+            .group_by()
+        )
         context["coaches"] = coaches
         context["programmes"] = programmes
         return context
@@ -138,7 +141,9 @@ class ProgrammeSessionDetailView(BaseProgrammeView):
         context["next_programme"] = None
         context["previous_programme"] = None
 
-        programme_sessions = ProgrammeSession.objects.filter(athlete=athlete)
+        programme_sessions = ProgrammeSession.objects.filter(
+            athlete=athlete
+        ).filter(published__isnull=False)
         for i, ps in enumerate(programme_sessions):
             if ps.reference_id == self.kwargs.get("pk"):
                 if i > 0:

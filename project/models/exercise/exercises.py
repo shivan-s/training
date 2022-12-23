@@ -27,6 +27,8 @@ class Exercise(BaseModel):
         "project.ExerciseType",
         on_delete=models.CASCADE,
         verbose_name=_("exercise"),
+        blank=True,
+        null=True,
     )
 
     coach_notes = models.TextField(
@@ -50,6 +52,17 @@ class Exercise(BaseModel):
         }
         return reverse(
             "project:hx-coach-exercise-update",
+            kwargs=kwargs,
+        )
+
+    def get_hx_delete_url(self) -> str:
+        kwargs = {
+            "athlete_pk": self.programme_session.athlete.pk,
+            "programme_session_pk": self.programme_session.pk,
+            "pk": self.pk,
+        }
+        return reverse(
+            "project:hx-coach-exercise-delete",
             kwargs=kwargs,
         )
 

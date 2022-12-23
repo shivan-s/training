@@ -25,18 +25,18 @@
     <div class="card-content">
         <div class="content">
             {% for exercise_set_form in exercise_sets_formset %}
-                {% include "coaches/programme_sessions/update/partials/exercise_set_form.html" with exercise_set_form=exercise_set_form %}
+                {% include "coaches/programme_sessions/partials/exercise_set_form.html" with exercise_set_form=exercise_set_form %}
             {% endfor %}
-            <div class="buttons is-centered">
+            <div class="buttons">
                 <div class="field">
                     <div class="control">
                         <form method="post" hx-post={{ exercise_set.get_hx_edit_url }}>
                             {% csrf_token %}
-                            <button class="button is-success is-light is-small is-rounded">
+                            <button class="button is-success is-light is-outlined is-small">
                                 <span class="icon is-small">
                                     <i class="fas fa-plus"></i>
                                 </span>
-                              <span>{% translate "Add more"%}</span>
+                                <span>{% translate "Set" %}</span>
                             </button>
                         </form>
                     </div>
@@ -45,20 +45,34 @@
         </div>
     </div>
     <footer class="card-footer">
-        <button class="card-footer-item button is-info is-light" href="#">
-            <span class="icon is-small">
-                <i class="fas fa-chevron-up"></i>
-            </span>
-        </button>
-        <button class="card-footer-item button is-info is-light" href=""%>
-            <span class="icon is-small">
-                <i class="fas fa-chevron-down"></i>
-            </span>
-        </button>
-        <button class="card-footer-item button is-danger is-light" href=""%>
-            <span class="icon is-small">
-                <i class="fas fa-trash"></i>
-            </span>
-        </button>
+        <form class="card-footer-item control" method="post" hx-post="">
+            {% csrf_token %}
+            <button style="width: 100%;" class="button is-info is-light" href="#">
+                <span class="icon is-small">
+                    <i class="fas fa-chevron-up"></i>
+                </span>
+            </button>
+        </form>
+        <form class="card-footer-item control" method="post" hx-post="">
+            {% csrf_token %}
+            <button style="width: 100%;" class="button is-info is-light" href=""%>
+                <span class="icon is-small">
+                    <i class="fas fa-chevron-down"></i>
+                </span>
+            </button>
+        </form>
+        <form class="card-footer-item control"
+            method="post"
+            hx-post="{{ exercise_form.instance.get_hx_delete_url }}"
+            hx-swap="outerHTML"
+            hx-target="#edit-programme-{{ programme.pk }}"
+            >
+            {% csrf_token %}
+            <button style="width: 100%;" class="button is-danger is-light" href=""%>
+                <span class="icon is-small">
+                    <i class="fas fa-trash"></i>
+                </span>
+            </button>
+        </form>
     </footer>
 </div>

@@ -1,13 +1,8 @@
-"""Utility functions for models."""
-
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Union
+"""Utility functions for views."""
 
 from django.db.models import Max
 
-from .. import ProgrammeSession
-from . import Exercise, ExerciseSet
+from project.models import Exercise, ExerciseSet, ProgrammeSession
 
 
 def get_max_exercise_order(programme_session: type[ProgrammeSession]) -> int:
