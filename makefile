@@ -2,16 +2,14 @@
 .PHONY: run-detached
 run-detached:
 	@echo "Building and running application detached" && \
-	cp .env ./docker/dev/.env
-	docker-compose -f ./docker/dev/docker-compose.yaml down --remove-orphans && \
-	docker-compose -f ./docker/dev/docker-compose.yaml up --build --wait
+	docker-compose down --remove-orphans && \
+	docker-compose -build --wait
 
 .PHONY: run
 run:
 	@echo "Building and running application" && \
-	cp .env ./docker/dev/.env
-	docker-compose -f ./docker/dev/docker-compose.yaml down --remove-orphans && \
-	docker-compose -f ./docker/dev/docker-compose.yaml up --build
+	docker-compose down --remove-orphans && \
+	docker-compose up --build
 
 .PHONY: attach
 attach:

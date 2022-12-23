@@ -31,33 +31,35 @@ services:
 
   web:
     container_name: trainwithsomeone_web
-    image: training:dev
+    image: trainwithsomeone:dev
     depends_on:
       - cache
     build:
-      context: ../..
+      context: .
       dockerfile: ./docker/dev/Dockerfile
     env_file:
       - .env
     volumes:
-      - ../..:/code/
+      - .:/code/
     restart: unless-stopped
     networks:
       - internal_network
       - external_network
     ports:
       - "${APP_PORT:-8000}:8000"
+    expose:
+      - 8000
 
   celery:
-    container_name: trainingwithsomeone_celery
+    container_name: trainwithsomeone_celery
     image: trainwithsomeone_celery:dev
     build:
-      context: ../..
+      context: .
       dockerfile: ./docker/dev/Dockerfile
     env_file:
       - .env
     volumes:
-      - ../..:/code/
+      - .:/code/
     restart: unless-stopped
     networks:
       - internal_network

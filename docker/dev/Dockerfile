@@ -26,7 +26,4 @@ RUN pip-compile -o requirements.txt requirements.in && \
   pip install --no-cache-dir --no-deps -r dev-requirements.txt
 
 COPY . .
-ENTRYPOINT ["docker/dev/entrypoint.sh"]
-
-# expose port
-EXPOSE 8000
+ENTRYPOINT ["sh", "-c", "docker-entrypoint.sh"]

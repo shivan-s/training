@@ -24,7 +24,4 @@ RUN pip-compile -o requirements.txt requirements.in && \
 
 # run entry scripts
 COPY . .
-ENTRYPOINT ["docker/prod/entrypoint.sh"]
-
-# expose port
-EXPOSE 8000
+ENTRYPOINT ["sh", "-c", "docker-entrypoint.sh"]

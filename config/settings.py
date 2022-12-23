@@ -104,23 +104,33 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_NAME"),
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "PORT": 5432,
         "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": 5432,
     }
 }
 
-# Cached Database - Redis
+# online - for prod
+if os.getenv("DATABASE_URL", "") != "":
+    r = urlparse(os.environ.get("DATABASE_URL"))
+    DATABASES["default"]["NAME"] = os.path.relpath(str(r.path), "/")
+    DATABASES["default"]["USER"] = str(r.username)
+    DATABASES["default"]["PASSWORD"] = str(r.password)
+    DATABASES["default"]["HOST"] = str(r.hostname)
+    DATABASES["default"]["PORT"] = int(str(r.port))
 
+
+# Cached Database - Redis
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://cache:6379",
+        "LOCATION": os.getenv("REDIS_URL", "redis://cache:6379"),
     }
 }
 
@@ -274,7 +284,7 @@ LOGGING = {
 # Producution settings
 DEBUG = False
 ALLOWED_HOSTS = [
-    "training.shivan.xyz",
+    "trainwithsomeone.com",
 ]
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
