@@ -24,4 +24,4 @@ RUN pip-compile -o requirements.txt requirements.in && \
 
 # run entry scripts
 COPY . .
-ENTRYPOINT ["sh", "-c", "docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "-c", "/code/docker-entrypoint.sh"]

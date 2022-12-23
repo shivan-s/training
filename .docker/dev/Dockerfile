@@ -26,4 +26,4 @@ RUN pip-compile -o requirements.txt requirements.in && \
   pip install --no-cache-dir --no-deps -r dev-requirements.txt
 
 COPY . .
-ENTRYPOINT ["sh", "-c", "docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "-c", "/code/docker-entrypoint.sh"]

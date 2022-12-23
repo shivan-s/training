@@ -36,7 +36,7 @@ services:
       - cache
     build:
       context: .
-      dockerfile: ./docker/dev/Dockerfile
+      dockerfile: ./.docker/dev/Dockerfile
     env_file:
       - .env
     volumes:
@@ -55,7 +55,7 @@ services:
     image: trainwithsomeone_celery:dev
     build:
       context: .
-      dockerfile: ./docker/dev/Dockerfile
+      dockerfile: ./.docker/dev/Dockerfile
     env_file:
       - .env
     volumes:
